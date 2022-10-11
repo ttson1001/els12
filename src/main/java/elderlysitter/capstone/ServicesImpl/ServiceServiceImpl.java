@@ -30,7 +30,7 @@ public class ServiceServiceImpl implements ServiceService {
                         .price(serviceDTO.getPrice())
                         .description(serviceDTO.getDescription())
                         .url(serviceDTO.getUrl())
-                        .sitterRequirement(serviceDTO.getSitter_requirement())
+                        .sitterRequirement(serviceDTO.getSitterRequirement())
                         .duration(serviceDTO.getDuration())
                         .status(statusRepository.findById(serviceDTO.getStatusID()).get())
                         .category(categoryRepository.findById(serviceDTO.getCategoryID()).get())
@@ -44,7 +44,7 @@ public class ServiceServiceImpl implements ServiceService {
         oldService.setDescription(serviceDTO.getDescription());
         oldService.setPrice(serviceDTO.getPrice());
         oldService.setUrl(serviceDTO.getUrl());
-        oldService.setSitterRequirement(serviceDTO.getSitter_requirement());
+        oldService.setSitterRequirement(serviceDTO.getSitterRequirement());
         oldService.setDuration(serviceDTO.getDuration());
         oldService.setStatus(statusRepository.findById(serviceDTO.getStatusID()).get());
         oldService.setCategory(categoryRepository.findById(serviceDTO.getCategoryID()).get());

@@ -19,7 +19,7 @@ public class ServiceDTO {
     private BigDecimal price;
     private String description;
     private String url;
-    private String sitter_requirement;
+    private String sitterRequirement;
     private Integer duration;
     private Long statusID;
     private Long categoryID;

@@ -25,7 +25,7 @@ public class SitterController {
     UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
+//    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<ResponseDTO> getAll() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {

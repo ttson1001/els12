@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
-//@CrossOrigin(origins = "*")
+//@CrossOrigin
 @RequestMapping("auth")
 public class AuthenController {
     private AuthenticationManager authenticationManager;
