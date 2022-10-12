@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-//@CrossOrigin(origins = "*")
 @RequestMapping("customer")
 public class CustomerController {
     @Autowired
@@ -20,7 +19,7 @@ public class CustomerController {
     PasswordEncoder passwordEncoder;
 
     @PostMapping()
-    public ResponseEntity<ResponseDTO> CustomerRegister(@RequestBody @NotNull CustomerRegisterDTO customerRegisterDTO){
+    public ResponseEntity<ResponseDTO> customerRegister(@RequestBody @NotNull CustomerRegisterDTO customerRegisterDTO){
         User newUser = userService.save(User.builder()
                 .fullName(customerRegisterDTO.getFullName())
                 .email(customerRegisterDTO.getEmail())
@@ -30,6 +29,8 @@ public class CustomerController {
         responseDTO.setData(newUser);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+
 
 
 

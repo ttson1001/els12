@@ -4,6 +4,7 @@ import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ public class AdminController {
     UserService userService;
 
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> activeSitter(@PathVariable long sitterId){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(userService.updateStatusSitter(1L,sitterId));
@@ -21,6 +23,7 @@ public class AdminController {
     }
 
     @PutMapping("deactive/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> deactiveSitter(@PathVariable long sitterId){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(userService.updateStatusSitter(2L,sitterId));

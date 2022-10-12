@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query("select u from User u where u.status.statusName = ?2  and u.role.name = ?1")
     List<User> findAll(String roleName,  String statusName);
+
+    User findUserByEmail(String email);
 }

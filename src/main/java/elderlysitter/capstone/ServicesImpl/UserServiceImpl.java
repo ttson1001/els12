@@ -1,10 +1,12 @@
 package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.UserService;
+import elderlysitter.capstone.dto.ChangePasswordDTO;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.repository.StatusRepository;
 import elderlysitter.capstone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private StatusRepository statusRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Override
     public User findByUsername(String username) {
         return  userRepository.findByUsername((username));
@@ -52,6 +57,13 @@ public class UserServiceImpl implements UserService {
         User sitter = userRepository.findById(sitterId).get();
         sitter.setStatus(statusRepository.findById(statusID).get());
         return userRepository.save(sitter);
+    }
+
+    @Override
+    public User changePassword(ChangePasswordDTO changePasswordDTO) {
+        User user = userRepository.findUserByEmail(changePasswordDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
+        return userRepository.save(user);
     }
 
 

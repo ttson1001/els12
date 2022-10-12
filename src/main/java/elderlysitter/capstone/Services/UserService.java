@@ -1,8 +1,8 @@
 package elderlysitter.capstone.Services;
 
-import elderlysitter.capstone.entities.Role;
+import elderlysitter.capstone.dto.ChangePasswordDTO;
 import elderlysitter.capstone.entities.User;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -13,4 +13,6 @@ public interface UserService {
     List<User> findAll(String roleName, String statusName);
 
     User updateStatusSitter(Long statusID, Long SitterID);
+
+    User changePassword(ChangePasswordDTO changePasswordDTO);
 }

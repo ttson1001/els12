@@ -1,6 +1,7 @@
 package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.Services.UserService;
+import elderlysitter.capstone.dto.ChangePasswordDTO;
 import elderlysitter.capstone.dto.LoginDTO;
 import elderlysitter.capstone.dto.LoginResponseDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
@@ -26,7 +27,6 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
-//@CrossOrigin
 @RequestMapping("auth")
 public class AuthenController {
     private AuthenticationManager authenticationManager;
@@ -71,5 +71,14 @@ public class AuthenController {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping()
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(userServices.changePassword(changePasswordDTO));
+        return ResponseEntity.ok().body(responseDTO);
+
+
     }
 }
