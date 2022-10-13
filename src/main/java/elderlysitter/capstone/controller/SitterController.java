@@ -4,6 +4,7 @@ import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
