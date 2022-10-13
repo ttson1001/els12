@@ -51,7 +51,7 @@ public class AuthenController {
         try{
             Authentication authenticate = authenticationManager.authenticate(authentication);
             if(authenticate.isAuthenticated()){
-                User userAuthenticated = userServices.findByUsername(authenticate.getName());
+                User userAuthenticated = userServices.findByEmail(authenticate.getName());
                 String token = Jwts.builder().setSubject(authenticate.getName())
                         .claim(("authorities"), authenticate.getAuthorities()).claim("id",userAuthenticated.getId())
                         .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))

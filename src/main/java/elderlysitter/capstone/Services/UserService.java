@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserService {
     User findByUsername(String username);
+    User findByEmail(String email);
     User save(User user);
 
     List<User> findAll(String roleName, String statusName);
