@@ -1,5 +1,6 @@
 package elderlysitter.capstone.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,11 +25,12 @@ public class Service {
     private String sitterRequirement;
     private Integer duration;
 
-
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id")
     private Status status;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "service")
     private List<BookingDetail> bookingDetails;
 

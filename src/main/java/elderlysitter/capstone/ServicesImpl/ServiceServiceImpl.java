@@ -53,7 +53,13 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     public List<Service> getAllService(){
-        ArrayList<Service> services = (ArrayList<Service>) serviceRepository.findAll();
+        try {
+            ArrayList<Service> services = (ArrayList<Service>) serviceRepository.findAll();
+            return  services;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         return null;
     }
 
