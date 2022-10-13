@@ -1,5 +1,6 @@
 package elderlysitter.capstone.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,13 +19,13 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String statusName;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "status")
     private List<User> users;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "status")
     private List<Booking> bookings;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "status")
-    private  List<Service> services;
+    private List<Service> services;
 }

@@ -24,7 +24,6 @@ public class Service {
     @Column(name = "sitter_requirement")
     private String sitterRequirement;
     private Integer duration;
-
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id")
