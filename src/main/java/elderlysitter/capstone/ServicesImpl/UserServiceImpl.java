@@ -3,6 +3,7 @@ package elderlysitter.capstone.ServicesImpl;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ChangePasswordDTO;
 import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.repository.RoleRepository;
 import elderlysitter.capstone.repository.StatusRepository;
 import elderlysitter.capstone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    RoleRepository roleRepository;
     @Override
     public User findByUsername(String username) {
         return  userRepository.findByUsername((username));
@@ -46,6 +50,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllByRole(String roleName) {
+        List<User> users = new ArrayList<>();
+        try {
+            users = userRepository.findAllByRole(roleRepository.findByName(roleName));
+        }catch (Exception e){
+            e.printStackTrace();
+            return users;
+        }
+        return users;
+    }
+
+    @Override
     public List<User> findAll(String roleName, String statusName) {
         List<User> users = new ArrayList<>();
         try {
@@ -56,6 +72,8 @@ public class UserServiceImpl implements UserService {
         }
         return users;
     }
+
+
 
     @Override
     public User updateStatusSitter(Long statusID, Long sitterId) {

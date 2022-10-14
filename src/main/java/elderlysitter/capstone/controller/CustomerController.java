@@ -9,8 +9,11 @@ import elderlysitter.capstone.repository.StatusRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("customer")
@@ -26,6 +29,7 @@ public class CustomerController {
     @Autowired
     RoleService roleService;
 
+
     @PostMapping()
     public ResponseEntity<ResponseDTO> customerRegister(@RequestBody @NotNull CustomerRegisterDTO customerRegisterDTO){
         User newUser = userService.save(User.builder()
@@ -37,6 +41,15 @@ public class CustomerController {
                 .build());
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(newUser);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAll(){
+        List<User> users = userService.findAllByRole("CUSTOMER");
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(users);
         return ResponseEntity.ok().body(responseDTO);
     }
 

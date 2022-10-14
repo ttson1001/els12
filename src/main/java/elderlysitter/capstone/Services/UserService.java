@@ -1,6 +1,7 @@
 package elderlysitter.capstone.Services;
 
 import elderlysitter.capstone.dto.ChangePasswordDTO;
+import elderlysitter.capstone.entities.Role;
 import elderlysitter.capstone.entities.User;
 
 
@@ -11,6 +12,7 @@ public interface UserService {
     User findByEmail(String email);
     User save(User user);
 
+    List<User> findAllByRole(String roleName);
     List<User> findAll(String roleName, String statusName);
 
     User updateStatusSitter(Long statusID, Long SitterID);
