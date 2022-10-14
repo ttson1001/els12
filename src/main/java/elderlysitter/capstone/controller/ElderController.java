@@ -17,8 +17,15 @@ public class ElderController {
     @GetMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ResponseDTO> getAllElder() {
+
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(elderService.getAllElder());
+        try {
+            responseDTO.setData(elderService.getAllElder());
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok().body(responseDTO);
     }
 

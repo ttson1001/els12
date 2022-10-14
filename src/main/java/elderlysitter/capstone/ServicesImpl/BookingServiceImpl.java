@@ -2,6 +2,7 @@ package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.BookingService;
 import elderlysitter.capstone.dto.BookingDTO;
+import elderlysitter.capstone.dto.BookingSitterDTO;
 import elderlysitter.capstone.entities.Booking;
 import elderlysitter.capstone.entities.BookingDetail;
 import elderlysitter.capstone.entities.Service;
@@ -51,5 +52,33 @@ public class BookingServiceImpl implements BookingService {
         }
         return booking;
 
+    }
+
+    @Override
+    public Booking bookingSitter(BookingSitterDTO bookingSitterDTO) {
+        Booking newBooking = Booking.builder()
+                .name(bookingSitterDTO.getName())
+                .address(bookingSitterDTO.getAddress())
+                .place(bookingSitterDTO.getPlace())
+                .description(bookingSitterDTO.getDescription())
+                .startDate(bookingSitterDTO.getStartDateTime())
+                .endDate(bookingSitterDTO.getEndDateTime())
+                .totalPrice(bookingSitterDTO.getTotalPrice())
+                .elderId(bookingSitterDTO.getElderId())
+                .sitter_id(bookingSitterDTO.getSitterId())
+                .user(userRepository.findUserByEmail(bookingSitterDTO.getEmail()))
+                .build();
+        bookingRepository.save(newBooking);
+        Booking booking = bookingRepository.findBookingByName(bookingSitterDTO.getName());
+        for (int i = 0 ; i<bookingSitterDTO.getServiceIds().size(); i++){
+            Service service = serviceRepository.getById(bookingSitterDTO.getServiceIds().get(i));
+            BookingDetail bookingDetail = BookingDetail.builder()
+                    .booking(booking)
+                    .service(service)
+                    .duration(service.getDuration())
+                    .build();
+            bookingDetailRepository.save(bookingDetail);
+        }
+        return booking;
     }
 }
