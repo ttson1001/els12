@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,8 +18,8 @@ public class BookingSitterDTO {
     private String address;
     private String description;
     private Long elderId;
-    private LocalDate startDateTime;
-    private LocalDate endDateTime;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private String place;
     private BigDecimal totalPrice;
     private Long sitterId;

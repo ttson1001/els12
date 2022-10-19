@@ -1,6 +1,7 @@
 package elderlysitter.capstone.Services;
 
 import elderlysitter.capstone.dto.ChangePasswordDTO;
+import elderlysitter.capstone.entities.FavoriteSitter;
 import elderlysitter.capstone.entities.Role;
 import elderlysitter.capstone.entities.User;
 
@@ -8,7 +9,7 @@ import elderlysitter.capstone.entities.User;
 import java.util.List;
 
 public interface UserService {
-    User findByUsername(String username);
+
     User findByEmail(String email);
     User save(User user);
 
@@ -18,4 +19,6 @@ public interface UserService {
     User updateStatusSitter(Long statusID, Long SitterID);
 
     User changePassword(ChangePasswordDTO changePasswordDTO);
+
+    List<User> findAllFavorite(Long customerId);
 }

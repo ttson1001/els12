@@ -2,7 +2,9 @@ package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ChangePasswordDTO;
+import elderlysitter.capstone.entities.FavoriteSitter;
 import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.repository.FavoriteSitterRepository;
 import elderlysitter.capstone.repository.RoleRepository;
 import elderlysitter.capstone.repository.StatusRepository;
 import elderlysitter.capstone.repository.UserRepository;
@@ -27,10 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     RoleRepository roleRepository;
-    @Override
-    public User findByUsername(String username) {
-        return  userRepository.findByUsername((username));
-    }
+
+    @Autowired
+    FavoriteSitterRepository favoriteSitterRepository;
 
     @Override
     public User findByEmail(String email) {
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll(String roleName, String statusName) {
         List<User> users = new ArrayList<>();
         try {
-            users = userRepository.findAll(roleName, statusName);
+            users = userRepository.findAllByRole_NameAndStatus_StatusName(roleName, statusName);
         }catch (Exception e){
             e.printStackTrace();
             return users;
@@ -89,5 +90,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    public List<User> findAllFavorite(Long customerId) {
+        List<User> users = favoriteSitterRepository.findAll(customerId);
+        return users;
+    }
 
 }

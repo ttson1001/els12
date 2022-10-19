@@ -47,7 +47,7 @@ public class AuthenController {
     @PermitAll
     public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDTO user){
         ResponseDTO responseDTO = new ResponseDTO();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         try{
             Authentication authenticate = authenticationManager.authenticate(authentication);
             if(authenticate.isAuthenticated()){

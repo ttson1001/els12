@@ -20,7 +20,7 @@ public class Elder {
 
     private String name;
 
-    private Boolean gender;
+    private String gender;
 
     private LocalDate dob;
 

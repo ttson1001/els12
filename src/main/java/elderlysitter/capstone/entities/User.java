@@ -19,8 +19,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-
     private String password;
 
     @Column(name = "Full_name")
@@ -60,6 +58,10 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
+
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "sitter")
+//    private List<Booking> _bookings;
 
     @JsonIgnore
     @OneToOne(mappedBy = "user")

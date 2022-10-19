@@ -4,6 +4,7 @@ import elderlysitter.capstone.Services.RoleService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.CustomerRegisterDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.entities.FavoriteSitter;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.repository.StatusRepository;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +49,15 @@ public class CustomerController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> getAll(){
         List<User> users = userService.findAllByRole("CUSTOMER");
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(users);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("{id}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> getAllSitter(@PathVariable Long id){
+        List<User> users = userService.findAllFavorite(id);
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(users);
         return ResponseEntity.ok().body(responseDTO);

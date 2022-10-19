@@ -7,10 +7,7 @@ import elderlysitter.capstone.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("booking")
@@ -31,6 +28,30 @@ public class BookingController {
     public ResponseEntity<ResponseDTO> bookSitter(@RequestBody BookingSitterDTO bookingSitterDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(bookingService.bookingSitter(bookingSitterDTO));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("{statusId")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getBookingByStatus(@PathVariable Long statusId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(bookingService.getListBookingBYStatus(statusId));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAllBooking(){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(bookingService.getAllBooking());
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("customer/{id}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public  ResponseEntity<ResponseDTO> getALlBookingByCustomerID(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(bookingService.getAllBookingByCustomerId(id));
         return ResponseEntity.ok().body(responseDTO);
     }
 
