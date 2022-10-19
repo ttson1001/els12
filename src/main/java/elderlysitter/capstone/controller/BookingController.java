@@ -31,7 +31,7 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("{statusId")
+    @GetMapping("{statusId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> getBookingByStatus(@PathVariable Long statusId){
         ResponseDTO responseDTO = new ResponseDTO();
