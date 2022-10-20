@@ -62,6 +62,21 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("sitter/{sitterEmail}")
+    @PreAuthorize("hasRole('SITTER')")
+    public  ResponseEntity<ResponseDTO> getAllBookingBySitterEmail(@PathVariable String cusEmail){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+
+            responseDTO.setData(bookingService.getAllBookingBySitterEmail(cusEmail));
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @GetMapping("bookingDetail/{bookingId}")
     @PreAuthorize("hasRole('CUSTOMER')")
     public  ResponseEntity<ResponseDTO> getAllBookingDetailByBookingId(@PathVariable Long bookingId){
