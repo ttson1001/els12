@@ -32,6 +32,7 @@ public class User {
 
     private String address;
 
+    @Column(unique=true)
     private String email;
 
     @Column(name = "create_date")
