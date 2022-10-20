@@ -20,8 +20,8 @@ public class ElderServiceImpl implements ElderService {
     UserRepository userRepository;
 
     @Override
-    public List<Elder> getAllElder() {
-        List<Elder> elders = elderRepository.findAll();
+    public List<Elder> getAllElderByCustomer(String email) {
+        List<Elder> elders = elderRepository.findAllByUser_Email(email);
         return elders;
     }
 

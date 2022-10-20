@@ -6,7 +6,7 @@ import elderlysitter.capstone.entities.Elder;
 import java.util.List;
 
 public interface ElderService {
-    List<Elder> getAllElder();
+    List<Elder> getAllElderByCustomer(String email);
 
     Elder addElder(ElderDTO elderDTO);
 }

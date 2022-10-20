@@ -14,13 +14,13 @@ public class ElderController {
     @Autowired
     ElderService elderService;
 
-    @GetMapping
+    @GetMapping("{cusEmail}")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> getAllElder() {
+    public ResponseEntity<ResponseDTO> getAllElder(@PathVariable String cusEmail) {
 
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(elderService.getAllElder());
+            responseDTO.setData(elderService.getAllElderByCustomer(cusEmail));
 
         }catch(Exception e){
             e.printStackTrace();
