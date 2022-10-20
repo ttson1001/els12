@@ -51,7 +51,14 @@ public class BookingController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public  ResponseEntity<ResponseDTO> getALlBookingByCustomerID(@PathVariable String cusEmail){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(bookingService.getAllBookingByCustomerEmail(cusEmail));
+        try {
+
+            responseDTO.setData(bookingService.getAllBookingByCustomerEmail(cusEmail));
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 

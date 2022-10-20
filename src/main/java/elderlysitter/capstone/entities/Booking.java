@@ -1,5 +1,6 @@
 package elderlysitter.capstone.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -54,9 +55,11 @@ public class Booking {
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<BookingDetail> bookingDetails;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<Rating> ratings;
 
