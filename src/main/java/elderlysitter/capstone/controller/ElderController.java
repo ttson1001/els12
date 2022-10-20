@@ -31,6 +31,21 @@ public class ElderController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('CUSTOMER','SITTER')")
+    public ResponseEntity<ResponseDTO> getElderId(@PathVariable Long id) {
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(elderService.getElderById(id));
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ResponseDTO> addElder(@RequestBody ElderDTO elderDTO){

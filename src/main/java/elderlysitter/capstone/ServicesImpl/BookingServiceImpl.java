@@ -130,7 +130,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking acceptBookingBySitter(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).get();
-        booking.setStatus(statusRepository.findByStatusName("STARTING"));
+        booking.setStatus(statusRepository.findByStatusName("S"));
         return booking;
     }
 }

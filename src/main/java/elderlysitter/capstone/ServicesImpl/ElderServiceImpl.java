@@ -50,4 +50,9 @@ public class ElderServiceImpl implements ElderService {
         elder.setIsAllergy(elderProfileDTO.getIsAllergy());
         return elderRepository.save(elder);
     }
+
+    @Override
+    public Elder getElderById(Long id) {
+        return  elderRepository.findById(id).get();
+    }
 }

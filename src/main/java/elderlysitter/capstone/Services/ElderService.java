@@ -12,4 +12,7 @@ public interface ElderService {
     Elder addElder(ElderDTO elderDTO);
 
     Elder updateElder(ElderProfileDTO elderProfileDTO);
+    Elder getElderById(Long id);
+
+
 }
