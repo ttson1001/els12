@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,5 +24,5 @@ public class BookingSitterDTO {
     private String totalPrice;
     private String sitterId;
     private String email;
-    private List<String> serviceIds;
+    private ArrayList<String> serviceIds;
 }
