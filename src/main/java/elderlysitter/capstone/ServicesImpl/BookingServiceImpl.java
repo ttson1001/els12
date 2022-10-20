@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.stereotype.Service
 public class BookingServiceImpl implements BookingService {
@@ -66,8 +67,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking bookingSitter(BookingSitterDTO bookingSitterDTO) {
+        UUID uuid = UUID.randomUUID();
         Booking newBooking = Booking.builder()
-                .name(bookingSitterDTO.getName())
+                .name(uuid.toString())
                 .address(bookingSitterDTO.getAddress())
                 .place(bookingSitterDTO.getPlace())
                 .description(bookingSitterDTO.getDescription())
@@ -79,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
                 .user(userRepository.findUserByEmail(bookingSitterDTO.getEmail()))
                 .build();
         bookingRepository.save(newBooking);
-        Booking booking = bookingRepository.findBookingByName(bookingSitterDTO.getName());
+        Booking booking = bookingRepository.findBookingByName(newBooking.getName());
         for (int i = 0 ; i<bookingSitterDTO.getServiceIds().size(); i++){
             Service service = serviceRepository.getById(Long.parseLong(bookingSitterDTO.getServiceIds().get(i)));
             BookingDetail bookingDetail = BookingDetail.builder()

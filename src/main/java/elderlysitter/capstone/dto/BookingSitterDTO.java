@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class BookingSitterDTO {
-    private String name;
     private String address;
     private String description;
     private String elderId;

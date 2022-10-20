@@ -17,6 +17,7 @@ import java.io.Serializable;
                 @UniqueConstraint(name = "uniqueBookingService", columnNames = { "booking_id", "service_id" })})
 public class BookingDetail implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JoinColumn(name = "booking_id")
     @ManyToOne(fetch = FetchType.EAGER)
