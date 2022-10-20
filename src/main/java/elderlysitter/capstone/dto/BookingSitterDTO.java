@@ -17,12 +17,12 @@ public class BookingSitterDTO {
     private String name;
     private String address;
     private String description;
-    private Long elderId;
+    private String elderId;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private String place;
-    private BigDecimal totalPrice;
-    private Long sitterId;
+    private String totalPrice;
+    private String sitterId;
     private String email;
-    private List<Long> serviceIds;
+    private List<String> serviceIds;
 }

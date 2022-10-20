@@ -1,5 +1,6 @@
 package elderlysitter.capstone.ServicesImpl;
 
+import com.fasterxml.jackson.databind.node.DecimalNode;
 import elderlysitter.capstone.Services.BookingService;
 import elderlysitter.capstone.dto.BookingDTO;
 import elderlysitter.capstone.dto.BookingSitterDTO;
@@ -9,6 +10,7 @@ import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @org.springframework.stereotype.Service
@@ -71,15 +73,15 @@ public class BookingServiceImpl implements BookingService {
                 .description(bookingSitterDTO.getDescription())
                 .startDateTime(bookingSitterDTO.getStartDateTime())
                 .endDateTime(bookingSitterDTO.getEndDateTime())
-                .totalPrice(bookingSitterDTO.getTotalPrice())
-                .elderId(bookingSitterDTO.getElderId())
-                .sitter(userRepository.findById(bookingSitterDTO.getSitterId()).get())
+                .totalPrice(BigDecimal.valueOf(Double.valueOf(bookingSitterDTO.getTotalPrice())))
+                .elderId(Long.parseLong(bookingSitterDTO.getElderId()))
+                .sitter(userRepository.findById(Long.parseLong(bookingSitterDTO.getSitterId())).get())
                 .user(userRepository.findUserByEmail(bookingSitterDTO.getEmail()))
                 .build();
         bookingRepository.save(newBooking);
         Booking booking = bookingRepository.findBookingByName(bookingSitterDTO.getName());
         for (int i = 0 ; i<bookingSitterDTO.getServiceIds().size(); i++){
-            Service service = serviceRepository.getById(bookingSitterDTO.getServiceIds().get(i));
+            Service service = serviceRepository.getById(Long.parseLong(bookingSitterDTO.getServiceIds().get(i)));
             BookingDetail bookingDetail = BookingDetail.builder()
                     .booking(booking)
                     .service(service)
