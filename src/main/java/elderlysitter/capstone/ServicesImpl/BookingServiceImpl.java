@@ -39,21 +39,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking addBookingService(BookingDTO bookingDTO) {
+        UUID uuid = UUID.randomUUID();
         Booking newBooking = Booking.builder()
-                .name(bookingDTO.getName())
+                .name(uuid.toString())
                 .address(bookingDTO.getAddress())
                 .place(bookingDTO.getPlace())
                 .description(bookingDTO.getDescription())
                 .startDateTime(bookingDTO.getStartDateTime())
                 .endDateTime(bookingDTO.getEndDateTime())
-                .totalPrice(bookingDTO.getTotalPrice())
-                .elderId(bookingDTO.getElderId())
+                .totalPrice(BigDecimal.valueOf(Double.valueOf(bookingDTO.getTotalPrice())))
+                .status(statusRepository.findByStatusName("CREATE"))
+                .elderId(Long.parseLong(bookingDTO.getElderId()))
                 .user(userRepository.findUserByEmail(bookingDTO.getEmail()))
                 .build();
         bookingRepository.save(newBooking);
-        Booking booking = bookingRepository.findBookingByName(bookingDTO.getName());
+        Booking booking = bookingRepository.findBookingByName(newBooking.getName());
         for (int i = 0 ; i<bookingDTO.getServiceIds().size(); i++){
-            Service service = serviceRepository.getById(bookingDTO.getServiceIds().get(i));
+            Service service = serviceRepository.getById(Long.parseLong(bookingDTO.getServiceIds().get(i)));
             BookingDetail bookingDetail = BookingDetail.builder()
                     .booking(booking)
                     .service(service)
@@ -77,6 +79,7 @@ public class BookingServiceImpl implements BookingService {
                 .endDateTime(bookingSitterDTO.getEndDateTime())
                 .totalPrice(BigDecimal.valueOf(Double.valueOf(bookingSitterDTO.getTotalPrice())))
                 .elderId(Long.parseLong(bookingSitterDTO.getElderId()))
+                .status(statusRepository.findByStatusName("WAITING_FOR_SITTER"))
                 .sitter(userRepository.findById(Long.parseLong(bookingSitterDTO.getSitterId())).get())
                 .user(userRepository.findUserByEmail(bookingSitterDTO.getEmail()))
                 .build();
@@ -110,5 +113,24 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookingByCustomerEmail(String email) {
         List<Booking> bookings = bookingRepository.findAllByUser_Email(email);
         return bookings;
+    }
+
+    @Override
+    public List<Booking> getAllBookingBySitterEmail(String email) {
+        List<Booking> bookings = bookingRepository.findAllBySitter_Email(email);
+        return bookings;
+    }
+
+    @Override
+    public List<BookingDetail> getAllBookingDetailByBookingId(Long bookingId) {
+        List<BookingDetail> bookingDetails = bookingDetailRepository.findAllByBooking_Id(bookingId);
+        return bookingDetails;
+    }
+
+    @Override
+    public Booking acceptBookingBySitter(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).get();
+        booking.setStatus(statusRepository.findByStatusName("STARTING"));
+        return booking;
     }
 }

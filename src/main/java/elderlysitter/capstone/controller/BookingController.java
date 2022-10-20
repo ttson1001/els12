@@ -49,7 +49,7 @@ public class BookingController {
 
     @GetMapping("customer/{cusEmail}")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public  ResponseEntity<ResponseDTO> getALlBookingByCustomerID(@PathVariable String cusEmail){
+    public  ResponseEntity<ResponseDTO> getAllBookingByCustomerID(@PathVariable String cusEmail){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
 
@@ -62,4 +62,19 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("bookingDetail/{bookingId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public  ResponseEntity<ResponseDTO> getAllBookingDetailByBookingId(@PathVariable Long bookingId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(bookingService.getAllBookingDetailByBookingId(bookingId));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("acceptBySitter/{bookingId}")
+    @PreAuthorize("hasRole('SITTER')")
+    public  ResponseEntity<ResponseDTO> acceptBySitter(@PathVariable Long bookingId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(bookingService.acceptBookingBySitter(bookingId));
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

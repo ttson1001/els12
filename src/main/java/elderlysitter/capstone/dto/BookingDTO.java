@@ -15,15 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class BookingDTO {
-    private String name;
     private String address;
     private String description;
-    private Long elderId;
+    private String elderId;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private String place;
-    private BigDecimal totalPrice;
-    private Long statusId;
+    private String totalPrice;
     private String email;
-    private List<Long> serviceIds;
+    private List<String> serviceIds;
 }
