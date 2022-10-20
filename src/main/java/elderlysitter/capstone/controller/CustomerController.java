@@ -7,6 +7,7 @@ import elderlysitter.capstone.dto.CustomerRegisterDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.entities.FavoriteSitter;
 import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.repository.StatusRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class CustomerController {
 
     @PostMapping()
     public ResponseEntity<ResponseDTO> customerRegister(@RequestBody @NotNull CustomerRegisterDTO customerRegisterDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
         User newUser = userService.save(User.builder()
                 .fullName(customerRegisterDTO.getFullName())
                 .email(customerRegisterDTO.getEmail())
@@ -41,8 +43,9 @@ public class CustomerController {
                         .status(statusRepository.findById(2L).get())
                         .role(roleService.findByName("CUSTOMER"))
                 .build());
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(newUser);
+        if (newUser.getId() != null){
+        responseDTO.setData(newUser);}
+        else responseDTO.setErrorCode(ErrorCode.DUPLICATE_EMAIL);
         return ResponseEntity.ok().body(responseDTO);
     }
 
