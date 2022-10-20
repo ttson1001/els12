@@ -103,8 +103,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllBookingByCustomerId(Long customerId) {
-        List<Booking> bookings = bookingRepository.findAllByUser_Id(customerId);
+    public List<Booking> getAllBookingByCustomerEmail(String email) {
+        List<Booking> bookings = bookingRepository.findAllByUser_Email(email);
         return bookings;
     }
 }

@@ -2,7 +2,7 @@ package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ChangePasswordDTO;
-import elderlysitter.capstone.entities.FavoriteSitter;
+import elderlysitter.capstone.dto.CustomerProfileDTO;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.repository.FavoriteSitterRepository;
 import elderlysitter.capstone.repository.RoleRepository;
@@ -91,9 +91,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllFavorite(Long customerId) {
-        List<User> users = favoriteSitterRepository.findAll(customerId);
+    public List<User> findAllFavorite(String email) {
+        List<User> users = favoriteSitterRepository.findAll(email);
         return users;
+    }
+
+    @Override
+    public User updateCustomerProfile(CustomerProfileDTO customerProfileDTO) {
+        User oldUser = userRepository.findUserByEmail(customerProfileDTO.getEmail());
+        oldUser.setFullName(customerProfileDTO.getFullName());
+        oldUser.setDob(customerProfileDTO.getDob());
+        oldUser.setAddress(customerProfileDTO.getAddress());
+        oldUser.setGender(customerProfileDTO.getGender());
+        oldUser.setPhone(customerProfileDTO.getPhone());
+        return userRepository.save(oldUser);
     }
 
 }

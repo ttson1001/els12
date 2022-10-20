@@ -15,5 +15,5 @@ public interface BookingService {
 
     List<Booking> getAllBooking();
 
-    List<Booking> getAllBookingByCustomerId(Long customerId);
+    List<Booking> getAllBookingByCustomerEmail(String email);
 }

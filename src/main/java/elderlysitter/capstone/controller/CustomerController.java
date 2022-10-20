@@ -2,6 +2,7 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.Services.RoleService;
 import elderlysitter.capstone.Services.UserService;
+import elderlysitter.capstone.dto.CustomerProfileDTO;
 import elderlysitter.capstone.dto.CustomerRegisterDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.entities.FavoriteSitter;
@@ -54,13 +55,22 @@ public class CustomerController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{email}")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> getAllSitter(@PathVariable Long id){
-        List<User> users = userService.findAllFavorite(id);
+    public ResponseEntity<ResponseDTO> getAllSitter(@PathVariable String email){
+        List<User> users = userService.findAllFavorite(email);
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(users);
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping()
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> updateProfileCus(@RequestBody CustomerProfileDTO customerProfileDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(userService.updateCustomerProfile(customerProfileDTO));
+        return ResponseEntity.ok().body(responseDTO);
+
     }
 
 
