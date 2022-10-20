@@ -57,7 +57,14 @@ public class AuthenController {
                         .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
                         .signWith(jwtConfig.secretKey()).compact();
 
-                LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder().username(userAuthenticated.getEmail()).role(userAuthenticated.getRole().getName())
+                LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder()
+                        .address(userAuthenticated.getAddress())
+                        .fullName(userAuthenticated.getFullName())
+                        .dob(userAuthenticated.getDob())
+                        .phone(userAuthenticated.getPhone())
+                        .gender(userAuthenticated.getGender())
+                        .email(userAuthenticated.getEmail())
+                        .role(userAuthenticated.getRole().getName())
                         .token(jwtConfig.getTokenPrefix() + token).build();
 
                 responseDTO.setData(loginResponseDTO);
