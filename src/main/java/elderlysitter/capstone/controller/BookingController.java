@@ -78,7 +78,7 @@ public class BookingController {
     }
 
     @GetMapping("bookingDetail/{bookingId}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER','SITTER')")
     public  ResponseEntity<ResponseDTO> getAllBookingDetailByBookingId(@PathVariable Long bookingId){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(bookingService.getAllBookingDetailByBookingId(bookingId));

@@ -23,4 +23,5 @@ public class BookingSitterDTO {
     private String sitterId;
     private String email;
     private List<String> serviceIds;
+
 }
