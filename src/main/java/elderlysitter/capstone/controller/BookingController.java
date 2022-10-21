@@ -64,11 +64,11 @@ public class BookingController {
 
     @GetMapping("sitter/{sitterEmail}")
     @PreAuthorize("hasRole('SITTER')")
-    public  ResponseEntity<ResponseDTO> getAllBookingBySitterEmail(@PathVariable String cusEmail){
+    public  ResponseEntity<ResponseDTO> getAllBookingBySitterEmail(@PathVariable String sitterEmail){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
 
-            responseDTO.setData(bookingService.getAllBookingBySitterEmail(cusEmail));
+            responseDTO.setData(bookingService.getAllBookingBySitterEmail(sitterEmail));
             return ResponseEntity.ok().body(responseDTO);
         }catch (Exception e)
         {

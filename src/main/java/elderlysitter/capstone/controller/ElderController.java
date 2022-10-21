@@ -31,7 +31,7 @@ public class ElderController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("getBy/{id}")
     @PreAuthorize("hasAnyRole('CUSTOMER','SITTER')")
     public ResponseEntity<ResponseDTO> getElderId(@PathVariable Long id) {
 
