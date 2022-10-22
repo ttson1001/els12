@@ -31,5 +31,13 @@ public class ServiceController {
          return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> updateService(@RequestBody ServiceDTO serviceDTO){
+        ResponseDTO responseDTO =  new ResponseDTO();
+        responseDTO.setData(serviceService.updateService(serviceDTO));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 
 }
