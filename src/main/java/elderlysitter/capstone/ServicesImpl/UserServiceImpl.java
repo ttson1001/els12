@@ -1,19 +1,18 @@
 package elderlysitter.capstone.ServicesImpl;
 
+import elderlysitter.capstone.Services.EmailService;
 import elderlysitter.capstone.Services.UserService;
-import elderlysitter.capstone.dto.ChangePasswordDTO;
-import elderlysitter.capstone.dto.CustomerProfileDTO;
+import elderlysitter.capstone.dto.*;
+import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
-import elderlysitter.capstone.repository.FavoriteSitterRepository;
-import elderlysitter.capstone.repository.RoleRepository;
-import elderlysitter.capstone.repository.StatusRepository;
-import elderlysitter.capstone.repository.UserRepository;
+import elderlysitter.capstone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,6 +31,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     FavoriteSitterRepository favoriteSitterRepository;
+
+    @Autowired
+    SitterProfileRepository sitterProfileRepository;
+
+    @Autowired
+    EmailService emailService;
 
     @Override
     public User findByEmail(String email) {
@@ -107,4 +112,69 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(oldUser);
     }
 
+    @Override
+    public User addSitter(SitterDTO sitterDTO) {
+        User sitter = User.builder()
+                .role(roleRepository.findByName("SITTER"))
+                .fullName(sitterDTO.getFullName())
+                .status(statusRepository.findByStatusName("DEACTIVE"))
+                .dob(sitterDTO.getDob())
+                .address(sitterDTO.getAddress())
+                .gender(sitterDTO.getGender())
+                .phone(sitterDTO.getPhone())
+                .email(sitterDTO.getEmail()).build();
+        User newSitter = userRepository.save(sitter);
+        SitterProfile sitterProfile = SitterProfile.builder()
+                .user(newSitter)
+                .exp(sitterDTO.getExp())
+                .skill(sitterDTO.getSkill())
+                .idNumber(sitterDTO.getIdNumber())
+                .build();
+        sitterProfileRepository.save(sitterProfile);
+        return  newSitter;
+    }
+
+    @Override
+    public User activeSitter(String email) {
+        System.out.println(email);
+        String password = randomPassword()+"ELS1";
+        User  sitter = userRepository.findUserByEmail(email);
+        if(sitter == null) {
+            return null;
+        }
+
+        sitter.setStatus(statusRepository.findByStatusName("ACTIVE"));
+        sitter.setPassword(passwordEncoder.encode(password));
+        EmailDTO emailDetails = EmailDTO.builder()
+                .email(email)
+                .subject("Your password from els ")
+                .massage(password)
+                .build();
+        emailService.sendSimpleMail(emailDetails);
+        return userRepository.save(sitter);
+    }
+
+    @Override
+    public User updateSitter(SitterUpdateDTO sitterUpdateDTO) {
+        User sitter = userRepository.findUserByEmail(sitterUpdateDTO.getEmail());
+            sitter.setDob(sitterUpdateDTO.getDob());
+            sitter.setAddress(sitterUpdateDTO.getAddress());
+            sitter.setFullName(sitterUpdateDTO.getFullName());
+            sitter.setGender(sitterUpdateDTO.getGender());
+            sitter.setPhone(sitterUpdateDTO.getPhone());
+            return  userRepository.save(sitter);
+    }
+
+    public String randomPassword() {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        return generatedString;
+
+    }
 }
