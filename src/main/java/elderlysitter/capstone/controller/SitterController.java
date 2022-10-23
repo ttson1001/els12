@@ -59,6 +59,22 @@ public class SitterController {
             return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("getAllDeactiveSitter")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAllDeactive() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(userService.findAll("SITTER", "DEACTIVE"));
+            if (responseDTO.getData() != null)
+                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_SUCCESS);
+            else responseDTO.setErrorCode(ErrorCode.FIND_ALL_FAIL);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ALL_SITTER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 
 
 }

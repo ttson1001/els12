@@ -15,7 +15,6 @@ import java.util.List;
 @Table(name = "sitter_profile")
 public class SitterProfile implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long id;
     @MapsId
