@@ -21,7 +21,7 @@ public class SitterController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
-    public ResponseEntity<ResponseDTO> getAll() {
+    public ResponseEntity<ResponseDTO> getAllActive() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             responseDTO.setData(userService.findAll("SITTER", "ACTIVE"));
@@ -49,6 +49,14 @@ public class SitterController {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(userService.activeSitter(email));
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("getAllsitter")
+    @PreAuthorize("hasRole('ADMIN')")
+    public  ResponseEntity<ResponseDTO> getAll(){
+            ResponseDTO responseDTO = new ResponseDTO();
+            responseDTO.setData(userService.findAllByRole("SITTER"));
+            return ResponseEntity.ok().body(responseDTO);
     }
 
 
