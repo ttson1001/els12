@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import java.util.List;
 
 @RestController
@@ -34,6 +35,7 @@ public class CustomerController {
 
 
     @PostMapping()
+    @PermitAll
     public ResponseEntity<ResponseDTO> customerRegister(@RequestBody @NotNull CustomerRegisterDTO customerRegisterDTO){
         ResponseDTO responseDTO = new ResponseDTO();
         User newUser = userService.save(User.builder()

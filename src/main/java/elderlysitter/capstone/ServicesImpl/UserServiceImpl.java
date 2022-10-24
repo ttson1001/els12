@@ -3,6 +3,7 @@ package elderlysitter.capstone.ServicesImpl;
 import elderlysitter.capstone.Services.EmailService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.*;
+import elderlysitter.capstone.entities.CertificateSitter;
 import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.repository.*;
@@ -38,6 +39,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    CertificateSitterRepository certificateSitterRepository;
+
     @Override
     public User findByEmail(String email) {
         return userRepository.findUserByEmail(email);
@@ -48,7 +52,7 @@ public class UserServiceImpl implements UserService {
         User saveUser = new User();
         try {
             saveUser = userRepository.save(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return saveUser;
         }
@@ -60,7 +64,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = new ArrayList<>();
         try {
             users = userRepository.findAllByRole(roleRepository.findByName(roleName));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return users;
         }
@@ -72,13 +76,12 @@ public class UserServiceImpl implements UserService {
         List<User> users = new ArrayList<>();
         try {
             users = userRepository.findAllByRole_NameAndStatus_StatusName(roleName, statusName);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return users;
         }
         return users;
     }
-
 
 
     @Override
@@ -113,36 +116,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addSitter(SitterDTO sitterDTO) {
-        User sitter = User.builder()
-                .role(roleRepository.findByName("SITTER"))
+    public User addCandidate(SitterDTO sitterDTO) {
+        User candidate = User.builder()
+                .role(roleRepository.findByName("CANDIDATE"))
                 .fullName(sitterDTO.getFullName())
-                .status(statusRepository.findByStatusName("DEACTIVE"))
                 .dob(sitterDTO.getDob())
                 .address(sitterDTO.getAddress())
                 .gender(sitterDTO.getGender())
                 .phone(sitterDTO.getPhone())
                 .email(sitterDTO.getEmail()).build();
-        User newSitter = userRepository.save(sitter);
+        User newSitter = userRepository.save(candidate);
         SitterProfile sitterProfile = SitterProfile.builder()
                 .user(newSitter)
                 .exp(sitterDTO.getExp())
                 .skill(sitterDTO.getSkill())
                 .idNumber(sitterDTO.getIdNumber())
                 .build();
-        sitterProfileRepository.save(sitterProfile);
-        return  newSitter;
+        SitterProfile sitterProfile1 = sitterProfileRepository.save(sitterProfile);
+
+        List<CertificateDTO> list = sitterDTO.getCertificateDTOS();
+
+        for (int i = 0; i < list.size(); i++) {
+            CertificateSitter certificateSitter = CertificateSitter.builder()
+                    .sitterProfile(sitterProfile1)
+                    .url(list.get(i).getUrl())
+                    .exp(list.get(i).getExp())
+                    .build();
+            certificateSitterRepository.save(certificateSitter);
+        }
+        return newSitter;
     }
 
     @Override
     public User activeSitter(String email) {
         System.out.println(email);
-        String password = randomPassword()+"ELS1";
-        User  sitter = userRepository.findUserByEmail(email);
-        if(sitter == null) {
+        String password = randomPassword() + "ELS1";
+        User sitter = userRepository.findUserByEmail(email);
+        if (sitter == null) {
             return null;
         }
-
+        sitter.setRole(roleRepository.findByName("SITTER"));
         sitter.setStatus(statusRepository.findByStatusName("ACTIVE"));
         sitter.setPassword(passwordEncoder.encode(password));
         EmailDTO emailDetails = EmailDTO.builder()
@@ -154,8 +167,8 @@ public class UserServiceImpl implements UserService {
                         "\n" +
                         "Dưới đây là username/ password của anh/chị\n" +
                         "\n" +
-                        "Username: " + sitter.getEmail() + "\n"+
-                        "Password: " + password +"\n"+
+                        "Username: " + sitter.getEmail() + "\n" +
+                        "Password: " + password + "\n" +
                         "\n" +
                         "Một lần nữa, xin chúc mừng và chào mừng anh/chị đến với ELS!\n" +
                         "\n" +
@@ -171,12 +184,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateSitter(SitterUpdateDTO sitterUpdateDTO) {
         User sitter = userRepository.findUserByEmail(sitterUpdateDTO.getEmail());
-            sitter.setDob(sitterUpdateDTO.getDob());
-            sitter.setAddress(sitterUpdateDTO.getAddress());
-            sitter.setFullName(sitterUpdateDTO.getFullName());
-            sitter.setGender(sitterUpdateDTO.getGender());
-            sitter.setPhone(sitterUpdateDTO.getPhone());
-            return  userRepository.save(sitter);
+        sitter.setDob(sitterUpdateDTO.getDob());
+        sitter.setAddress(sitterUpdateDTO.getAddress());
+        sitter.setFullName(sitterUpdateDTO.getFullName());
+        sitter.setGender(sitterUpdateDTO.getGender());
+        sitter.setPhone(sitterUpdateDTO.getPhone());
+        return userRepository.save(sitter);
+    }
+
+    @Override
+    public SitterProfile getCandidateProfileByEmail(String email) {
+        return sitterProfileRepository.findByUser_Email(email);
     }
 
     public String randomPassword() {

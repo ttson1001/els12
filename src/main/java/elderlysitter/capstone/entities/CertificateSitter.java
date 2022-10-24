@@ -1,10 +1,7 @@
 package elderlysitter.capstone.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "certificate_sitter")
 public class CertificateSitter {
     @Id
@@ -21,8 +19,8 @@ public class CertificateSitter {
 
     private String url;
 
-    @Column(name = "is_required")
-    private Boolean isRequired;
+//    @Column(name = "is_required")
+//    private Boolean isRequired;
 
     private String exp;
 

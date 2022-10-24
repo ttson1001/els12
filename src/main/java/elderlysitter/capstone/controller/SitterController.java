@@ -3,6 +3,7 @@ package elderlysitter.capstone.controller;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.SitterUpdateDTO;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +36,11 @@ public class SitterController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping
-    @PermitAll
-    public  ResponseEntity<ResponseDTO> addSitter(@RequestBody SitterDTO sitterDTO){
+    @PutMapping
+    @PreAuthorize("hasAnyRole('SITTER')")
+    public ResponseEntity<ResponseDTO> updateSitter(@RequestBody SitterUpdateDTO sitterUpdateDTO){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.addSitter(sitterDTO));
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @PutMapping("{email}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public  ResponseEntity<ResponseDTO> acceptSitter(@PathVariable String email){
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.activeSitter(email));
+        responseDTO.setData(userService.updateSitter(sitterUpdateDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -61,10 +54,10 @@ public class SitterController {
 
     @GetMapping("getAllDeactiveSitter")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getAllDeactive() {
+    public ResponseEntity<ResponseDTO> getAllCandidate() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(userService.findAll("SITTER", "DEACTIVE"));
+            responseDTO.setData(userService.findAllByRole("CANDIDATE"));
             if (responseDTO.getData() != null)
                 responseDTO.setSuccessCode(SuccessCode.FIND_ALL_SUCCESS);
             else responseDTO.setErrorCode(ErrorCode.FIND_ALL_FAIL);

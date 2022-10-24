@@ -6,6 +6,7 @@ import elderlysitter.capstone.dto.SitterDTO;
 import elderlysitter.capstone.dto.SitterUpdateDTO;
 import elderlysitter.capstone.entities.FavoriteSitter;
 import elderlysitter.capstone.entities.Role;
+import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
 
 
@@ -27,9 +28,11 @@ public interface UserService {
 
     User updateCustomerProfile(CustomerProfileDTO customerProfileDTO);
 
-    User addSitter(SitterDTO sitterDTO);
+    User addCandidate(SitterDTO sitterDTO);
 
     User activeSitter(String email);
 
     User updateSitter(SitterUpdateDTO sitterUpdateDTO);
+
+    SitterProfile getCandidateProfileByEmail(String email);
 }
