@@ -17,6 +17,14 @@ public class CandidateController {
     UserService userService;
 
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAll(){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(userService.findAllByRole("CANDIDATE"));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PutMapping("{email}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> acceptCandidate(@PathVariable String email){
