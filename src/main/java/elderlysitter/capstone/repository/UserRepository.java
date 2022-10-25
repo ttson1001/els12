@@ -15,8 +15,6 @@ public interface UserRepository extends JpaRepository<User,Long> { ;
     List<User> findAllByRole_NameAndStatus_StatusName(String roleName,  String statusName);
     List<User> findAllByRole(Role role);
     User findUserByEmail(String email);
-
-//    @Query("select u from  User u join SitterProfile sp on u.id = sp.id join SitterService ss on sp.id = ss.sitterProfile.id where ")
-//    User findAllBySitterProfile_SitterService();
+    
 
 }

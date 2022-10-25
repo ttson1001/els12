@@ -109,8 +109,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
     @Override
     public User updateSitter(SitterUpdateDTO sitterUpdateDTO) {
         User sitter = userRepository.findUserByEmail(sitterUpdateDTO.getEmail());
@@ -122,14 +120,27 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(sitter);
     }
 
-//    @Override
-//    public User getAllSitterByTotalPrice(List<ServiceRequestDTO> serviceRequestDTOs, BigDecimal totalPrice){
-//        List<User> users = new ArrayList<>();
-//
-//
-//    }
+    @Override
+    public User getAllSitterByTotalPrice(List<ServiceRequestDTO> serviceRequestDTOs, BigDecimal totalPrice) {
+        List<User> users = userRepository.findAllByRole(roleRepository.findByName("SITTER"));
+
+            for (User user : users
+            ) {
+                System.out.println(user.getEmail());
+
+                if(user.getSitterProfile().getSitterService()!= null) {
+                    List<SitterService>  sitterServices = user.getSitterProfile().getSitterService();
+                    for (SitterService sitterService : sitterServices) {
+                        System.out.println(sitterService.getService().getId());
+                        System.out.println();
+                    }
+                }
+            }
 
 
+
+        return null;
+    }
 
 
 }

@@ -1,13 +1,11 @@
 package elderlysitter.capstone.Services;
 
-import elderlysitter.capstone.dto.ChangePasswordDTO;
-import elderlysitter.capstone.dto.CustomerProfileDTO;
-import elderlysitter.capstone.dto.CandidateRequestDTO;
-import elderlysitter.capstone.dto.SitterUpdateDTO;
+import elderlysitter.capstone.dto.*;
 import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserService {
@@ -26,9 +24,7 @@ public interface UserService {
 
     User updateCustomerProfile(CustomerProfileDTO customerProfileDTO);
 
-
-
-
+    User getAllSitterByTotalPrice(List<ServiceRequestDTO> serviceRequestDTOs, BigDecimal totalPrice);
 
     User updateSitter(SitterUpdateDTO sitterUpdateDTO);
 
