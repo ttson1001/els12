@@ -20,7 +20,6 @@ public class BookingDTO {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private String place;
-    private String totalPrice;
     private String email;
     private List<String> serviceIds;
 }

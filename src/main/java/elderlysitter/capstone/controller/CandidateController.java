@@ -3,7 +3,7 @@ package elderlysitter.capstone.controller;
 import elderlysitter.capstone.Services.CandidateService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.CandidateRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,9 +39,9 @@ public class CandidateController {
 
     @PostMapping
     @PermitAll
-    public  ResponseEntity<ResponseDTO> addCandidate(@RequestBody SitterDTO sitterDTO){
+    public  ResponseEntity<ResponseDTO> addCandidate(@RequestBody CandidateRequestDTO candidateRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.addCandidate(sitterDTO));
+        responseDTO.setData(userService.addCandidate(candidateRequestDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("{email}")

@@ -2,10 +2,8 @@ package elderlysitter.capstone.Services;
 
 import elderlysitter.capstone.dto.ChangePasswordDTO;
 import elderlysitter.capstone.dto.CustomerProfileDTO;
-import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.CandidateRequestDTO;
 import elderlysitter.capstone.dto.SitterUpdateDTO;
-import elderlysitter.capstone.entities.FavoriteSitter;
-import elderlysitter.capstone.entities.Role;
 import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
 
@@ -28,7 +26,7 @@ public interface UserService {
 
     User updateCustomerProfile(CustomerProfileDTO customerProfileDTO);
 
-    User addCandidate(SitterDTO sitterDTO);
+    User addCandidate(CandidateRequestDTO candidateRequestDTO);
 
 
 

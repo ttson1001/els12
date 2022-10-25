@@ -47,7 +47,6 @@ public class BookingServiceImpl implements BookingService {
                 .description(bookingDTO.getDescription())
                 .startDateTime(bookingDTO.getStartDateTime())
                 .endDateTime(bookingDTO.getEndDateTime())
-                .totalPrice(BigDecimal.valueOf(Double.valueOf(bookingDTO.getTotalPrice())))
                 .status(statusRepository.findByStatusName("CREATE"))
                 .elderId(Long.parseLong(bookingDTO.getElderId()))
                 .user(userRepository.findUserByEmail(bookingDTO.getEmail()))

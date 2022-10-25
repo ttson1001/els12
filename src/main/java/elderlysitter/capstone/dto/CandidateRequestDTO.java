@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SitterDTO {
+public class CandidateRequestDTO {
 
     private String fullName;
 
@@ -25,6 +25,10 @@ public class SitterDTO {
     private String address;
 
     private String email;
+
+    private List<SitterServiceRequestDTO> sitterServiceRequestDTOS;
+
+    private UserImgDTO userImgDTO;
 
     private String idNumber;
 
