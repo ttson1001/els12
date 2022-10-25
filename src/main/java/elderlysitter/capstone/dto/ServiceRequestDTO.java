@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ServiceDTO {
+public class ServiceRequestDTO {
 
     private Long id;
     private String name;

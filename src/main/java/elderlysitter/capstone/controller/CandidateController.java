@@ -14,8 +14,6 @@ import javax.annotation.security.PermitAll;
 @RestController
 @RequestMapping("candidate")
 public class CandidateController {
-    @Autowired
-    UserService userService;
 
     @Autowired
     CandidateService candidateService;
@@ -41,14 +39,14 @@ public class CandidateController {
     @PermitAll
     public  ResponseEntity<ResponseDTO> addCandidate(@RequestBody CandidateRequestDTO candidateRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.addCandidate(candidateRequestDTO));
+        responseDTO.setData(candidateService.addCandidate(candidateRequestDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("{email}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> getCandidateProfile(@PathVariable String email){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.getCandidateProfileByEmail(email));
+        responseDTO.setData(candidateService.getCandidateProfileByEmail(email));
         return ResponseEntity.ok().body(responseDTO);
     }
 

@@ -1,5 +1,6 @@
 package elderlysitter.capstone.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,14 +23,14 @@ public class SitterProfile implements Serializable {
     @OneToOne(fetch = FetchType.EAGER)
     private User user;
 
-
-    private String status;
     private String idNumber;
-    private String skill;
-    private String exp;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "sitterProfile")
     private List<CertificateSitter> certificateSitters;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sitterProfile")
+    private List<SitterService> SitterService;
 
 }

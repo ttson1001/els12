@@ -3,15 +3,13 @@ package elderlysitter.capstone.ServicesImpl;
 import elderlysitter.capstone.Services.EmailService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.*;
-import elderlysitter.capstone.entities.CertificateSitter;
-import elderlysitter.capstone.entities.SitterProfile;
-import elderlysitter.capstone.entities.User;
-import elderlysitter.capstone.entities.UserImg;
+import elderlysitter.capstone.entities.*;
 import elderlysitter.capstone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,16 +32,8 @@ public class UserServiceImpl implements UserService {
     FavoriteSitterRepository favoriteSitterRepository;
 
     @Autowired
-    SitterProfileRepository sitterProfileRepository;
+    SitterServiceRepository sitterServiceRepository;
 
-    @Autowired
-    EmailService emailService;
-
-    @Autowired
-    CertificateSitterRepository certificateSitterRepository;
-
-    @Autowired
-    UserImgRepository userImgRepository;
 
     @Override
     public User findByEmail(String email) {
@@ -118,46 +108,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(oldUser);
     }
 
-    @Override
-    public User addCandidate(CandidateRequestDTO candidateRequestDTO) {
-        User candidate = User.builder()
-                .role(roleRepository.findByName("CANDIDATE"))
-                .fullName(candidateRequestDTO.getFullName())
-                .dob(candidateRequestDTO.getDob())
-                .address(candidateRequestDTO.getAddress())
-                .gender(candidateRequestDTO.getGender())
-                .phone(candidateRequestDTO.getPhone())
-                .email(candidateRequestDTO.getEmail()).build();
-        User newSitter = userRepository.save(candidate);
-        SitterProfile sitterProfile = SitterProfile.builder()
-                .user(newSitter)
-                .exp(candidateRequestDTO.getExp())
-                .skill(candidateRequestDTO.getSkill())
-                .idNumber(candidateRequestDTO.getIdNumber())
-                .build();
-        SitterProfile sitterProfile1 = sitterProfileRepository.save(sitterProfile);
-
-        List<CertificateDTO> list = candidateRequestDTO.getCertificateDTOS();
-
-        for (int i = 0; i < list.size(); i++) {
-            CertificateSitter certificateSitter = CertificateSitter.builder()
-                    .sitterProfile(sitterProfile1)
-                    .url(list.get(i).getUrl())
-                    .exp(list.get(i).getExp())
-                    .build();
-            certificateSitterRepository.save(certificateSitter);
-        }
-
-        UserImg userImg = UserImg.builder()
-                .avatarImgUrl(candidateRequestDTO.getUserImgDTO().getAvatarImgUrl())
-                .backIdImgUrl(candidateRequestDTO.getUserImgDTO().getBackIdImgUrl())
-                .fontIdImgUrl(candidateRequestDTO.getUserImgDTO().getFontIdImgUrl())
-                .build();
-
-        userImgRepository.save(userImg);
-
-        return newSitter;
-    }
 
 
 
@@ -172,10 +122,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(sitter);
     }
 
-    @Override
-    public SitterProfile getCandidateProfileByEmail(String email) {
-        return sitterProfileRepository.findByUser_Email(email);
-    }
+//    @Override
+//    public User getAllSitterByTotalPrice(List<ServiceRequestDTO> serviceRequestDTOs, BigDecimal totalPrice){
+//        List<User> users = new ArrayList<>();
+//
+//
+//    }
+
+
 
 
 }

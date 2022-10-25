@@ -61,9 +61,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "sitter")
-//    private List<Booking> _bookings;
 
     @JsonIgnore
     @OneToOne(mappedBy = "user")

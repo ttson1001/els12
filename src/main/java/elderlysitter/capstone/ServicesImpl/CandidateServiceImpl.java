@@ -2,12 +2,8 @@ package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.CandidateService;
 import elderlysitter.capstone.Services.EmailService;
-import elderlysitter.capstone.dto.CandidateResponseDTO;
-import elderlysitter.capstone.dto.EmailDTO;
-import elderlysitter.capstone.entities.CertificateSitter;
-import elderlysitter.capstone.entities.SitterProfile;
-import elderlysitter.capstone.entities.SitterService;
-import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.dto.*;
+import elderlysitter.capstone.entities.*;
 import elderlysitter.capstone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +27,11 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    ServiceRepository serviceRepository;
+
+    @Autowired
+    UserImgRepository userImgRepository;
 
     @Autowired
     EmailService emailService;
@@ -96,38 +97,41 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public Boolean rejectCandidate(String email) {
-        List<SitterService> sitterServices = sitterServiceRepository.getAllBySitterProfile_User_Email(email);
-        for (SitterService item : sitterServices) {
-            sitterServiceRepository.delete(item);
+        try {
+            List<SitterService> sitterServices = sitterServiceRepository.getAllBySitterProfile_User_Email(email);
+            for (SitterService item : sitterServices) {
+                sitterServiceRepository.delete(item);
+            }
+            List<CertificateSitter> certificateSitters = certificateSitterRepository.findAllBySitterProfile_User_Email(email);
+            for (CertificateSitter item : certificateSitters){
+                certificateSitterRepository.delete(item);
+            }
+
+            SitterProfile sitterProfile = sitterProfileRepository.findByUser_Email(email);
+            sitterProfileRepository.delete(sitterProfile);
+
+            User candidate = userRepository.findUserByEmail(email);
+            String fullName = candidate.getFullName();
+            userRepository.delete(candidate);
+
+            EmailDTO emailDetails = EmailDTO.builder()
+                    .email(email)
+                    .subject("Thông báo về kết quả đăng ký tài khoản ELS")
+                    .massage("Xin chào "+ fullName + ",\n" +
+                            "\n" +
+                            "Chúng tôi đã đọc và rất ấn tượng với kĩ năng chuyên môn và kinh nghiệm làm việc mà bạn đã ghi trong form đăng ký. \n" +
+                            "Nhưng chúng tôi rất tiếc khi phải thông báo rằng bạn không phù hợp với tiêu chí và mục tiêu của ELS.\n" +
+                            "\n" +
+                            "Mong sớm được hợp tác cùng bạn trong tương lai.\n" +
+                            "\n" +
+                            "Trân trọng,\n" +
+                            "\n" +
+                            "Phòng Quản lý Nhân sự.\n" +
+                            "(Đây là email được gửi tự động, Quý khách vui lòng không hồi đáp theo địa chỉ email này.)")
+                    .build();
+            emailService.sendSimpleMail(emailDetails);
+        }catch (Exception e){
         }
-        List<CertificateSitter> certificateSitters = certificateSitterRepository.findAllBySitterProfile_User_Email(email);
-        for (CertificateSitter item : certificateSitters){
-            certificateSitterRepository.delete(item);
-        }
-
-        SitterProfile sitterProfile = sitterProfileRepository.findByUser_Email(email);
-        sitterProfileRepository.delete(sitterProfile);
-
-        User candidate = userRepository.findUserByEmail(email);
-        String fullName = candidate.getFullName();
-        userRepository.delete(candidate);
-
-        EmailDTO emailDetails = EmailDTO.builder()
-                .email(email)
-                .subject("Thông báo về kết quả đăng ký tài khoản ELS")
-                .massage("Xin chào "+ fullName + ",\n" +
-                        "\n" +
-                        "Chúng tôi đã đọc và rất ấn tượng với kĩ năng chuyên môn và kinh nghiệm làm việc mà bạn đã ghi trong form đăng ký. \n" +
-                        "Nhưng chúng tôi rất tiếc khi phải thông báo rằng bạn không phù hợp với tiêu chí và mục tiêu của ELS.\n" +
-                        "\n" +
-                        "Mong sớm được hợp tác cùng bạn trong tương lai.\n" +
-                        "\n" +
-                        "Trân trọng,\n" +
-                        "\n" +
-                        "Phòng Quản lý Nhân sự.\n" +
-                        "(Đây là email được gửi tự động, Quý khách vui lòng không hồi đáp theo địa chỉ email này.)")
-                .build();
-        emailService.sendSimpleMail(emailDetails);
         return true;
     }
 
@@ -144,4 +148,61 @@ public class CandidateServiceImpl implements CandidateService {
         return generatedString;
 
     }
+    @Override
+    public SitterProfile getCandidateProfileByEmail(String email) {
+        return sitterProfileRepository.findByUser_Email(email);
+    }
+    @Override
+    public User addCandidate(CandidateRequestDTO candidateRequestDTO) {
+        User candidate = User.builder()
+                .role(roleRepository.findByName("CANDIDATE"))
+                .fullName(candidateRequestDTO.getFullName())
+                .dob(candidateRequestDTO.getDob())
+                .address(candidateRequestDTO.getAddress())
+                .gender(candidateRequestDTO.getGender())
+                .phone(candidateRequestDTO.getPhone())
+                .email(candidateRequestDTO.getEmail()).build();
+        User newSitter = userRepository.save(candidate);
+        SitterProfile sitterProfile = SitterProfile.builder()
+                .user(newSitter)
+                .idNumber(candidateRequestDTO.getIdNumber())
+                .build();
+        SitterProfile sitterProfile1 = sitterProfileRepository.save(sitterProfile);
+
+        List<SitterServiceRequestDTO> sitterServiceRequestDTOS = candidateRequestDTO.getSitterServiceRequestDTOS();
+        for (SitterServiceRequestDTO item : sitterServiceRequestDTOS
+        ) {
+            SitterService sitterService = SitterService.builder()
+                    .service(serviceRepository.findById(item.getId()).get())
+                    .exp(item.getExp())
+                    .price(item.getServicePrice())
+                    .sitterProfile(sitterProfile1)
+                    .build();
+            sitterServiceRepository.save(sitterService);
+        }
+
+
+        List<CertificateDTO> list = candidateRequestDTO.getCertificateDTOS();
+
+        for (int i = 0; i < list.size(); i++) {
+            CertificateSitter certificateSitter = CertificateSitter.builder()
+                    .sitterProfile(sitterProfile1)
+                    .url(list.get(i).getUrl())
+                    .exp(list.get(i).getExp())
+                    .build();
+            certificateSitterRepository.save(certificateSitter);
+        }
+
+        UserImg userImg = UserImg.builder()
+                .avatarImgUrl(candidateRequestDTO.getUserImgDTO().getAvatarImgUrl())
+                .backIdImgUrl(candidateRequestDTO.getUserImgDTO().getBackIdImgUrl())
+                .fontIdImgUrl(candidateRequestDTO.getUserImgDTO().getFontIdImgUrl())
+                .build();
+
+        userImgRepository.save(userImg);
+
+        return newSitter;
+    }
+
+
 }

@@ -32,10 +32,6 @@ public class CandidateRequestDTO {
 
     private String idNumber;
 
-    private String skill;
-
-    private String exp;
-
     private List<CertificateDTO> certificateDTOS;
 
 }

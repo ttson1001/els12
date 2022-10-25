@@ -2,7 +2,7 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.Services.ServiceService;
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.dto.ServiceDTO;
+import elderlysitter.capstone.dto.ServiceRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,9 +17,9 @@ public class ServiceController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> createService(@RequestBody ServiceDTO serviceDTO) {
+    public ResponseEntity<ResponseDTO> createService(@RequestBody ServiceRequestDTO serviceRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
-            responseDTO.setData(serviceService.createService(serviceDTO));
+            responseDTO.setData(serviceService.createService(serviceRequestDTO));
             return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -33,9 +33,9 @@ public class ServiceController {
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> updateService(@RequestBody ServiceDTO serviceDTO){
+    public ResponseEntity<ResponseDTO> updateService(@RequestBody ServiceRequestDTO serviceRequestDTO){
         ResponseDTO responseDTO =  new ResponseDTO();
-        responseDTO.setData(serviceService.updateService(serviceDTO));
+        responseDTO.setData(serviceService.updateService(serviceRequestDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
 

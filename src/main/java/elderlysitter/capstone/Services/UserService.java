@@ -26,11 +26,11 @@ public interface UserService {
 
     User updateCustomerProfile(CustomerProfileDTO customerProfileDTO);
 
-    User addCandidate(CandidateRequestDTO candidateRequestDTO);
+
 
 
 
     User updateSitter(SitterUpdateDTO sitterUpdateDTO);
 
-    SitterProfile getCandidateProfileByEmail(String email);
+
 }

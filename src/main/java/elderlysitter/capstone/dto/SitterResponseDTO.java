@@ -29,10 +29,6 @@ public class SitterResponseDTO {
     // profile
     private String idNumber;
 
-    private String skill;
-
-    private String exp;
-
     // sitterService
     private List<SitterServiceDTO> sitterServices;
     // ratting

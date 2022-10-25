@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
+//@Table(name = "sitter_service")
 public class SitterService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +24,7 @@ public class SitterService {
     @JoinColumn(name = "service_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Service service;
+
     private BigDecimal price;
+    private Long exp;
 }

@@ -1,8 +1,8 @@
 package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.Services.BookingService;
-import elderlysitter.capstone.dto.BookingDTO;
-import elderlysitter.capstone.dto.BookingSitterDTO;
+import elderlysitter.capstone.dto.BookingRequestDTO;
+import elderlysitter.capstone.dto.BookingSitterRequestDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,25 +17,25 @@ public class BookingController {
 
     @PostMapping()
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> addBooking(@RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<ResponseDTO> addBooking(@RequestBody BookingRequestDTO bookingRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(bookingService.addBookingService(bookingDTO));
+        responseDTO.setData(bookingService.addBookingService(bookingRequestDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("addSitter")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> bookSitter(@RequestBody BookingSitterDTO bookingSitterDTO) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(bookingService.bookingSitter(bookingSitterDTO));
-        return ResponseEntity.ok().body(responseDTO);
-    }
+//    @PostMapping("addSitter")
+//    @PreAuthorize("hasRole('CUSTOMER')")
+//    public ResponseEntity<ResponseDTO> bookSitter(@RequestBody BookingSitterRequestDTO bookingSitterRequestDTO) {
+//        ResponseDTO responseDTO = new ResponseDTO();
+//        responseDTO.setData(bookingService.bookingSitter(bookingSitterRequestDTO));
+//        return ResponseEntity.ok().body(responseDTO);
+//    }
 
-    @GetMapping("{statusId}")
+    @GetMapping("{statusName}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getBookingByStatus(@PathVariable Long statusId){
+    public ResponseEntity<ResponseDTO> getBookingByStatus(@PathVariable String statusName){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(bookingService.getListBookingBYStatus(statusId));
+        responseDTO.setData(bookingService.getListBookingByStatus(statusName));
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -76,6 +76,35 @@ public class BookingController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+    @GetMapping("sitter/{sitterEmail}/{statusName}")
+    @PreAuthorize("hasRole('SITTER')")
+    public  ResponseEntity<ResponseDTO> getAllBookingBySitterEmailAndStatusName(@PathVariable String sitterEmail, @PathVariable String statusName){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+
+            responseDTO.setData(bookingService.getAllBookingBySitterEmailAndStatusName(sitterEmail,statusName));
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+  @GetMapping("customer/{cusEmail}/{statusName}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public  ResponseEntity<ResponseDTO> getAllBookingByCusEmailAndStatusName(@PathVariable String cusEmail, @PathVariable String statusName){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+
+            responseDTO.setData(bookingService.getAllBookingByCustomerEmailAndStatusName(cusEmail,statusName));
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 
     @GetMapping("bookingDetail/{bookingId}")
     @PreAuthorize("hasAnyRole('CUSTOMER','SITTER')")

@@ -33,6 +33,10 @@ public class Service {
     @OneToMany(mappedBy = "service")
     private List<BookingDetail> bookingDetails;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "service")
+    private List<SitterService> SitterService;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 }

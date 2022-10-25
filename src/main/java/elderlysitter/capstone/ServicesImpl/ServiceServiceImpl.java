@@ -1,7 +1,7 @@
 package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.ServiceService;
-import elderlysitter.capstone.dto.ServiceDTO;
+import elderlysitter.capstone.dto.ServiceRequestDTO;
 import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.repository.CategoryRepository;
 import elderlysitter.capstone.repository.ServiceRepository;
@@ -23,31 +23,31 @@ public class ServiceServiceImpl implements ServiceService {
     StatusRepository statusRepository;
 
     @Override
-    public Service createService(ServiceDTO serviceDTO) {
+    public Service createService(ServiceRequestDTO serviceRequestDTO) {
 
         Service newService = serviceRepository.save(Service.builder()
-                        .name(serviceDTO.getName())
-                        .price(serviceDTO.getPrice())
-                        .description(serviceDTO.getDescription())
-                        .url(serviceDTO.getUrl())
-                        .sitterRequirement(serviceDTO.getSitterRequirement())
-                        .duration(serviceDTO.getDuration())
-                        .status(statusRepository.findById(serviceDTO.getStatusID()).get())
-                        .category(categoryRepository.findById(serviceDTO.getCategoryID()).get())
+                        .name(serviceRequestDTO.getName())
+                        .price(serviceRequestDTO.getPrice())
+                        .description(serviceRequestDTO.getDescription())
+                        .url(serviceRequestDTO.getUrl())
+                        .sitterRequirement(serviceRequestDTO.getSitterRequirement())
+                        .duration(serviceRequestDTO.getDuration())
+                        .status(statusRepository.findById(serviceRequestDTO.getStatusID()).get())
+                        .category(categoryRepository.findById(serviceRequestDTO.getCategoryID()).get())
                         .build());
         return newService;
     }
 
-    public Service updateService(ServiceDTO serviceDTO){
-        Service oldService = serviceRepository.findById(serviceDTO.getId()).get();
-        oldService.setName(serviceDTO.getName());
-        oldService.setDescription(serviceDTO.getDescription());
-        oldService.setPrice(serviceDTO.getPrice());
-        oldService.setUrl(serviceDTO.getUrl());
-        oldService.setSitterRequirement(serviceDTO.getSitterRequirement());
-        oldService.setDuration(serviceDTO.getDuration());
-        oldService.setStatus(statusRepository.findById(serviceDTO.getStatusID()).get());
-        oldService.setCategory(categoryRepository.findById(serviceDTO.getCategoryID()).get());
+    public Service updateService(ServiceRequestDTO serviceRequestDTO){
+        Service oldService = serviceRepository.findById(serviceRequestDTO.getId()).get();
+        oldService.setName(serviceRequestDTO.getName());
+        oldService.setDescription(serviceRequestDTO.getDescription());
+        oldService.setPrice(serviceRequestDTO.getPrice());
+        oldService.setUrl(serviceRequestDTO.getUrl());
+        oldService.setSitterRequirement(serviceRequestDTO.getSitterRequirement());
+        oldService.setDuration(serviceRequestDTO.getDuration());
+        oldService.setStatus(statusRepository.findById(serviceRequestDTO.getStatusID()).get());
+        oldService.setCategory(categoryRepository.findById(serviceRequestDTO.getCategoryID()).get());
 
         return serviceRepository.save(oldService);
     }

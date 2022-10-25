@@ -1,18 +1,18 @@
 package elderlysitter.capstone.Services;
 
-import elderlysitter.capstone.dto.BookingDTO;
-import elderlysitter.capstone.dto.BookingSitterDTO;
+import elderlysitter.capstone.dto.BookingRequestDTO;
+import elderlysitter.capstone.dto.BookingSitterRequestDTO;
 import elderlysitter.capstone.entities.Booking;
 import elderlysitter.capstone.entities.BookingDetail;
 
 import java.util.List;
 
 public interface BookingService {
-    Booking addBookingService(BookingDTO bookingDTO);
+    Booking addBookingService(BookingRequestDTO bookingRequestDTO);
 
-    Booking bookingSitter(BookingSitterDTO bookingSitterDTO);
+//    Booking bookingSitter(BookingSitterRequestDTO bookingSitterRequestDTO);
 
-    List<Booking> getListBookingBYStatus(Long statusId);
+    List<Booking> getListBookingByStatus(String name);
 
     List<Booking> getAllBooking();
 
@@ -22,4 +22,8 @@ public interface BookingService {
     List<BookingDetail> getAllBookingDetailByBookingId(Long bookingId);
 
     Booking acceptBookingBySitter(Long bookingId);
+
+    List<Booking> getAllBookingByCustomerEmailAndStatusName(String email, String statusName);
+
+    List<Booking> getAllBookingBySitterEmailAndStatusName(String email, String statusName);
 }

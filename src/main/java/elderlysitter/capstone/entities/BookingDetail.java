@@ -27,7 +27,6 @@ public class BookingDetail implements Serializable {
     @JoinColumn(name = "service_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Service service;
-    private Integer duration;
-
+    private Long duration;
     private BigDecimal price;
 }

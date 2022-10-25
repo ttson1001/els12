@@ -1,16 +1,13 @@
 package elderlysitter.capstone.ServicesImpl;
 
-import com.fasterxml.jackson.databind.node.DecimalNode;
 import elderlysitter.capstone.Services.BookingService;
-import elderlysitter.capstone.dto.BookingDTO;
-import elderlysitter.capstone.dto.BookingSitterDTO;
+import elderlysitter.capstone.dto.BookingRequestDTO;
 import elderlysitter.capstone.entities.Booking;
 import elderlysitter.capstone.entities.BookingDetail;
 import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,68 +34,75 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     StatusRepository statusRepository;
 
-    @Override
-    public Booking addBookingService(BookingDTO bookingDTO) {
-        UUID uuid = UUID.randomUUID();
-        Booking newBooking = Booking.builder()
-                .name(uuid.toString())
-                .address(bookingDTO.getAddress())
-                .place(bookingDTO.getPlace())
-                .description(bookingDTO.getDescription())
-                .startDateTime(bookingDTO.getStartDateTime())
-                .endDateTime(bookingDTO.getEndDateTime())
-                .status(statusRepository.findByStatusName("CREATE"))
-                .elderId(Long.parseLong(bookingDTO.getElderId()))
-                .user(userRepository.findUserByEmail(bookingDTO.getEmail()))
-                .build();
-        bookingRepository.save(newBooking);
-        Booking booking = bookingRepository.findBookingByName(newBooking.getName());
-        for (int i = 0 ; i<bookingDTO.getServiceIds().size(); i++){
-            Service service = serviceRepository.getById(Long.parseLong(bookingDTO.getServiceIds().get(i)));
-            BookingDetail bookingDetail = BookingDetail.builder()
-                    .booking(booking)
-                    .service(service)
-                    .duration(service.getDuration())
-                    .build();
-            bookingDetailRepository.save(bookingDetail);
-        }
-        return booking;
-
-    }
+    @Autowired
+    SitterServiceRepository sitterServiceRepository;
 
     @Override
-    public Booking bookingSitter(BookingSitterDTO bookingSitterDTO) {
+    public Booking addBookingService(BookingRequestDTO bookingRequestDTO) {
         UUID uuid = UUID.randomUUID();
+        bookingRequestDTO.getTotalPrice();
+
+
         Booking newBooking = Booking.builder()
                 .name(uuid.toString())
-                .address(bookingSitterDTO.getAddress())
-                .place(bookingSitterDTO.getPlace())
-                .description(bookingSitterDTO.getDescription())
-                .startDateTime(bookingSitterDTO.getStartDateTime())
-                .endDateTime(bookingSitterDTO.getEndDateTime())
-                .totalPrice(BigDecimal.valueOf(Double.valueOf(bookingSitterDTO.getTotalPrice())))
-                .elderId(Long.parseLong(bookingSitterDTO.getElderId()))
+                .address(bookingRequestDTO.getAddress())
+                .place(bookingRequestDTO.getPlace())
+                .description(bookingRequestDTO.getDescription())
+                .startDateTime(bookingRequestDTO.getStartDateTime())
+                .endDateTime(bookingRequestDTO.getEndDateTime())
                 .status(statusRepository.findByStatusName("WAITING_FOR_SITTER"))
-                .sitter(userRepository.findById(Long.parseLong(bookingSitterDTO.getSitterId())).get())
-                .user(userRepository.findUserByEmail(bookingSitterDTO.getEmail()))
+                .elderId(Long.parseLong(bookingRequestDTO.getElderId()))
+                .user(userRepository.findUserByEmail(bookingRequestDTO.getEmail()))
                 .build();
         bookingRepository.save(newBooking);
         Booking booking = bookingRepository.findBookingByName(newBooking.getName());
-        for (int i = 0 ; i<bookingSitterDTO.getServiceIds().size(); i++){
-            Service service = serviceRepository.getById(Long.parseLong(bookingSitterDTO.getServiceIds().get(i)));
+        for (int i = 0; i< bookingRequestDTO.getBookingServiceRequestDTOS().size(); i++){
+            Service service = serviceRepository.getById(bookingRequestDTO.getBookingServiceRequestDTOS().get(i).getId());
             BookingDetail bookingDetail = BookingDetail.builder()
                     .booking(booking)
                     .service(service)
-                    .duration(service.getDuration())
+                    .duration(bookingRequestDTO.getBookingServiceRequestDTOS().get(i).getDuration())
+//                    .price()
                     .build();
             bookingDetailRepository.save(bookingDetail);
         }
         return booking;
+
     }
 
+//    @Override
+//    public Booking bookingSitter(BookingSitterRequestDTO bookingSitterRequestDTO) {
+//        UUID uuid = UUID.randomUUID();
+//        Booking newBooking = Booking.builder()
+//                .name(uuid.toString())
+//                .address(bookingSitterRequestDTO.getAddress())
+//                .place(bookingSitterRequestDTO.getPlace())
+//                .description(bookingSitterRequestDTO.getDescription())
+//                .startDateTime(bookingSitterRequestDTO.getStartDateTime())
+//                .endDateTime(bookingSitterRequestDTO.getEndDateTime())
+//                .totalPrice(BigDecimal.valueOf(Double.valueOf(bookingSitterRequestDTO.getTotalPrice())))
+//                .elderId(Long.parseLong(bookingSitterRequestDTO.getElderId()))
+//                .status(statusRepository.findByStatusName("WAITING_FOR_SITTER"))
+//                .sitter(userRepository.findById(Long.parseLong(bookingSitterRequestDTO.getSitterId())).get())
+//                .user(userRepository.findUserByEmail(bookingSitterRequestDTO.getEmail()))
+//                .build();
+//        bookingRepository.save(newBooking);
+//        Booking booking = bookingRepository.findBookingByName(newBooking.getName());
+//        for (int i = 0; i< bookingSitterRequestDTO.getServiceIds().size(); i++){
+//            Service service = serviceRepository.getById(Long.parseLong(bookingSitterRequestDTO.getServiceIds().get(i)));
+//            BookingDetail bookingDetail = BookingDetail.builder()
+//                    .booking(booking)
+//                    .service(service)
+//                    .duration(service.getDuration())
+//                    .build();
+//            bookingDetailRepository.save(bookingDetail);
+//        }
+//        return booking;
+//    }
+
     @Override
-    public List<Booking> getListBookingBYStatus(Long statusId) {
-        List<Booking> bookings = bookingRepository.findAllByStatus_Id(statusId);
+    public List<Booking> getListBookingByStatus(String statusEmail) {
+        List<Booking> bookings = bookingRepository.findAllByStatus_StatusName(statusEmail);
         return bookings;
     }
 
@@ -131,5 +135,17 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).get();
         booking.setStatus(statusRepository.findByStatusName("S"));
         return booking;
+    }
+
+    @Override
+    public List<Booking> getAllBookingByCustomerEmailAndStatusName(String email, String statusName) {
+        List<Booking> bookingList = bookingRepository.findAllByUser_EmailAndStatus_StatusName(email,statusName);
+        return bookingList;
+    }
+
+    @Override
+    public List<Booking> getAllBookingBySitterEmailAndStatusName(String email, String statusName) {
+        List<Booking> bookingList = bookingRepository.findAllBySitter_EmailAndStatus_StatusName(email,statusName);
+        return bookingList;
     }
 }

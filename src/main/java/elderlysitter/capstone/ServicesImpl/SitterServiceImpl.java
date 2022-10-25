@@ -72,9 +72,7 @@ public class SitterServiceImpl implements SitterServiceService {
                 .ratingStar(4.0F)
                 .sitterServices(sitterServiceDTOList)
                 .idNumber(sitterProfile.getIdNumber())
-                .skill(sitterProfile.getSkill())
                 .address(sitter.getAddress())
-                .exp(sitterProfile.getExp())
                 .build();
 
         return  responseDTO;
