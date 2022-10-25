@@ -147,39 +147,7 @@ public class UserServiceImpl implements UserService {
         return newSitter;
     }
 
-    @Override
-    public User activeSitter(String email) {
-        System.out.println(email);
-        String password = randomPassword() + "ELS1";
-        User sitter = userRepository.findUserByEmail(email);
-        if (sitter == null) {
-            return null;
-        }
-        sitter.setRole(roleRepository.findByName("SITTER"));
-        sitter.setStatus(statusRepository.findByStatusName("ACTIVE"));
-        sitter.setPassword(passwordEncoder.encode(password));
-        EmailDTO emailDetails = EmailDTO.builder()
-                .email(email)
-                .subject("Thông báo đăng ký thành công tài khoản của ELS")
-                .massage("Xin chào " + sitter.getFullName() + ",\n" +
-                        "\n" +
-                        "Chúng tôi xin chúc mừng bạn đã trở thành nhân viên chăm sóc của Elderly Sitter. Sau khi đọc bản đăng ký của bạn, chúng tôi rất ấn tượng về kĩ năng chuyên môn cũng như kinh nghiệm làm việc của anh/chị. \n" +
-                        "\n" +
-                        "Dưới đây là username/ password của anh/chị\n" +
-                        "\n" +
-                        "Username: " + sitter.getEmail() + "\n" +
-                        "Password: " + password + "\n" +
-                        "\n" +
-                        "Một lần nữa, xin chúc mừng và chào mừng anh/chị đến với ELS!\n" +
-                        "\n" +
-                        "Trân trọng,\n" +
-                        "\n" +
-                        "Phòng Quản lý Nhân sự.\n" +
-                        "(Đây là email được gửi tự động, Quý khách vui lòng không hồi đáp theo địa chỉ email này.)")
-                .build();
-        emailService.sendSimpleMail(emailDetails);
-        return userRepository.save(sitter);
-    }
+
 
     @Override
     public User updateSitter(SitterUpdateDTO sitterUpdateDTO) {
@@ -197,16 +165,5 @@ public class UserServiceImpl implements UserService {
         return sitterProfileRepository.findByUser_Email(email);
     }
 
-    public String randomPassword() {
-        int leftLimit = 97; // letter 'a'
-        int rightLimit = 122; // letter 'z'
-        int targetStringLength = 10;
-        Random random = new Random();
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-        return generatedString;
 
-    }
 }

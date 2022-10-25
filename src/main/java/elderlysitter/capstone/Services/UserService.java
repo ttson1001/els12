@@ -30,7 +30,7 @@ public interface UserService {
 
     User addCandidate(SitterDTO sitterDTO);
 
-    User activeSitter(String email);
+
 
     User updateSitter(SitterUpdateDTO sitterUpdateDTO);
 

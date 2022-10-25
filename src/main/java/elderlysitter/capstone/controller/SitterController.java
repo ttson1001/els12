@@ -1,8 +1,8 @@
 package elderlysitter.capstone.controller;
 
+import elderlysitter.capstone.Services.SitterServiceService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.dto.SitterDTO;
 import elderlysitter.capstone.dto.SitterUpdateDTO;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.PermitAll;
+
 
 
 @RestController
@@ -19,6 +19,9 @@ import javax.annotation.security.PermitAll;
 public class SitterController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    SitterServiceService sitterServiceService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
@@ -67,6 +70,15 @@ public class SitterController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+    @GetMapping("{email}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getSitterById(@PathVariable String email){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(sitterServiceService.getSitterByEmail(email));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
 
 
 

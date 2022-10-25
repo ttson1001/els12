@@ -1,5 +1,6 @@
 package elderlysitter.capstone.controller;
 
+import elderlysitter.capstone.Services.CandidateService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.SitterDTO;
@@ -16,12 +17,15 @@ public class CandidateController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CandidateService candidateService;
+
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> getAll(){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.findAllByRole("CANDIDATE"));
+        responseDTO.setData(candidateService.getAllCandidate());
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -29,7 +33,7 @@ public class CandidateController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> acceptCandidate(@PathVariable String email){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.activeSitter(email));
+        responseDTO.setData(candidateService.acceptCandidate(email));
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -47,5 +51,14 @@ public class CandidateController {
         responseDTO.setData(userService.getCandidateProfileByEmail(email));
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @DeleteMapping("{email}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> rejectCandidate(@PathVariable String email){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(candidateService.rejectCandidate(email));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 
 }

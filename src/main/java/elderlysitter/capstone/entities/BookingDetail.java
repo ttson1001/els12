@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @NoArgsConstructor
@@ -27,4 +28,6 @@ public class BookingDetail implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Service service;
     private Integer duration;
+
+    private BigDecimal price;
 }
