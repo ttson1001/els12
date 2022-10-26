@@ -1,17 +1,12 @@
 package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.SitterServiceService;
-import elderlysitter.capstone.dto.CertificateDTO;
-import elderlysitter.capstone.dto.SitterServiceDTO;
+import elderlysitter.capstone.dto.*;
 import elderlysitter.capstone.entities.SitterService;
-import elderlysitter.capstone.dto.SitterResponseDTO;
 import elderlysitter.capstone.entities.CertificateSitter;
 import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
-import elderlysitter.capstone.repository.CertificateSitterRepository;
-import elderlysitter.capstone.repository.SitterProfileRepository;
-import elderlysitter.capstone.repository.SitterServiceRepository;
-import elderlysitter.capstone.repository.UserRepository;
+import elderlysitter.capstone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +28,10 @@ public class SitterServiceImpl implements SitterServiceService {
 
     @Autowired
     SitterServiceRepository sitterServiceRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
 
     @Override
     public SitterResponseDTO getSitterByEmail(String email) {
@@ -84,4 +83,43 @@ public class SitterServiceImpl implements SitterServiceService {
         return  responseDTO;
 
     }
+
+    @Override
+    public List<SitterGetAllResponseDTO> getAllSitter() {
+        List<User> users = userRepository.findAllByRole(roleRepository.findByName("SITTER"));
+        List<SitterGetAllResponseDTO> list = new ArrayList<>();
+        try {
+
+
+            for (User user : users) {
+                BigDecimal total = BigDecimal.valueOf(0);
+                BigDecimal count = BigDecimal.valueOf(0);
+                List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
+                for (SitterService sitterService : sitterServices
+                ) {
+                    count = count.add(BigDecimal.valueOf(1));
+                    total = total.add(sitterService.getPrice());
+                }
+
+
+                SitterGetAllResponseDTO dto = SitterGetAllResponseDTO.builder()
+                        .id(user.getId())
+                        .fullName(user.getFullName())
+                        .email(user.getEmail())
+                        .address(user.getAddress())
+                        .ratingStar(5F)
+                        .gender(user.getGender())
+                        .dob(user.getDob())
+                        .crateDate(user.getCreateDate())
+                        .avgPrice(total.divide(count))
+                        .build();
+                list.add(dto);
+            }
+        }catch (Exception e){
+
+        }
+        return list;
+    }
+
+
 }

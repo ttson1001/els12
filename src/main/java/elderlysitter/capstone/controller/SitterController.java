@@ -51,7 +51,7 @@ public class SitterController {
     @PreAuthorize("hasRole('ADMIN')")
     public  ResponseEntity<ResponseDTO> getAll(){
             ResponseDTO responseDTO = new ResponseDTO();
-            responseDTO.setData(userService.findAllByRole("SITTER"));
+            responseDTO.setData(sitterServiceService.getAllSitter());
             return ResponseEntity.ok().body(responseDTO);
     }
 
