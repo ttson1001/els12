@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,5 +16,5 @@ public class CandidateResponseDTO {
         private String name;
         private String email;
         private String address;
-        private String avgPrice;
+        private BigDecimal avgPrice;
 }

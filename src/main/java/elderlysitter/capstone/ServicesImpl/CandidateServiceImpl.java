@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,14 +49,26 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public List<CandidateResponseDTO> getAllCandidate() {
         List<User> users = userRepository.findAllByRole(roleRepository.findByName("CANDIDATE"));
+
         List<CandidateResponseDTO> list = new ArrayList<>();
 
-        for (User user: users) {
+        for (User user : users) {
+            BigDecimal total = BigDecimal.valueOf(0);
+            BigDecimal count = BigDecimal.valueOf(0);
+            List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
+            for (SitterService sitterService : sitterServices
+            ) {
+                count = count.add(BigDecimal.valueOf(1));
+                total = total.add(sitterService.getPrice());
+            }
+
+
             CandidateResponseDTO dto = CandidateResponseDTO.builder()
                     .id(user.getId())
                     .name(user.getFullName())
                     .email(user.getEmail())
                     .address(user.getAddress())
+                    .avgPrice(total.divide(count))
                     .build();
             list.add(dto);
         }
@@ -103,7 +116,7 @@ public class CandidateServiceImpl implements CandidateService {
                 sitterServiceRepository.delete(item);
             }
             List<CertificateSitter> certificateSitters = certificateSitterRepository.findAllBySitterProfile_User_Email(email);
-            for (CertificateSitter item : certificateSitters){
+            for (CertificateSitter item : certificateSitters) {
                 certificateSitterRepository.delete(item);
             }
 
@@ -117,7 +130,7 @@ public class CandidateServiceImpl implements CandidateService {
             EmailDTO emailDetails = EmailDTO.builder()
                     .email(email)
                     .subject("Thông báo về kết quả đăng ký tài khoản ELS")
-                    .massage("Xin chào "+ fullName + ",\n" +
+                    .massage("Xin chào " + fullName + ",\n" +
                             "\n" +
                             "Chúng tôi đã đọc và rất ấn tượng với kĩ năng chuyên môn và kinh nghiệm làm việc mà bạn đã ghi trong form đăng ký. \n" +
                             "Nhưng chúng tôi rất tiếc khi phải thông báo rằng bạn không phù hợp với tiêu chí và mục tiêu của ELS.\n" +
@@ -130,7 +143,7 @@ public class CandidateServiceImpl implements CandidateService {
                             "(Đây là email được gửi tự động, Quý khách vui lòng không hồi đáp theo địa chỉ email này.)")
                     .build();
             emailService.sendSimpleMail(emailDetails);
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         return true;
     }
@@ -148,10 +161,12 @@ public class CandidateServiceImpl implements CandidateService {
         return generatedString;
 
     }
+
     @Override
     public SitterProfile getCandidateProfileByEmail(String email) {
         return sitterProfileRepository.findByUser_Email(email);
     }
+
     @Override
     public User addCandidate(CandidateRequestDTO candidateRequestDTO) {
         User candidate = User.builder()
