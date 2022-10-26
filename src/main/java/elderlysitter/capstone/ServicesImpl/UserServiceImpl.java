@@ -1,6 +1,5 @@
 package elderlysitter.capstone.ServicesImpl;
 
-import elderlysitter.capstone.Services.EmailService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.*;
 import elderlysitter.capstone.entities.*;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,24 +119,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getAllSitterByTotalPrice(List<ServiceRequestDTO> serviceRequestDTOs, BigDecimal totalPrice) {
+    public User getAllSitterByBookingServiceRequestDTO(List<BookingServiceRequestDTO> bookingServiceRequestDTOs) {
         List<User> users = userRepository.findAllByRole(roleRepository.findByName("SITTER"));
-
-            for (User user : users
-            ) {
-                System.out.println(user.getEmail());
-
-                if(user.getSitterProfile().getSitterService()!= null) {
-                    List<SitterService>  sitterServices = user.getSitterProfile().getSitterService();
-                    for (SitterService sitterService : sitterServices) {
-                        System.out.println(sitterService.getService().getId());
-                        System.out.println();
-                    }
+        int count = 0;
+        for (User user : users
+        ) {
+            List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
+            for (SitterService sitterService : sitterServices) {
+                for (BookingServiceRequestDTO bookingServiceRequestDTO: bookingServiceRequestDTOs )
+                {
+                    if (bookingServiceRequestDTO.getId() == sitterService.getService().getId())  count = count + 1;
                 }
             }
-
-
-
+            if(count == bookingServiceRequestDTOs.size()) {
+                return user;
+            }
+            else {
+                count = 0;
+            }
+        }
         return null;
     }
 

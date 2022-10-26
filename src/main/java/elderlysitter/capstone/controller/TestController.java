@@ -1,15 +1,14 @@
 package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.Services.UserService;
+import elderlysitter.capstone.dto.BookingServiceRequestDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.dto.SitterUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
-import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("test")
@@ -17,11 +16,11 @@ public class TestController {
     @Autowired
     UserService userService;
 
-    @GetMapping
+    @PostMapping
     @PermitAll
-    public ResponseEntity<ResponseDTO> test(){
+    public ResponseEntity<ResponseDTO> test(@RequestBody List<BookingServiceRequestDTO> bookingServiceRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.getAllSitterByTotalPrice(null, BigDecimal.valueOf(Float.parseFloat("10"))));
+        responseDTO.setData(userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
 }

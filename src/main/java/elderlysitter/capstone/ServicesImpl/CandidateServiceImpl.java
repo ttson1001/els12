@@ -98,7 +98,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public Boolean rejectCandidate(String email) {
         try {
-            List<SitterService> sitterServices = sitterServiceRepository.getAllBySitterProfile_User_Email(email);
+            List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
             for (SitterService item : sitterServices) {
                 sitterServiceRepository.delete(item);
             }
@@ -188,7 +188,7 @@ public class CandidateServiceImpl implements CandidateService {
             CertificateSitter certificateSitter = CertificateSitter.builder()
                     .sitterProfile(sitterProfile1)
                     .url(list.get(i).getUrl())
-                    .exp(list.get(i).getExp())
+                    .name(list.get(i).getName())
                     .build();
             certificateSitterRepository.save(certificateSitter);
         }

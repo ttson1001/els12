@@ -38,7 +38,7 @@ public class SitterServiceImpl implements SitterServiceService {
         User sitter = userRepository.findUserByEmail(email);
         SitterProfile sitterProfile = sitterProfileRepository.findByUser_Email(email);
         List<CertificateSitter> certificateSitter = certificateSitterRepository.findAllBySitterProfile_User_Email(email);
-        List<SitterService> sitterServices = sitterServiceRepository.getAllBySitterProfile_User_Email(email);
+        List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
 
         List<CertificateDTO> certificateDTOList =  new ArrayList<>();
 
@@ -48,7 +48,6 @@ public class SitterServiceImpl implements SitterServiceService {
         ) {
             CertificateDTO certificateDTO = CertificateDTO.builder()
                     .url(item.getUrl())
-                    .exp(item.getExp())
                     .build();
             certificateDTOList.add(certificateDTO);
         }

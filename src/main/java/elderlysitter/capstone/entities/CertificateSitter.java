@@ -19,10 +19,7 @@ public class CertificateSitter {
 
     private String url;
 
-//    @Column(name = "is_required")
-//    private Boolean isRequired;
-
-    private String exp;
+    private String name;
 
     @JsonIgnore
     @JoinColumn(name = "sitter_id")

@@ -13,5 +13,5 @@ public class CertificateDTO {
 
     private String url;
 
-    private String exp;
+    private String name;
 }

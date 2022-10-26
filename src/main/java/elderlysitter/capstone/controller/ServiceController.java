@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
+
 @RestController
 @RequestMapping("service")
 public class ServiceController {
@@ -24,7 +26,7 @@ public class ServiceController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
+    @PermitAll
     public ResponseEntity<ResponseDTO> getAllService(){
         ResponseDTO responseDTO =  new ResponseDTO();
          responseDTO.setData(serviceService.getAllService());

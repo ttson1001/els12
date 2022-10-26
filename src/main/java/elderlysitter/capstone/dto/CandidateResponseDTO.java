@@ -14,5 +14,5 @@ public class CandidateResponseDTO {
         private String name;
         private String email;
         private String address;
-
+        private String avgPrice;
 }
