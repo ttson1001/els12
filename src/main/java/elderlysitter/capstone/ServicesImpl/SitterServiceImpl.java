@@ -100,7 +100,9 @@ public class SitterServiceImpl implements SitterServiceService {
                     count = count.add(BigDecimal.valueOf(1));
                     total = total.add(sitterService.getPrice());
                 }
-                System.out.println(user.getEmail());
+                if(count == BigDecimal.valueOf(0)){
+                         total = BigDecimal.valueOf(0);
+                }
 
 
                 SitterGetAllResponseDTO dto = SitterGetAllResponseDTO.builder()
