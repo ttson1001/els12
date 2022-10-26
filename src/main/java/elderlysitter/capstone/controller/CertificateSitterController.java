@@ -18,7 +18,7 @@ public class CertificateSitterController {
 
     @GetMapping("{candidateEmail}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getcer(@PathVariable String candidateEmail) {
+    public ResponseEntity<ResponseDTO> getCertificate(@PathVariable String candidateEmail) {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(certificateSitterService.getAllCertificateByEmail(candidateEmail));
         return ResponseEntity.ok().body(responseDTO);

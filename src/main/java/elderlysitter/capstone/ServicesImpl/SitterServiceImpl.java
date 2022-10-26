@@ -15,6 +15,7 @@ import elderlysitter.capstone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class SitterServiceImpl implements SitterServiceService {
 
     @Override
     public SitterResponseDTO getSitterByEmail(String email) {
+        BigDecimal total = BigDecimal.valueOf(0);
+        BigDecimal count = BigDecimal.valueOf(0);
         User sitter = userRepository.findUserByEmail(email);
         SitterProfile sitterProfile = sitterProfileRepository.findByUser_Email(email);
         List<CertificateSitter> certificateSitter = certificateSitterRepository.findAllBySitterProfile_User_Email(email);
@@ -52,8 +55,11 @@ public class SitterServiceImpl implements SitterServiceService {
             certificateDTOList.add(certificateDTO);
         }
 
+
         for (SitterService item : sitterServices
         ) {
+            total = total.add(item.getPrice());
+            count = count.add(BigDecimal.valueOf(1));
             SitterServiceDTO sitterServiceDTO = SitterServiceDTO.builder()
                     .serviceName(item.getService().getName())
                     .servicePrice(item.getPrice())
@@ -69,6 +75,7 @@ public class SitterServiceImpl implements SitterServiceService {
                 .gender(sitter.getGender())
                 .email(sitter.getEmail())
                 .ratingStar(4.0F)
+                .avgPrice(total.divide(count))
                 .sitterServices(sitterServiceDTOList)
                 .idNumber(sitterProfile.getIdNumber())
                 .address(sitter.getAddress())

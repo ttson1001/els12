@@ -49,28 +49,32 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public List<CandidateResponseDTO> getAllCandidate() {
         List<User> users = userRepository.findAllByRole(roleRepository.findByName("CANDIDATE"));
-
         List<CandidateResponseDTO> list = new ArrayList<>();
+        try {
 
-        for (User user : users) {
-            BigDecimal total = BigDecimal.valueOf(0);
-            BigDecimal count = BigDecimal.valueOf(0);
-            List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
-            for (SitterService sitterService : sitterServices
-            ) {
-                count = count.add(BigDecimal.valueOf(1));
-                total = total.add(sitterService.getPrice());
+
+            for (User user : users) {
+                BigDecimal total = BigDecimal.valueOf(0);
+                BigDecimal count = BigDecimal.valueOf(0);
+                List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
+                for (SitterService sitterService : sitterServices
+                ) {
+                    count = count.add(BigDecimal.valueOf(1));
+                    total = total.add(sitterService.getPrice());
+                }
+
+
+                CandidateResponseDTO dto = CandidateResponseDTO.builder()
+                        .id(user.getId())
+                        .name(user.getFullName())
+                        .email(user.getEmail())
+                        .address(user.getAddress())
+                        .avgPrice(total.divide(count))
+                        .build();
+                list.add(dto);
             }
+        }catch (Exception e){
 
-
-            CandidateResponseDTO dto = CandidateResponseDTO.builder()
-                    .id(user.getId())
-                    .name(user.getFullName())
-                    .email(user.getEmail())
-                    .address(user.getAddress())
-                    .avgPrice(total.divide(count))
-                    .build();
-            list.add(dto);
         }
         return list;
     }
