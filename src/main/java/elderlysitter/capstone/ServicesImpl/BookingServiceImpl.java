@@ -182,6 +182,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking acceptBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).get();
         booking.setStatus(statusRepository.findByStatusName("WAITING_TO_START_DATE"));
+        bookingRepository.save(booking);
         return booking;
     }
 }
