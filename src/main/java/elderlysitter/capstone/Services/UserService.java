@@ -22,7 +22,7 @@ public interface UserService {
 
     User updateCustomerProfile(CustomerProfileDTO customerProfileDTO);
 
-    User getAllSitterByBookingServiceRequestDTO(List<BookingServiceRequestDTO> bookingServiceRequestDTO);
+    User getAllSitterByBookingServiceRequestDTO(List<BookingServiceRequestDTO> bookingServiceRequestDTO, String email);
 
     User updateSitter(SitterUpdateDTO sitterUpdateDTO);
 

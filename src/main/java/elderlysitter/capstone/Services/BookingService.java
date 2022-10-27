@@ -26,4 +26,8 @@ public interface BookingService {
     List<Booking> getAllBookingByCustomerEmailAndStatusName(String email, String statusName);
 
     List<Booking> getAllBookingBySitterEmailAndStatusName(String email, String statusName);
+
+    Booking cancelBookingSitter(Long bookingId , String email);
+
+    Booking acceptBooking(Long bookingId);
 }

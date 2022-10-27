@@ -119,23 +119,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getAllSitterByBookingServiceRequestDTO(List<BookingServiceRequestDTO> bookingServiceRequestDTOs) {
+    public User getAllSitterByBookingServiceRequestDTO(List<BookingServiceRequestDTO> bookingServiceRequestDTOs, String email) {
         List<User> users = userRepository.findAllByRole(roleRepository.findByName("SITTER"));
         int count = 0;
         for (User user : users
         ) {
-            List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
-            for (SitterService sitterService : sitterServices) {
-                for (BookingServiceRequestDTO bookingServiceRequestDTO: bookingServiceRequestDTOs )
-                {
-                    if (bookingServiceRequestDTO.getId() == sitterService.getService().getId())  count = count + 1;
+            if (email.equalsIgnoreCase(user.getEmail())) continue;
+            {
+                List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
+                for (SitterService sitterService : sitterServices) {
+                    for (BookingServiceRequestDTO bookingServiceRequestDTO : bookingServiceRequestDTOs) {
+                        if (bookingServiceRequestDTO.getId() == sitterService.getService().getId()) count = count + 1;
+                    }
                 }
-            }
-            if(count == bookingServiceRequestDTOs.size()) {
-                return user;
-            }
-            else {
-                count = 0;
+                if (count == bookingServiceRequestDTOs.size()) {
+                    return user;
+                } else {
+                    count = 0;
+                }
             }
         }
         return null;

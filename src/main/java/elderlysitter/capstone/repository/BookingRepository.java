@@ -17,4 +17,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByUser_EmailAndStatus_StatusName(String email, String statusName);
 
     List<Booking> findAllBySitter_EmailAndStatus_StatusName(String email, String statusName);
+
+
 }

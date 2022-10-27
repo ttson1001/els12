@@ -26,7 +26,7 @@ public class TestController {
     @PermitAll
     public ResponseEntity<ResponseDTO> test(@RequestBody List<BookingServiceRequestDTO> bookingServiceRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTO));
+        responseDTO.setData(userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTO,null));
         return ResponseEntity.ok().body(responseDTO);
     }
 

@@ -118,7 +118,7 @@ public class BookingController {
     @PreAuthorize("hasRole('SITTER')")
     public  ResponseEntity<ResponseDTO> acceptBySitter(@PathVariable Long bookingId){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(bookingService.acceptBookingBySitter(bookingId));
+        responseDTO.setData(bookingService.acceptBooking(bookingId));
         return ResponseEntity.ok().body(responseDTO);
     }
 }

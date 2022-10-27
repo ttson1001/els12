@@ -9,6 +9,7 @@ import elderlysitter.capstone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
 
         List<BookingServiceRequestDTO> bookingServiceRequestDTOS =bookingRequestDTO.getBookingServiceRequestDTOS();
 
-        User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS);
+        User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS,null);
         if(user == null )
         {
             return null;
@@ -87,6 +88,7 @@ public class BookingServiceImpl implements BookingService {
                     .build();
             bookingDetailRepository.save(bookingDetail);
         }
+
         return booking;
 
     }
@@ -138,6 +140,49 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookingBySitterEmailAndStatusName(String email, String statusName) {
         List<Booking> bookingList = bookingRepository.findAllBySitter_EmailAndStatus_StatusName(email,statusName);
         return bookingList;
+    }
+
+    @Override
+    public Booking cancelBookingSitter(Long bookingId, String email) {
+        Booking booking = bookingRepository.findById(bookingId).get();
+        booking.setSitter(userRepository.findUserByEmail(email));
+
+        List<BookingDetail> bookingDetails = booking.getBookingDetails();
+        List<BookingServiceRequestDTO> bookingServiceRequestDTOS  = new ArrayList<>();
+        for (BookingDetail bookingDetail: bookingDetails){
+            BookingServiceRequestDTO bookingServiceRequestDTO = BookingServiceRequestDTO.builder()
+                    .id(bookingDetail.getService().getId())
+                    .duration(bookingDetail.getDuration())
+                    .build();
+            bookingServiceRequestDTOS.add(bookingServiceRequestDTO);
+        }
+
+        User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS,email);
+        if(user == null )
+        {
+            return null;
+        }
+        List<BookingDetail> bookingDetails1 = bookingDetailRepository.findAllByBooking_Id(bookingId);
+        BigDecimal total = BigDecimal.valueOf(0D);
+        for (BookingDetail bookingDetail: bookingDetails1){
+            BigDecimal price = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(user.getEmail(),bookingDetail.getService().getId()).getPrice();
+            bookingDetail.setPrice(price.multiply(BigDecimal.valueOf(bookingDetail.getDuration())));
+            total = total.add(price.multiply(BigDecimal.valueOf(bookingDetail.getDuration())));
+            bookingDetailRepository.save(bookingDetail);
+        }
+
+
+        booking.setTotalPrice(total);
+
+
+        return  bookingRepository.save(booking);
+    }
+
+    @Override
+    public Booking acceptBooking(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).get();
+        booking.setStatus(statusRepository.findByStatusName("WAITING_TO_START_DATE"));
+        return booking;
     }
 }
 
