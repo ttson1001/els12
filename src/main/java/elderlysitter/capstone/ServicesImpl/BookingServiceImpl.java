@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
 
         List<BookingServiceRequestDTO> bookingServiceRequestDTOS =bookingRequestDTO.getBookingServiceRequestDTOS();
 
-        User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS,null);
+        User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS," ");
         if(user == null )
         {
             return null;
