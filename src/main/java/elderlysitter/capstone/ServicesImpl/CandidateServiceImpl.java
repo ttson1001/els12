@@ -74,7 +74,7 @@ public class CandidateServiceImpl implements CandidateService {
                 list.add(dto);
             }
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return list;
     }
