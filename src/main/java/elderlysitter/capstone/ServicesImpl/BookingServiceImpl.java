@@ -170,11 +170,7 @@ public class BookingServiceImpl implements BookingService {
             total = total.add(price.multiply(BigDecimal.valueOf(bookingDetail.getDuration())));
             bookingDetailRepository.save(bookingDetail);
         }
-
-
         booking.setTotalPrice(total);
-
-
         return  bookingRepository.save(booking);
     }
 
@@ -183,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).get();
         booking.setStatus(statusRepository.findByStatusName("WAITING_TO_START_DATE"));
         bookingRepository.save(booking);
-        return booking;
+        return  bookingRepository.save(booking);
     }
 }
 

@@ -47,6 +47,10 @@ public class Booking {
 
     private String place;
 
+    private Boolean isSitterCheckout;
+
+    private Boolean isCustomerCheckout;
+
     @JoinColumn(name = "status_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Status status;

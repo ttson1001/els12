@@ -42,7 +42,7 @@ public class CustomerController {
                 .fullName(customerRegisterDTO.getFullName())
                 .email(customerRegisterDTO.getEmail())
                 .password(passwordEncoder.encode(customerRegisterDTO.getPassword()))
-                        .status(statusRepository.findById(2L).get())
+                        .status(statusRepository.findByStatusName("DEACTIVE"))
                         .role(roleService.findByName("CUSTOMER"))
                 .build());
         if (newUser.getId() != null){
