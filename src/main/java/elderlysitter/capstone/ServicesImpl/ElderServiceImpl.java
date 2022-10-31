@@ -30,6 +30,7 @@ public class ElderServiceImpl implements ElderService {
     public Elder addElder(ElderDTO elderDTO) {
         Elder elder = Elder.builder()
                 .name(elderDTO.getName())
+                .gender(elderDTO.getGender())
                 .note(elderDTO.getNote())
                 .dob(elderDTO.getDob())
                 .healthStatus(elderDTO.getHealthStatus())
