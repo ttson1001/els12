@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ElderDTO {
     private String name;
-    private Boolean gender;
+    private String gender;
     private LocalDate dob;
     private String healthStatus;
     private String note;
