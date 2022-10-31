@@ -172,6 +172,11 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    public SitterProfile getCandidateProfileById(Long id) {
+        return sitterProfileRepository.findById(id).get();
+    }
+
+    @Override
     public User addCandidate(CandidateRequestDTO candidateRequestDTO) {
         User candidate = User.builder()
                 .role(roleRepository.findByName("CANDIDATE"))

@@ -1,14 +1,13 @@
 package elderlysitter.capstone.Services;
 
 import elderlysitter.capstone.dto.BookingRequestDTO;
-import elderlysitter.capstone.dto.BookingSitterRequestDTO;
 import elderlysitter.capstone.entities.Booking;
 import elderlysitter.capstone.entities.BookingDetail;
 
 import java.util.List;
 
 public interface BookingService {
-    Booking addBookingService(BookingRequestDTO bookingRequestDTO);
+    Booking addBooking(BookingRequestDTO bookingRequestDTO);
 
 //    Booking bookingSitter(BookingSitterRequestDTO bookingSitterRequestDTO);
 

@@ -44,7 +44,7 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public Booking addBookingService(BookingRequestDTO bookingRequestDTO) {
+    public Booking addBooking(BookingRequestDTO bookingRequestDTO) {
         UUID uuid = UUID.randomUUID();
 
         List<BookingServiceRequestDTO> bookingServiceRequestDTOS =bookingRequestDTO.getBookingServiceRequestDTOS();

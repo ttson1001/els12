@@ -2,7 +2,6 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.Services.BookingService;
 import elderlysitter.capstone.dto.BookingRequestDTO;
-import elderlysitter.capstone.dto.BookingSitterRequestDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,7 @@ public class BookingController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ResponseDTO> addBooking(@RequestBody BookingRequestDTO bookingRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(bookingService.addBookingService(bookingRequestDTO));
+        responseDTO.setData(bookingService.addBooking(bookingRequestDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -33,7 +32,7 @@ public class BookingController {
 
     @GetMapping("{statusName}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getBookingByStatus(@PathVariable String statusName){
+    public ResponseEntity<ResponseDTO> getAllBookingByStatus(@PathVariable String statusName){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(bookingService.getListBookingByStatus(statusName));
         return ResponseEntity.ok().body(responseDTO);

@@ -85,6 +85,57 @@ public class SitterServiceImpl implements SitterServiceService {
     }
 
     @Override
+    public SitterResponseDTO getSitterById(Long id) {
+        BigDecimal total = BigDecimal.valueOf(0);
+        BigDecimal count = BigDecimal.valueOf(0);
+        User sitter = userRepository.findById(id).get();
+        SitterProfile sitterProfile = sitterProfileRepository.findByUser_Email(sitter.getEmail());
+        List<CertificateSitter> certificateSitter = certificateSitterRepository.findAllBySitterProfile_User_Email(sitter.getEmail());
+        List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(sitter.getEmail());
+
+        List<CertificateDTO> certificateDTOList =  new ArrayList<>();
+
+        List<SitterServiceDTO> sitterServiceDTOList = new ArrayList<>();
+
+        for (CertificateSitter item : certificateSitter
+        ) {
+            CertificateDTO certificateDTO = CertificateDTO.builder()
+                    .url(item.getUrl())
+                    .build();
+            certificateDTOList.add(certificateDTO);
+        }
+
+
+        for (SitterService item : sitterServices
+        ) {
+            total = total.add(item.getPrice());
+            count = count.add(BigDecimal.valueOf(1));
+            SitterServiceDTO sitterServiceDTO = SitterServiceDTO.builder()
+                    .serviceName(item.getService().getName())
+                    .servicePrice(item.getPrice())
+                    .build();
+            sitterServiceDTOList.add(sitterServiceDTO);
+        }
+
+        SitterResponseDTO responseDTO = SitterResponseDTO.builder()
+                .fullName(sitter.getFullName())
+                .dob(sitter.getDob())
+                .phone(sitter.getPhone())
+                .certificateDTOS(certificateDTOList)
+                .gender(sitter.getGender())
+                .email(sitter.getEmail())
+                .ratingStar(4.0F)
+                .avgPrice(total.divide(count))
+                .sitterServices(sitterServiceDTOList)
+                .idNumber(sitterProfile.getIdNumber())
+                .address(sitter.getAddress())
+                .build();
+
+        return  responseDTO;
+
+    }
+
+    @Override
     public List<SitterGetAllResponseDTO> getAllSitter() {
         List<User> users = userRepository.findAllByRole(roleRepository.findByName("SITTER"));
         List<SitterGetAllResponseDTO> list = new ArrayList<>();

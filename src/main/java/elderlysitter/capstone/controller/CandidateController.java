@@ -50,6 +50,14 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("detail/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getCandidateProfile(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(candidateService.getCandidateProfileById(id));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @DeleteMapping("{email}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> rejectCandidate(@PathVariable String email){

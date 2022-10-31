@@ -72,9 +72,17 @@ public class SitterController {
     }
     @GetMapping("{email}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getSitterById(@PathVariable String email){
+    public ResponseEntity<ResponseDTO> getSitterByEmail(@PathVariable String email){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(sitterServiceService.getSitterByEmail(email));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("detail/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getSitterById(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(sitterServiceService.getSitterById(id));
         return ResponseEntity.ok().body(responseDTO);
     }
 

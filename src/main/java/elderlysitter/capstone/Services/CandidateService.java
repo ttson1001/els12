@@ -15,5 +15,7 @@ public interface CandidateService {
 
     SitterProfile getCandidateProfileByEmail(String email);
 
+    SitterProfile getCandidateProfileById(Long id);
+
     User addCandidate(CandidateRequestDTO candidateRequestDTO);
 }

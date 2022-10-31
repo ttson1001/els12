@@ -78,6 +78,15 @@ public class CustomerController {
 
     }
 
+    @GetMapping("detail/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getProfileCus(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(userService.findById(id));
+        return ResponseEntity.ok().body(responseDTO);
+
+    }
+
 
 
 
