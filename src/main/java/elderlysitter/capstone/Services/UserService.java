@@ -14,7 +14,7 @@ public interface UserService {
     List<User> findAllByRole(String roleName);
     List<User> findAll(String roleName, String statusName);
 
-    User updateStatusSitter(Long statusID, Long SitterID);
+    User updateStatusSitter(String statusName, Long SitterID);
 
     User changePassword(ChangePasswordDTO changePasswordDTO);
 

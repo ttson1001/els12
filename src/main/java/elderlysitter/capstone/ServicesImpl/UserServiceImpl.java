@@ -76,9 +76,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User updateStatusSitter(Long statusID, Long sitterId) {
+    public User updateStatusSitter(String statusName, Long sitterId) {
         User sitter = userRepository.findById(sitterId).get();
-        sitter.setStatus(statusRepository.findById(statusID).get());
+        sitter.setStatus(statusRepository.findByStatusName(statusName));
         return userRepository.save(sitter);
     }
 

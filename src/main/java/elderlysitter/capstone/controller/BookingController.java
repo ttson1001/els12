@@ -121,4 +121,13 @@ public class BookingController {
         responseDTO.setData(bookingService.acceptBooking(bookingId));
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PutMapping("{bookingId}/{email}")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> cancelBooking(@PathVariable Long bookingId, @PathVariable String email){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(bookingService.cancelBookingSitter(bookingId,email));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }

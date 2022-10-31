@@ -14,19 +14,19 @@ public class AdminController {
     @Autowired
     UserService userService;
 
-    @PutMapping("{id}")
+    @PutMapping("active/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> activeSitter(@PathVariable long sitterId){
+    public ResponseEntity<ResponseDTO> activeSitter(@PathVariable Long sitterId){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.updateStatusSitter(1L,sitterId));
+        responseDTO.setData(userService.updateStatusSitter("ACTIVE",sitterId));
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PutMapping("deactive/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> deactiveSitter(@PathVariable long sitterId){
+    public ResponseEntity<ResponseDTO> deactiveSitter(@PathVariable Long sitterId){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.updateStatusSitter(2L,sitterId));
+        responseDTO.setData(userService.updateStatusSitter("DEACTIVE",sitterId));
         return ResponseEntity.ok().body(responseDTO);
     }
 
