@@ -160,6 +160,7 @@ public class BookingServiceImpl implements BookingService {
         User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS,email);
         if(user == null )
         {
+            booking.setSitter(null);
             return null;
         }
         List<BookingDetail> bookingDetails1 = bookingDetailRepository.findAllByBooking_Id(bookingId);
