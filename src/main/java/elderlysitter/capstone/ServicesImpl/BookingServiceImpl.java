@@ -161,6 +161,7 @@ public class BookingServiceImpl implements BookingService {
         if(user == null )
         {
             booking.setSitter(null);
+            bookingRepository.save(booking);
             return null;
         }
         List<BookingDetail> bookingDetails1 = bookingDetailRepository.findAllByBooking_Id(bookingId);
