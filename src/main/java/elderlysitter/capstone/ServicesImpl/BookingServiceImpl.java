@@ -177,7 +177,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking acceptBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).get();
-        booking.setStatus(statusRepository.findByStatusName("WAITING_TO_START_DATE"));
+        booking.setStatus(statusRepository.findByStatusName("WAITING_FOR_DATE"));
         bookingRepository.save(booking);
         return  bookingRepository.save(booking);
     }
