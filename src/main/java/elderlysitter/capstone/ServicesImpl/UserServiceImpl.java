@@ -127,10 +127,11 @@ public class UserServiceImpl implements UserService {
     public User getAllSitterByBookingServiceRequestDTO(List<BookingServiceRequestDTO> bookingServiceRequestDTOs, String email) {
         List<User> users = userRepository.findAllByRole(roleRepository.findByName("SITTER"));
         int count = 0;
+        int flag = 0;
         for (User user : users
         ) {
-            if (email.equalsIgnoreCase(user.getEmail())){}
-            else {
+            if (email.equalsIgnoreCase(user.getEmail())){flag = 1;}
+            if(flag != 1){
                 List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
                 for (SitterService sitterService : sitterServices) {
                     for (BookingServiceRequestDTO bookingServiceRequestDTO : bookingServiceRequestDTOs) {
