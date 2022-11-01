@@ -129,8 +129,8 @@ public class UserServiceImpl implements UserService {
         int count = 0;
         for (User user : users
         ) {
-            if (email.equalsIgnoreCase(user.getEmail())) continue;
-            {
+            if (email.equalsIgnoreCase(user.getEmail())){}
+            else {
                 List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
                 for (SitterService sitterService : sitterServices) {
                     for (BookingServiceRequestDTO bookingServiceRequestDTO : bookingServiceRequestDTOs) {
