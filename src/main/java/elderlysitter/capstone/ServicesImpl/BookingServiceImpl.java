@@ -41,6 +41,7 @@ public class BookingServiceImpl implements BookingService {
     UserService userService;
 
 
+
     @Override
     public Booking addBooking(BookingRequestDTO bookingRequestDTO) {
         UUID uuid = UUID.randomUUID();
@@ -69,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
                 .startDateTime(bookingRequestDTO.getStartDateTime())
                 .endDateTime(bookingRequestDTO.getEndDateTime())
                 .status("WAITING_FOR_SITTER")
-                .elderId(Long.parseLong(bookingRequestDTO.getElderId()))
+                .elder(elderRepository.findById(Long.parseLong(bookingRequestDTO.getElderId())).get())
                 .sitter(userRepository.findUserByEmail(user.getEmail()))
                 .totalPrice(total)
                 .user(userRepository.findUserByEmail(bookingRequestDTO.getEmail()))
