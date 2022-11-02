@@ -48,7 +48,7 @@ public class SitterController {
     }
 
     @GetMapping("getAllsitter")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SITTER','ADMIN')")
     public  ResponseEntity<ResponseDTO> getAll(){
             ResponseDTO responseDTO = new ResponseDTO();
             responseDTO.setData(sitterServiceService.getAllSitter());
@@ -79,7 +79,7 @@ public class SitterController {
     }
 
     @GetMapping("detail/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER','SITTER')")
     public ResponseEntity<ResponseDTO> getSitterById(@PathVariable Long id){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(sitterServiceService.getSitterById(id));

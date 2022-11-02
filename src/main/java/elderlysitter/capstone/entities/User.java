@@ -39,10 +39,7 @@ public class User {
     @Column(name = "create_date")
     private LocalDate createDate;
 
-
-    @JoinColumn(name = "status_id")
-    @ManyToOne( fetch = FetchType.EAGER)
-    private Status status;
+    private String status;
 
     @JsonIgnore
     @JoinColumn (name = "role_id")

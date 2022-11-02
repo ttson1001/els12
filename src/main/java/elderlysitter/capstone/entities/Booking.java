@@ -36,8 +36,9 @@ public class Booking {
     @Column(name = "end_date_time")
     private LocalDateTime endDateTime;
 
-    @Column(name = "elder_id")
-    private Long elderId;
+    @JoinColumn(name = "elder_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Elder elder;
 
     @JoinColumn(name = "sitter_id")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -51,9 +52,7 @@ public class Booking {
 
     private Boolean isCustomerCheckout;
 
-    @JoinColumn(name = "status_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Status status;
+    private String status;
 
     @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.EAGER)

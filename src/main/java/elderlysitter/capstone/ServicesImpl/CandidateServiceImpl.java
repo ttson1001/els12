@@ -22,8 +22,6 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Autowired
     RoleRepository roleRepository;
-    @Autowired
-    StatusRepository statusRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -87,7 +85,7 @@ public class CandidateServiceImpl implements CandidateService {
             return null;
         }
         sitter.setRole(roleRepository.findByName("SITTER"));
-        sitter.setStatus(statusRepository.findByStatusName("ACTIVE"));
+        sitter.setStatus("ACTIVE");
         sitter.setPassword(passwordEncoder.encode(password));
         EmailDTO emailDetails = EmailDTO.builder()
                 .email(email)

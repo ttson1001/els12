@@ -5,10 +5,8 @@ import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.CustomerProfileDTO;
 import elderlysitter.capstone.dto.CustomerRegisterDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.entities.FavoriteSitter;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.ErrorCode;
-import elderlysitter.capstone.repository.StatusRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +26,6 @@ public class CustomerController {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    StatusRepository statusRepository;
-
-    @Autowired
     RoleService roleService;
 
 
@@ -42,7 +37,7 @@ public class CustomerController {
                 .fullName(customerRegisterDTO.getFullName())
                 .email(customerRegisterDTO.getEmail())
                 .password(passwordEncoder.encode(customerRegisterDTO.getPassword()))
-                        .status(statusRepository.findByStatusName("DEACTIVE"))
+                        .status("DEACTIVE")
                         .role(roleService.findByName("CUSTOMER"))
                 .build());
         if (newUser.getId() != null){

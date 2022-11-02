@@ -33,8 +33,6 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     RoleRepository roleRepository;
 
-    @Autowired
-    StatusRepository statusRepository;
 
     @Autowired
     SitterServiceRepository sitterServiceRepository;
@@ -70,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
                 .description(bookingRequestDTO.getDescription())
                 .startDateTime(bookingRequestDTO.getStartDateTime())
                 .endDateTime(bookingRequestDTO.getEndDateTime())
-                .status(statusRepository.findByStatusName("WAITING_FOR_SITTER"))
+                .status("WAITING_FOR_SITTER")
                 .elderId(Long.parseLong(bookingRequestDTO.getElderId()))
                 .sitter(userRepository.findUserByEmail(user.getEmail()))
                 .totalPrice(total)
@@ -95,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getListBookingByStatus(String statusEmail) {
-        List<Booking> bookings = bookingRepository.findAllByStatus_StatusName(statusEmail);
+        List<Booking> bookings = bookingRepository.findAllByStatus(statusEmail);
         return bookings;
     }
 
@@ -126,19 +124,19 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking acceptBookingBySitter(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).get();
-        booking.setStatus(statusRepository.findByStatusName("S"));
+//        booking.setStatus(statusRepository.findByStatusName("S"));
         return booking;
     }
 
     @Override
     public List<Booking> getAllBookingByCustomerEmailAndStatusName(String email, String statusName) {
-        List<Booking> bookingList = bookingRepository.findAllByUser_EmailAndStatus_StatusName(email,statusName);
+        List<Booking> bookingList = bookingRepository.findAllByUser_EmailAndStatus(email,statusName);
         return bookingList;
     }
 
     @Override
     public List<Booking> getAllBookingBySitterEmailAndStatusName(String email, String statusName) {
-        List<Booking> bookingList = bookingRepository.findAllBySitter_EmailAndStatus_StatusName(email,statusName);
+        List<Booking> bookingList = bookingRepository.findAllBySitter_EmailAndStatus(email,statusName);
         return bookingList;
     }
 
@@ -179,7 +177,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking acceptBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).get();
-        booking.setStatus(statusRepository.findByStatusName("WAITING_FOR_DATE"));
+        booking.setStatus("WAITING_FOR_DATE");
         bookingRepository.save(booking);
         return  bookingRepository.save(booking);
     }

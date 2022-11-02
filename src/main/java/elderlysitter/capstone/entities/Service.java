@@ -25,9 +25,7 @@ public class Service {
     private String sitterRequirement;
     private Integer duration;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "status_id")
-    private Status status;
+    private String status;
 
     @JsonIgnore
     @OneToMany(mappedBy = "service")

@@ -17,8 +17,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    StatusRepository statusRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -71,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll(String roleName, String statusName) {
         List<User> users = new ArrayList<>();
         try {
-            users = userRepository.findAllByRole_NameAndStatus_StatusName(roleName, statusName);
+            users = userRepository.findAllByRole_NameAndStatus(roleName, statusName);
         } catch (Exception e) {
             e.printStackTrace();
             return users;
@@ -83,7 +81,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateStatusSitter(String statusName, Long sitterId) {
         User sitter = userRepository.findById(sitterId).get();
-        sitter.setStatus(statusRepository.findByStatusName(statusName));
+        sitter.setStatus(statusName);
         return userRepository.save(sitter);
     }
 

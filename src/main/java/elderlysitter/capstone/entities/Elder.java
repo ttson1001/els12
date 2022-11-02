@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,6 +37,10 @@ public class Elder {
     @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
+
+
+    @OneToMany(mappedBy = "elder")
+    private List<Booking> bookings;
 
 
 }

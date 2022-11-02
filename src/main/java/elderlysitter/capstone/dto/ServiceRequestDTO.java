@@ -21,7 +21,6 @@ public class ServiceRequestDTO {
     private String url;
     private String sitterRequirement;
     private Integer duration;
-    private Long statusID;
     private Long categoryID;
 
 

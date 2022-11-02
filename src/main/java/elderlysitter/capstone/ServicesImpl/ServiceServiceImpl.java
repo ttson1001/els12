@@ -5,7 +5,6 @@ import elderlysitter.capstone.dto.ServiceRequestDTO;
 import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.repository.CategoryRepository;
 import elderlysitter.capstone.repository.ServiceRepository;
-import elderlysitter.capstone.repository.StatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ public class ServiceServiceImpl implements ServiceService {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @Autowired
-    StatusRepository statusRepository;
 
     @Override
     public Service createService(ServiceRequestDTO serviceRequestDTO) {
@@ -32,7 +29,7 @@ public class ServiceServiceImpl implements ServiceService {
                         .url(serviceRequestDTO.getUrl())
                         .sitterRequirement(serviceRequestDTO.getSitterRequirement())
                         .duration(serviceRequestDTO.getDuration())
-                        .status(statusRepository.findById(serviceRequestDTO.getStatusID()).get())
+                        .status("ACTIVE")
                         .category(categoryRepository.findById(serviceRequestDTO.getCategoryID()).get())
                         .build());
         return newService;
@@ -46,7 +43,6 @@ public class ServiceServiceImpl implements ServiceService {
         oldService.setUrl(serviceRequestDTO.getUrl());
         oldService.setSitterRequirement(serviceRequestDTO.getSitterRequirement());
         oldService.setDuration(serviceRequestDTO.getDuration());
-        oldService.setStatus(statusRepository.findById(serviceRequestDTO.getStatusID()).get());
         oldService.setCategory(categoryRepository.findById(serviceRequestDTO.getCategoryID()).get());
 
         return serviceRepository.save(oldService);
