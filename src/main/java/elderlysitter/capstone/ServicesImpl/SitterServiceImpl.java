@@ -50,6 +50,7 @@ public class SitterServiceImpl implements SitterServiceService {
         ) {
             CertificateDTO certificateDTO = CertificateDTO.builder()
                     .url(item.getUrl())
+                    .name(item.getName())
                     .build();
             certificateDTOList.add(certificateDTO);
         }
@@ -62,6 +63,8 @@ public class SitterServiceImpl implements SitterServiceService {
             SitterServiceDTO sitterServiceDTO = SitterServiceDTO.builder()
                     .serviceName(item.getService().getName())
                     .servicePrice(item.getPrice())
+                    .duration(item.getService().getDuration())
+                    .exp(item.getExp())
                     .build();
             sitterServiceDTOList.add(sitterServiceDTO);
         }
@@ -113,6 +116,8 @@ public class SitterServiceImpl implements SitterServiceService {
             SitterServiceDTO sitterServiceDTO = SitterServiceDTO.builder()
                     .serviceName(item.getService().getName())
                     .servicePrice(item.getPrice())
+                    .duration(item.getService().getDuration())
+                    .exp(item.getExp())
                     .build();
             sitterServiceDTOList.add(sitterServiceDTO);
         }

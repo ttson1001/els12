@@ -14,4 +14,6 @@ import java.math.BigDecimal;
 public class SitterServiceDTO {
     private String serviceName;
     private BigDecimal servicePrice;
+    private Long exp;
+    private Integer duration;
 }
