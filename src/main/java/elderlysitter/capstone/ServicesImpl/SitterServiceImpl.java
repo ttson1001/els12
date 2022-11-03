@@ -104,6 +104,7 @@ public class SitterServiceImpl implements SitterServiceService {
         ) {
             CertificateDTO certificateDTO = CertificateDTO.builder()
                     .url(item.getUrl())
+                    .name(item.getName())
                     .build();
             certificateDTOList.add(certificateDTO);
         }
