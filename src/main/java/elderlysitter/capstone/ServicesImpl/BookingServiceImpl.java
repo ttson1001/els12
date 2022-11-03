@@ -2,6 +2,7 @@ package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.BookingService;
 import elderlysitter.capstone.Services.UserService;
+import elderlysitter.capstone.dto.BookingDetailResponseDTO;
 import elderlysitter.capstone.dto.BookingRequestDTO;
 import elderlysitter.capstone.dto.BookingServiceRequestDTO;
 import elderlysitter.capstone.entities.*;
@@ -41,22 +42,20 @@ public class BookingServiceImpl implements BookingService {
     UserService userService;
 
 
-
     @Override
     public Booking addBooking(BookingRequestDTO bookingRequestDTO) {
         UUID uuid = UUID.randomUUID();
 
-        List<BookingServiceRequestDTO> bookingServiceRequestDTOS =bookingRequestDTO.getBookingServiceRequestDTOS();
+        List<BookingServiceRequestDTO> bookingServiceRequestDTOS = bookingRequestDTO.getBookingServiceRequestDTOS();
 
-        User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS," ");
-        if(user == null )
-        {
+        User user = userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS, " ");
+        if (user == null) {
             return null;
         }
         BigDecimal total = BigDecimal.valueOf(0D);
 
-        for (BookingServiceRequestDTO bookingServiceRequestDTO: bookingServiceRequestDTOS){
-            SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(user.getEmail(),bookingServiceRequestDTO.getId());
+        for (BookingServiceRequestDTO bookingServiceRequestDTO : bookingServiceRequestDTOS) {
+            SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(user.getEmail(), bookingServiceRequestDTO.getId());
             total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingServiceRequestDTO.getDuration())));
 
         }
@@ -77,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
                 .build();
         bookingRepository.save(newBooking);
         Booking booking = bookingRepository.findBookingByName(newBooking.getName());
-        for (int i = 0; i< bookingRequestDTO.getBookingServiceRequestDTOS().size(); i++){
+        for (int i = 0; i < bookingRequestDTO.getBookingServiceRequestDTOS().size(); i++) {
             Service service = serviceRepository.getById(bookingRequestDTO.getBookingServiceRequestDTOS().get(i).getId());
             BookingDetail bookingDetail = BookingDetail.builder()
                     .booking(booking)
@@ -117,9 +116,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetail> getAllBookingDetailByBookingId(Long bookingId) {
+    public List<BookingDetailResponseDTO> getAllBookingDetailByBookingId(Long bookingId) {
         List<BookingDetail> bookingDetails = bookingDetailRepository.findAllByBooking_Id(bookingId);
-        return bookingDetails;
+        List<BookingDetailResponseDTO> bookingDetailResponseDTOS = new ArrayList<>();
+        for (BookingDetail bookingDetail : bookingDetails ) {
+            BookingDetailResponseDTO responseDTO = BookingDetailResponseDTO.builder()
+                    .id(bookingDetail.getId())
+                    .serviceName(bookingDetail.getService().getName())
+                    .duration(bookingDetail.getDuration())
+                    .price(bookingDetail.getPrice())
+                    .build();
+
+            bookingDetailResponseDTOS.add(responseDTO);
+        }
+        return bookingDetailResponseDTOS;
     }
 
     @Override
@@ -131,13 +141,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllBookingByCustomerEmailAndStatusName(String email, String statusName) {
-        List<Booking> bookingList = bookingRepository.findAllByUser_EmailAndStatus(email,statusName);
+        List<Booking> bookingList = bookingRepository.findAllByUser_EmailAndStatus(email, statusName);
         return bookingList;
     }
 
     @Override
     public List<Booking> getAllBookingBySitterEmailAndStatusName(String email, String statusName) {
-        List<Booking> bookingList = bookingRepository.findAllBySitter_EmailAndStatus(email,statusName);
+        List<Booking> bookingList = bookingRepository.findAllBySitter_EmailAndStatus(email, statusName);
         return bookingList;
     }
 
@@ -147,8 +157,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setSitter(userRepository.findUserByEmail(email));
 
         List<BookingDetail> bookingDetails = booking.getBookingDetails();
-        List<BookingServiceRequestDTO> bookingServiceRequestDTOS  = new ArrayList<>();
-        for (BookingDetail bookingDetail: bookingDetails){
+        List<BookingServiceRequestDTO> bookingServiceRequestDTOS = new ArrayList<>();
+        for (BookingDetail bookingDetail : bookingDetails) {
             BookingServiceRequestDTO bookingServiceRequestDTO = BookingServiceRequestDTO.builder()
                     .id(bookingDetail.getService().getId())
                     .duration(bookingDetail.getDuration())
@@ -156,31 +166,38 @@ public class BookingServiceImpl implements BookingService {
             bookingServiceRequestDTOS.add(bookingServiceRequestDTO);
         }
 
-        User user =userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS,email);
-        if(user == null )
-        {
+        User user = userService.getAllSitterByBookingServiceRequestDTO(bookingServiceRequestDTOS, email);
+        if (user == null) {
             booking.setSitter(null);
             bookingRepository.save(booking);
             return null;
         }
         List<BookingDetail> bookingDetails1 = bookingDetailRepository.findAllByBooking_Id(bookingId);
         BigDecimal total = BigDecimal.valueOf(0D);
-        for (BookingDetail bookingDetail: bookingDetails1){
-            BigDecimal price = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(user.getEmail(),bookingDetail.getService().getId()).getPrice();
+        for (BookingDetail bookingDetail : bookingDetails1) {
+            BigDecimal price = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(user.getEmail(), bookingDetail.getService().getId()).getPrice();
             bookingDetail.setPrice(price.multiply(BigDecimal.valueOf(bookingDetail.getDuration())));
             total = total.add(price.multiply(BigDecimal.valueOf(bookingDetail.getDuration())));
             bookingDetailRepository.save(bookingDetail);
         }
         booking.setTotalPrice(total);
-        return  bookingRepository.save(booking);
+        return bookingRepository.save(booking);
     }
 
     @Override
     public Booking acceptBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).get();
-        booking.setStatus("WAITING_FOR_DATE");
+        booking.setStatus("WAITING_FOR_CUS_PAY");
         bookingRepository.save(booking);
-        return  bookingRepository.save(booking);
+        return bookingRepository.save(booking);
+    }
+
+    @Override
+    public Booking fakePayment(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).get();
+        booking.setStatus("STARTING");
+        bookingRepository.save(booking);
+        return bookingRepository.save(booking);
     }
 }
 

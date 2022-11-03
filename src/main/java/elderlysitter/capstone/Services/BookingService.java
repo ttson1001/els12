@@ -1,5 +1,6 @@
 package elderlysitter.capstone.Services;
 
+import elderlysitter.capstone.dto.BookingDetailResponseDTO;
 import elderlysitter.capstone.dto.BookingRequestDTO;
 import elderlysitter.capstone.entities.Booking;
 import elderlysitter.capstone.entities.BookingDetail;
@@ -18,7 +19,7 @@ public interface BookingService {
     List<Booking> getAllBookingByCustomerEmail(String email);
     List<Booking> getAllBookingBySitterEmail(String email);
 
-    List<BookingDetail> getAllBookingDetailByBookingId(Long bookingId);
+    List<BookingDetailResponseDTO> getAllBookingDetailByBookingId(Long bookingId);
 
     Booking acceptBookingBySitter(Long bookingId);
 
@@ -29,4 +30,6 @@ public interface BookingService {
     Booking cancelBookingSitter(Long bookingId , String email);
 
     Booking acceptBooking(Long bookingId);
+
+    Booking fakePayment(Long bookingId);
 }

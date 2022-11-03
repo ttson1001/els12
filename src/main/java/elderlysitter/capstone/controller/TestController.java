@@ -1,5 +1,6 @@
 package elderlysitter.capstone.controller;
 
+import elderlysitter.capstone.Services.BookingService;
 import elderlysitter.capstone.Services.CandidateService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.BookingServiceRequestDTO;
@@ -21,6 +22,10 @@ public class TestController {
     @Autowired
     CandidateService candidateService;
 
+    @Autowired
+    BookingService bookingService;
+
+
 
     @PostMapping
     @PermitAll
@@ -35,6 +40,14 @@ public class TestController {
     public ResponseEntity<ResponseDTO> getAll(){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(candidateService.getAllCandidate());
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("fakePayment/{bookingId}")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> fakePayment(@PathVariable Long bookingId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(bookingService.fakePayment(bookingId));
         return ResponseEntity.ok().body(responseDTO);
     }
 }
