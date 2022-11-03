@@ -56,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
 
         for (BookingServiceRequestDTO bookingServiceRequestDTO : bookingServiceRequestDTOS) {
             SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(user.getEmail(), bookingServiceRequestDTO.getId());
-            total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingServiceRequestDTO.getDuration())));
+            total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(60))));
 
         }
 
@@ -78,11 +78,12 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findBookingByName(newBooking.getName());
         for (int i = 0; i < bookingRequestDTO.getBookingServiceRequestDTOS().size(); i++) {
             Service service = serviceRepository.getById(bookingRequestDTO.getBookingServiceRequestDTOS().get(i).getId());
+            BigDecimal price = (user.getSitterProfile().getSitterService().get(i).getPrice().multiply(BigDecimal.valueOf(bookingRequestDTO.getBookingServiceRequestDTOS().get(i).getDuration()).divide(BigDecimal.valueOf(60L))));
             BookingDetail bookingDetail = BookingDetail.builder()
                     .booking(booking)
                     .service(service)
                     .duration(bookingRequestDTO.getBookingServiceRequestDTOS().get(i).getDuration())
-                    .price((user.getSitterProfile().getSitterService().get(i).getPrice().multiply(BigDecimal.valueOf(bookingRequestDTO.getBookingServiceRequestDTOS().get(i).getDuration()))))
+                    .price(price)
                     .build();
             bookingDetailRepository.save(bookingDetail);
         }
