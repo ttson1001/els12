@@ -25,6 +25,8 @@ public class SitterProfile implements Serializable {
 
     private String idNumber;
 
+    private String description;
+
     @JsonIgnore
     @OneToMany(mappedBy = "sitterProfile")
     private List<CertificateSitter> certificateSitters;

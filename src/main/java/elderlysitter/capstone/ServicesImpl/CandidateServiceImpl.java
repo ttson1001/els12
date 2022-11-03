@@ -188,6 +188,7 @@ public class CandidateServiceImpl implements CandidateService {
         SitterProfile sitterProfile = SitterProfile.builder()
                 .user(newSitter)
                 .idNumber(candidateRequestDTO.getIdNumber())
+                .description(candidateRequestDTO.getDescription())
                 .build();
         SitterProfile sitterProfile1 = sitterProfileRepository.save(sitterProfile);
 

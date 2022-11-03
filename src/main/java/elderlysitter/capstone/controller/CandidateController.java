@@ -1,7 +1,6 @@
 package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.Services.CandidateService;
-import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.CandidateRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
