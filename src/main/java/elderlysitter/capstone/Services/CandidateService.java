@@ -11,7 +11,7 @@ public interface CandidateService {
     List<CandidateResponseDTO> getAllCandidate();
     User acceptCandidate(String email);
 
-    Boolean rejectCandidate(String email);
+    User rejectCandidate(String email);
 
     SitterProfile getCandidateProfileByEmail(String email);
 

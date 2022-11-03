@@ -57,7 +57,7 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping("{email}")
+    @PutMapping("reject/{email}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> rejectCandidate(@PathVariable String email){
         ResponseDTO responseDTO = new ResponseDTO();

@@ -111,7 +111,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Boolean rejectCandidate(String email) {
+    public User rejectCandidate(String email) {
         try {
 //            List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
 //            for (SitterService item : sitterServices) {
@@ -149,9 +149,11 @@ public class CandidateServiceImpl implements CandidateService {
                             "(Đây là email được gửi tự động, Quý khách vui lòng không hồi đáp theo địa chỉ email này.)")
                     .build();
             emailService.sendSimpleMail(emailDetails);
+
+            return userRepository.save(candidate);
         } catch (Exception e) {
         }
-        return true;
+        return null;
     }
 
 
