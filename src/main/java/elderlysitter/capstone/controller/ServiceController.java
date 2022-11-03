@@ -42,7 +42,7 @@ public class ServiceController {
     }
 
 
-    @GetMapping
+    @GetMapping("category")
     @PreAuthorize("hasAnyRole('ADMIN','SITTER','CUSTOMER')")
     public ResponseEntity<ResponseDTO> getAllCategory(){
         ResponseDTO responseDTO =  new ResponseDTO();
