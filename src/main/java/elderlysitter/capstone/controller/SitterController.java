@@ -71,7 +71,7 @@ public class SitterController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("{email}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER','SITTER')")
     public ResponseEntity<ResponseDTO> getSitterByEmail(@PathVariable String email){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(sitterServiceService.getSitterByEmail(email));
