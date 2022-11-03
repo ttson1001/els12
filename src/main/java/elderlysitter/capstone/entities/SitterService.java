@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
-//@Table(name = "sitter_service")
+@Table(name = "sitter_service")
 public class SitterService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +27,6 @@ public class SitterService {
 
     private BigDecimal price;
     private Long exp;
+
+    private BigDecimal newPrice;
 }

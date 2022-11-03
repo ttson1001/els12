@@ -42,4 +42,23 @@ public class ServiceController {
     }
 
 
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','SITTER','CUSTOMER')")
+    public ResponseEntity<ResponseDTO> getAllCategory(){
+        ResponseDTO responseDTO =  new ResponseDTO();
+        responseDTO.setData(serviceService.getAllCategory());
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> removeService(@PathVariable Long id){
+        ResponseDTO responseDTO =  new ResponseDTO();
+        responseDTO.setData(serviceService.removeService(id));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
+
+
 }

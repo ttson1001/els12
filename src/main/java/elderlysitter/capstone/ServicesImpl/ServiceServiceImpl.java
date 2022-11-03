@@ -2,6 +2,7 @@ package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.ServiceService;
 import elderlysitter.capstone.dto.ServiceRequestDTO;
+import elderlysitter.capstone.entities.Category;
 import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.repository.CategoryRepository;
 import elderlysitter.capstone.repository.ServiceRepository;
@@ -54,6 +55,30 @@ public class ServiceServiceImpl implements ServiceService {
             return  services;
         }catch (Exception e)
         {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Category> getAllCategory() {
+        try {
+            ArrayList<Category> list = (ArrayList<Category>) categoryRepository.findAll();
+            return list;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Service removeService(Long id) {
+        Service service = serviceRepository.findById(id).get();
+        try {
+            service.setStatus("DEACTIVE");
+            return service;
+        }catch (Exception e){
             e.printStackTrace();
         }
         return null;
