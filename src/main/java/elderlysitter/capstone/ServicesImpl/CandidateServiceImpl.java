@@ -46,7 +46,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public List<CandidateResponseDTO> getAllCandidate() {
-        List<User> users = userRepository.findAllByRole(roleRepository.findByName("CANDIDATE"));
+        List<User> users = userRepository.findAllByRole_NameAndStatus("CANDIDATE", "APPLY");
         List<CandidateResponseDTO> list = new ArrayList<>();
         try {
 
@@ -71,7 +71,7 @@ public class CandidateServiceImpl implements CandidateService {
                         .build();
                 list.add(dto);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
@@ -113,21 +113,25 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public Boolean rejectCandidate(String email) {
         try {
-            List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
-            for (SitterService item : sitterServices) {
-                sitterServiceRepository.delete(item);
-            }
-            List<CertificateSitter> certificateSitters = certificateSitterRepository.findAllBySitterProfile_User_Email(email);
-            for (CertificateSitter item : certificateSitters) {
-                certificateSitterRepository.delete(item);
-            }
-
-            SitterProfile sitterProfile = sitterProfileRepository.findByUser_Email(email);
-            sitterProfileRepository.delete(sitterProfile);
-
+//            List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
+//            for (SitterService item : sitterServices) {
+//                sitterServiceRepository.delete(item);
+//            }
+//            List<CertificateSitter> certificateSitters = certificateSitterRepository.findAllBySitterProfile_User_Email(email);
+//            for (CertificateSitter item : certificateSitters) {
+//                certificateSitterRepository.delete(item);
+//            }
+//
+//            SitterProfile sitterProfile = sitterProfileRepository.findByUser_Email(email);
+//            sitterProfileRepository.delete(sitterProfile);
+//
+//            User candidate = userRepository.findUserByEmail(email);
+//            String fullName = candidate.getFullName();
+//            userRepository.delete(candidate);
             User candidate = userRepository.findUserByEmail(email);
             String fullName = candidate.getFullName();
-            userRepository.delete(candidate);
+            candidate.setStatus("REJECT");
+            userRepository.save(candidate);
 
             EmailDTO emailDetails = EmailDTO.builder()
                     .email(email)
@@ -183,6 +187,7 @@ public class CandidateServiceImpl implements CandidateService {
                 .address(candidateRequestDTO.getAddress())
                 .gender(candidateRequestDTO.getGender())
                 .phone(candidateRequestDTO.getPhone())
+                .status("APPLY")
                 .email(candidateRequestDTO.getEmail()).build();
         User newSitter = userRepository.save(candidate);
         SitterProfile sitterProfile = SitterProfile.builder()
