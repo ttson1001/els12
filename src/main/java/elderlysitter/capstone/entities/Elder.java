@@ -38,7 +38,7 @@ public class Elder {
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "elder")
     private List<Booking> bookings;
 
