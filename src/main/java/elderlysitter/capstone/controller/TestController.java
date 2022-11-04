@@ -5,6 +5,8 @@ import elderlysitter.capstone.Services.CandidateService;
 import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.BookingServiceRequestDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.entities.Booking;
+import elderlysitter.capstone.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,9 @@ public class TestController {
 
     @Autowired
     BookingService bookingService;
+
+    @Autowired
+    BookingRepository bookingRepository;
 
 
 
@@ -50,4 +55,36 @@ public class TestController {
         responseDTO.setData(bookingService.fakePayment(bookingId));
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PutMapping("checkin/{bookingId}")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> checkInBooking(@PathVariable Long bookingId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        Booking booking = bookingRepository.findById(bookingId).get();
+        booking.setStatus("STARTING");
+        responseDTO.setData(bookingRepository.save(booking));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("cuscheckout/{bookingid}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> cusCheckOutBooking(@PathVariable Long bookingId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        Booking booking = bookingRepository.findById(bookingId).get();
+        booking.setIsCustomerCheckout(true);
+        booking.setStatus("DONE");
+        responseDTO.setData(bookingRepository.save(booking));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("sitterCheckout/{bookingid}")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> sitterCheckOutBooking(@PathVariable Long bookingId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        Booking booking = bookingRepository.findById(bookingId).get();
+        booking.setIsSitterCheckout(true);
+        responseDTO.setData(bookingRepository.save(booking));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }

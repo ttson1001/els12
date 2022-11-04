@@ -129,5 +129,4 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-
 }
