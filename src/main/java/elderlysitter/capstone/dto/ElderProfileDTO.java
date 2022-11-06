@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class ElderProfileDTO {
     private Long Id;
     private String name;
-    private Boolean gender;
+    private String gender;
     private LocalDate dob;
     private String healthStatus;
     private String note;
