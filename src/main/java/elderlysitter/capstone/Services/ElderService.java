@@ -14,5 +14,7 @@ public interface ElderService {
     Elder updateElder(ElderProfileDTO elderProfileDTO);
     Elder getElderById(Long id);
 
+    Elder removeElder(Long id);
+
 
 }

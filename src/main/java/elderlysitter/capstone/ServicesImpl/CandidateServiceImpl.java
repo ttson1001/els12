@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -189,6 +190,7 @@ public class CandidateServiceImpl implements CandidateService {
                 .address(candidateRequestDTO.getAddress())
                 .gender(candidateRequestDTO.getGender())
                 .phone(candidateRequestDTO.getPhone())
+                .createDate(LocalDate.now())
                 .status("APPLY")
                 .email(candidateRequestDTO.getEmail()).build();
         User newSitter = userRepository.save(candidate);

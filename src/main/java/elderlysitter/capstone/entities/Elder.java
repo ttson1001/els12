@@ -33,6 +33,8 @@ public class Elder {
     @Column(name = "is_allergy")
     private Boolean isAllergy;
 
+    private String status;
+
     @JsonIgnore
     @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.EAGER)

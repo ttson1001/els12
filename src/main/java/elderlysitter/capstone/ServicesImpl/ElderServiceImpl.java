@@ -1,7 +1,6 @@
 package elderlysitter.capstone.ServicesImpl;
 
 import elderlysitter.capstone.Services.ElderService;
-import elderlysitter.capstone.Services.UserService;
 import elderlysitter.capstone.dto.ElderDTO;
 import elderlysitter.capstone.dto.ElderProfileDTO;
 import elderlysitter.capstone.entities.Elder;
@@ -55,5 +54,22 @@ public class ElderServiceImpl implements ElderService {
     @Override
     public Elder getElderById(Long id) {
         return  elderRepository.findById(id).get();
+    }
+
+    @Override
+    public Elder removeElder(Long id) {
+        try {
+            Elder elder = elderRepository.findById(id).get();
+            elder.setStatus("DEACTIVE");
+            elderRepository.save(elder);
+            return elder;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+
+
     }
 }

@@ -84,4 +84,18 @@ public class ServiceServiceImpl implements ServiceService {
         return null;
     }
 
+    @Override
+    public Service activeService(Long id) {
+        Service service = serviceRepository.findById(id).get();
+        try {
+            service.setStatus("ACTIVE");
+            return service;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
 }

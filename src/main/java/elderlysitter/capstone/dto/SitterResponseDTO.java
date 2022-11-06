@@ -39,4 +39,6 @@ public class SitterResponseDTO {
 
     // certificate
     private List<CertificateDTO> certificateDTOS;
+
+    private String urlAvatar;
 }

@@ -62,4 +62,13 @@ public class ElderController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PutMapping("remove/{id}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> removeElder(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(elderService.removeElder(id));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
 }

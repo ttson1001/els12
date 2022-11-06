@@ -135,6 +135,7 @@ public class SitterServiceImpl implements SitterServiceService {
                 .sitterServices(sitterServiceDTOList)
                 .idNumber(sitterProfile.getIdNumber())
                 .address(sitter.getAddress())
+                .urlAvatar(sitter.getUserImgs().get(0).getAvatarImgUrl())
                 .build();
 
         return  responseDTO;

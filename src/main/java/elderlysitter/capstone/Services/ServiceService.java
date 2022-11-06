@@ -16,5 +16,7 @@ public interface ServiceService {
     List<Category> getAllCategory();
 
     Service removeService(Long id);
+
+    Service activeService(Long id);
 }
 

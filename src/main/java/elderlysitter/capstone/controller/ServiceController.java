@@ -58,6 +58,14 @@ public class ServiceController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PutMapping("active/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> activeService(@PathVariable Long id){
+        ResponseDTO responseDTO =  new ResponseDTO();
+        responseDTO.setData(serviceService.activeService(id));
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 
 
 
