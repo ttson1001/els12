@@ -19,6 +19,6 @@ public class UpdateServiceRequestDTO {
     private String url;
     private String sitterRequirement;
     private Integer duration;
-    private String commission;
+    private Long commission;
     private Long categoryId;
 }

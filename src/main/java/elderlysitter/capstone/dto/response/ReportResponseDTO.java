@@ -10,4 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ReportResponseDTO {
+    private Long id;
+    private CustomerResponseDTO customerResponseDTO;
+    private String comment;
 }

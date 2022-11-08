@@ -142,6 +142,7 @@ public class SitterServiceImpl implements SitterService {
                     .certificatesResponseDTOS(certificatesResponseDTOS)
                     .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
                     .avatarUrl(candidate.getAvatarImgUrl())
+                    .ratingStart(4F)
                     .frontIdImgUrl(candidate.getFrontIdImgUrl())
                     .backIdImgUrl(candidate.getBackIdImgUrl())
                     .build();
@@ -190,6 +191,7 @@ public class SitterServiceImpl implements SitterService {
                     .idNumber(sitterProfile.getIdNumber())
                     .description(sitterProfile.getDescription())
                     .avgPrice(total.divide(count))
+                    .ratingStart(4F)
                     .certificatesResponseDTOS(certificatesResponseDTOS)
                     .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
                     .avatarUrl(candidate.getAvatarImgUrl())
