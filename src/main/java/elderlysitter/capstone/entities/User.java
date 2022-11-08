@@ -36,6 +36,15 @@ public class User {
     @Column(unique=true)
     private String email;
 
+    @Column(name = "font_id_img_url")
+    private String frontIdImgUrl;
+
+    @Column(name = "back_id_img_url")
+    private String backIdImgUrl;
+
+    @Column(name = "avatar_img_url")
+    private String avatarImgUrl;
+
     @Column(name = "create_date")
     private LocalDate createDate;
 
@@ -50,9 +59,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Elder> elders;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private List<UserImg> userImgs;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")

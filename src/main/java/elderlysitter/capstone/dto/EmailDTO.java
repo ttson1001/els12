@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class EmailDTO {
-
-    // Class data members
     private String email;
     private String massage;
     private String subject;

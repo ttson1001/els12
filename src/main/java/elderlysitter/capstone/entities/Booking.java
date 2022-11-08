@@ -30,11 +30,6 @@ public class Booking {
     private BigDecimal totalPrice;
 
 
-    @Column(name = "start_date_time")
-    private LocalDateTime startDateTime;
-
-    @Column(name = "end_date_time")
-    private LocalDateTime endDateTime;
 
     @JoinColumn(name = "elder_id")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,6 +45,8 @@ public class Booking {
 
     private Boolean isSitterCheckout;
 
+    private BigDecimal deposit;
+
     private Boolean isCustomerCheckout;
 
     private String status;
@@ -63,10 +60,24 @@ public class Booking {
     private List<BookingDetail> bookingDetails;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "booking")
-    private List<Rating> ratings;
+    @OneToOne(mappedBy = "booking")
+    private Rating rating;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "booking")
+    private Report report;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Payment payment;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "booking")
+    private List<WorkingTime> workingTimes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "booking")
+    private List<BookingImg> bookingImgs;
+
+
 
 }

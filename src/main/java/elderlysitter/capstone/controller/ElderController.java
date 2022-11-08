@@ -1,64 +1,61 @@
 package elderlysitter.capstone.controller;
 
-import elderlysitter.capstone.Services.ElderService;
-import elderlysitter.capstone.dto.ElderDTO;
-import elderlysitter.capstone.dto.ElderProfileDTO;
+import elderlysitter.capstone.services.ElderService;
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.dto.request.AddElderRequestDTO;
+import elderlysitter.capstone.dto.request.UpdateElderRequestDTO;
+import elderlysitter.capstone.entities.Elder;
+import elderlysitter.capstone.enumCode.ErrorCode;
+import elderlysitter.capstone.enumCode.SuccessCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("elder")
 public class ElderController {
+
     @Autowired
-    ElderService elderService;
+    private ElderService elderService;
 
-    @GetMapping("{cusEmail}")
+    @PostMapping("add")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> getAllElder(@PathVariable String cusEmail) {
-
+    public ResponseEntity<ResponseDTO> addElder(@RequestBody AddElderRequestDTO addElderRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(elderService.getAllElderByCustomer(cusEmail));
-
-        }catch(Exception e){
+            Elder elder = elderService.addElder(addElderRequestDTO);
+            responseDTO.setData(elder);
+            if(elder != null){
+                responseDTO.setSuccessCode(SuccessCode.ADD_ELDER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.ADD_ELDER_ERROR);
+            }
+        }catch (Exception e){
             e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.ADD_ELDER_ERROR);
         }
-
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("getBy/{id}")
-    @PreAuthorize("hasAnyRole('CUSTOMER','SITTER')")
-    public ResponseEntity<ResponseDTO> getElderId(@PathVariable Long id) {
-
+    @PutMapping("update")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> updateElder(@RequestBody UpdateElderRequestDTO updateElderRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(elderService.getElderById(id));
-
-        }catch(Exception e){
+            Elder elder = elderService.updateElder(updateElderRequestDTO);
+            responseDTO.setData(elder);
+            if(elder != null){
+                responseDTO.setSuccessCode(SuccessCode.UPDATE_ELDER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.UPDATE_ELDER_ERROR);
+            }
+        }catch (Exception e){
             e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.UPDATE_ELDER_ERROR);
         }
-
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @PostMapping
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> addElder(@RequestBody ElderDTO elderDTO){
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(elderService.addElder(elderDTO));
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @PutMapping
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> updateElder(@RequestBody ElderProfileDTO elderProfileDTO){
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(elderService.updateElder(elderProfileDTO));
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -66,9 +63,57 @@ public class ElderController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ResponseDTO> removeElder(@PathVariable Long id){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(elderService.removeElder(id));
+        try {
+            Elder elder = elderService.removeElder(id);
+            responseDTO.setData(elder);
+            if(elder != null){
+                responseDTO.setSuccessCode(SuccessCode.REMOVE_ELDER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.REMOVE_ELDER_ERROR);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.REMOVE_ELDER_ERROR);
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("elders-by-customer/{email}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> getAllElderByCustomerEmail(@PathVariable String email){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<Elder> elders = elderService.getAllElderByCustomerEmail(email);
+            responseDTO.setData(elders);
+            if(elders != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_ELDER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.ELDER_NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ALL_ELDER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("get-by-id/{id}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> getElderById(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            Elder elder = elderService.getElderById(id);
+            responseDTO.setData(elder);
+            if(elder != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_ELDER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.ELDER_NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ELDER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }

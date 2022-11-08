@@ -16,11 +16,18 @@ import java.time.LocalDateTime;
 @Setter
 public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "booking_id")
     private Long id;
+
+    @MapsId
+    @JoinColumn(name = "booking_id")
+    @OneToOne(fetch = FetchType.EAGER)
+    private Booking booking;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private  User sitter;
+
     private String comment;
     private Float star;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Booking booking;
 }

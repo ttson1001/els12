@@ -24,6 +24,7 @@ public class BookingDetail implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Booking booking;
 
+    private Long commission;
     @JoinColumn(name = "service_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Service service;

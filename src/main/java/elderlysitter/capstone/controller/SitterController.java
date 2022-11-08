@@ -1,94 +1,137 @@
 package elderlysitter.capstone.controller;
 
-import elderlysitter.capstone.Services.SitterServiceService;
-import elderlysitter.capstone.Services.UserService;
+
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.dto.SitterUpdateDTO;
+import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.request.UpdateSitterRequestDTO;
+import elderlysitter.capstone.dto.response.SitterResponseDTO;
+import elderlysitter.capstone.dto.response.SittersResponseDTO;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
+import elderlysitter.capstone.services.SitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
-
+import java.util.List;
 
 @RestController
 @RequestMapping("sitter")
 public class SitterController {
     @Autowired
-    UserService userService;
-
-    @Autowired
-    SitterServiceService sitterServiceService;
-
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
-    public ResponseEntity<ResponseDTO> getAllActive() {
+    SitterService sitterService;
+    @GetMapping("sitters")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAllSitter(){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(userService.findAll("SITTER", "ACTIVE"));
-            if (responseDTO.getData() != null)
-                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_SUCCESS);
-            else responseDTO.setErrorCode(ErrorCode.FIND_ALL_FAIL);
-        } catch (Exception e) {
+           List<SittersResponseDTO> sittersResponseDTOList = sitterService.getAllSitter();
+            responseDTO.setData(sittersResponseDTOList);
+            if(sittersResponseDTOList != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_SITTER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.FIND_ALL_SITTER_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping
-    @PreAuthorize("hasAnyRole('SITTER')")
-    public ResponseEntity<ResponseDTO> updateSitter(@RequestBody SitterUpdateDTO sitterUpdateDTO){
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.updateSitter(sitterUpdateDTO));
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @GetMapping("getAllsitter")
-    @PreAuthorize("hasAnyRole('SITTER','ADMIN')")
-    public  ResponseEntity<ResponseDTO> getAll(){
-            ResponseDTO responseDTO = new ResponseDTO();
-            responseDTO.setData(sitterServiceService.getAllSitter());
-            return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @GetMapping("getAllDeactiveSitter")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getAllCandidate() {
+    @PutMapping("activate/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> activateSitter(@PathVariable Long id){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(userService.findAllByRole("CANDIDATE"));
-            if (responseDTO.getData() != null)
-                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_SUCCESS);
-            else responseDTO.setErrorCode(ErrorCode.FIND_ALL_FAIL);
-        } catch (Exception e) {
+            SitterDTO sitterDTO = sitterService.activate(id);
+            responseDTO.setData(sitterDTO);
+            if(sitterDTO != null){
+                responseDTO.setSuccessCode(SuccessCode.ACTIVATE_SITTER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.ACTIVATE_SITTER_FAIL);
+            }
+        }catch (Exception e){
             e.printStackTrace();
-            responseDTO.setErrorCode(ErrorCode.FIND_ALL_SITTER_ERROR);
+            responseDTO.setErrorCode(ErrorCode.ACTIVATE_SITTER_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }
-    @GetMapping("{email}")
-    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER','SITTER')")
-    public ResponseEntity<ResponseDTO> getSitterByEmail(@PathVariable String email){
+
+    @PutMapping("deactivate/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> deactivateSitter(@PathVariable Long id){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(sitterServiceService.getSitterByEmail(email));
+        try {
+            SitterDTO sitterDTO = sitterService.deactivate(id);
+            responseDTO.setData(sitterDTO);
+            if(sitterDTO != null){
+                responseDTO.setSuccessCode(SuccessCode.DEACTIVATE_SITTER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.DEACTIVATE_SITTER_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.DEACTIVATE_SITTER_ERROR);
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("detail/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER','SITTER')")
+    @GetMapping("get-by-id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> getSitterById(@PathVariable Long id){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(sitterServiceService.getSitterById(id));
+        try {
+            SitterResponseDTO sitterResponseDTO = sitterService.getSitterById(id);
+            responseDTO.setData(sitterResponseDTO);
+            if(sitterResponseDTO != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_SITTER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_SITTER_ERROR);
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("get-by-email/{email}")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> getSitterByEmail(@PathVariable String email){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            SitterResponseDTO sitterResponseDTO = sitterService.getSitterByEmail(email);
+            responseDTO.setData(sitterResponseDTO);
+            if(sitterResponseDTO != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_SITTER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_SITTER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
-
-
-
-
+    @GetMapping("update")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> updateSitter(@RequestBody UpdateSitterRequestDTO updateSitterRequestDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            SitterDTO sitterDTO = sitterService.updateSitter(updateSitterRequestDTO);
+            responseDTO.setData(sitterDTO);
+            if(sitterDTO != null){
+                responseDTO.setSuccessCode(SuccessCode.UPDATE_SITTER_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.UPDATE_SITTER_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.UPDATE_SITTER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

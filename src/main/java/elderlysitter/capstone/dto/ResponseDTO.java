@@ -1,6 +1,5 @@
 package elderlysitter.capstone.dto;
 
-import com.sun.net.httpserver.Authenticator;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
 import lombok.AllArgsConstructor;
@@ -15,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class ResponseDTO {
     private SuccessCode successCode;
     private ErrorCode errorCode;
-    private Object data;
+    private  Object data;
 }

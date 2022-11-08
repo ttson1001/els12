@@ -28,5 +28,6 @@ public class SitterService {
     private BigDecimal price;
     private Long exp;
 
+    @Column(name = "new_price")
     private BigDecimal newPrice;
 }

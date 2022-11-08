@@ -23,6 +23,7 @@ public class SitterProfile implements Serializable {
     @OneToOne(fetch = FetchType.EAGER)
     private User user;
 
+    @Column(name = "id_number")
     private String idNumber;
 
     private String description;

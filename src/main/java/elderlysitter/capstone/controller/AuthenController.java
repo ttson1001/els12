@@ -1,10 +1,9 @@
 package elderlysitter.capstone.controller;
 
-import elderlysitter.capstone.Services.UserService;
-import elderlysitter.capstone.dto.ChangePasswordDTO;
-import elderlysitter.capstone.dto.LoginDTO;
-import elderlysitter.capstone.dto.LoginResponseDTO;
+import elderlysitter.capstone.services.UserService;
+import elderlysitter.capstone.dto.request.LoginRequestDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.dto.response.LoginResponseDTO;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
@@ -45,7 +44,7 @@ public class AuthenController {
 
     @PostMapping()
     @PermitAll
-    public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDTO user){
+    public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginRequestDTO user){
         ResponseDTO responseDTO = new ResponseDTO();
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         try{
@@ -80,12 +79,5 @@ public class AuthenController {
         }
     }
 
-    @PutMapping()
-    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO){
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userServices.changePassword(changePasswordDTO));
-        return ResponseEntity.ok().body(responseDTO);
 
-
-    }
 }

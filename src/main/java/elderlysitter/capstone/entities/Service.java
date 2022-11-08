@@ -24,6 +24,7 @@ public class Service {
     @Column(name = "sitter_requirement")
     private String sitterRequirement;
     private Integer duration;
+    private Long commission;
 
     private String status;
 

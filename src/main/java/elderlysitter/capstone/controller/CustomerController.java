@@ -1,17 +1,16 @@
 package elderlysitter.capstone.controller;
 
-import elderlysitter.capstone.Services.RoleService;
-import elderlysitter.capstone.Services.UserService;
-import elderlysitter.capstone.dto.CustomerProfileDTO;
-import elderlysitter.capstone.dto.CustomerRegisterDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.dto.request.AddCustomerRequestDTO;
+import elderlysitter.capstone.dto.request.ChangePasswordDTO;
+import elderlysitter.capstone.dto.request.UpdateCustomerRequestDTO;
+import elderlysitter.capstone.dto.response.CustomerResponseDTO;
 import elderlysitter.capstone.enumCode.ErrorCode;
-import org.jetbrains.annotations.NotNull;
+import elderlysitter.capstone.enumCode.SuccessCode;
+import elderlysitter.capstone.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
@@ -21,70 +20,158 @@ import java.util.List;
 @RequestMapping("customer")
 public class CustomerController {
     @Autowired
-    UserService userService;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private CustomerService customerService;
 
-    @Autowired
-    RoleService roleService;
-
-
-    @PostMapping()
+    @PostMapping("add")
     @PermitAll
-    public ResponseEntity<ResponseDTO> customerRegister(@RequestBody @NotNull CustomerRegisterDTO customerRegisterDTO){
+    public ResponseEntity<ResponseDTO> addCustomer(@RequestBody AddCustomerRequestDTO addCustomerRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
-        User newUser = userService.save(User.builder()
-                .fullName(customerRegisterDTO.getFullName())
-                .email(customerRegisterDTO.getEmail())
-                .password(passwordEncoder.encode(customerRegisterDTO.getPassword()))
-                        .status("DEACTIVE")
-                        .role(roleService.findByName("CUSTOMER"))
-                .build());
-        if (newUser.getId() != null){
-        responseDTO.setData(newUser);}
-        else responseDTO.setErrorCode(ErrorCode.DUPLICATE_EMAIL);
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.addCustomer(addCustomerRequestDTO);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.ADD_CUSTOMER_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.ADD_CUSTOMER_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.ADD_CUSTOMER_ERROR);
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getAll(){
-        List<User> users = userService.findAllByRole("CUSTOMER");
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(users);
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    @GetMapping("{email}")
+    @PutMapping("update")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> getAllSitter(@PathVariable String email){
-        List<User> users = userService.findAllFavorite(email);
+    public ResponseEntity<ResponseDTO> updateCustomer(@RequestBody UpdateCustomerRequestDTO updateCustomerRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(users);
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.updateCustomer(updateCustomerRequestDTO);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.UPDATE_CUSTOMER_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.UPDATE_CUSTOMER_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.UPDATE_CUSTOMER_ERROR);
+        }
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping()
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> updateProfileCus(@RequestBody CustomerProfileDTO customerProfileDTO){
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.updateCustomerProfile(customerProfileDTO));
-        return ResponseEntity.ok().body(responseDTO);
-
-    }
-
-    @GetMapping("detail/{id}")
+    @PutMapping("ban/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getProfileCus(@PathVariable Long id){
+    public ResponseEntity<ResponseDTO> banCustomer(@PathVariable Long id){
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(userService.findById(id));
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.banCustomer(id);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.BAN_CUSTOMER_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.BAN_CUSTOMER_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.BAN_CUSTOMER_ERROR);
+        }
         return ResponseEntity.ok().body(responseDTO);
-
     }
 
+    @PutMapping("unban/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> unbanCustomer(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.unbanCustomer(id);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.UNBAN_CUSTOMER_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.UNBAN_CUSTOMER_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.UNBAN_CUSTOMER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
+    @GetMapping("customers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAllCustomer(){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<CustomerResponseDTO> customerResponseDTO = customerService.getAllCustomer();
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_CUSTOMER_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ALL_CUSTOMER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
+    @GetMapping("get-by-id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getById(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.getById(id);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.FIND_CUSTOMER_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_CUSTOMER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
+    @GetMapping("get-by-email/{email}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> getByEmail(@PathVariable String email){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.getByEmail(email);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.FIND_CUSTOMER_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_CUSTOMER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
+    @PutMapping("change-password")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.changePassword(changePasswordDTO);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.CHANGE_PASSWORD_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.CHANGE_PASSWORD_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.CHANGE_PASSWORD_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }
