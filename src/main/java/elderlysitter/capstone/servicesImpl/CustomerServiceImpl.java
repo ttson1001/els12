@@ -4,6 +4,7 @@ import elderlysitter.capstone.dto.request.AddCustomerRequestDTO;
 import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateCustomerRequestDTO;
 import elderlysitter.capstone.dto.response.CustomerResponseDTO;
+import elderlysitter.capstone.dto.response.CustomersResponseDTO;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.RoleRepository;
@@ -98,12 +99,19 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerResponseDTO> getAllCustomer() {
-        List<CustomerResponseDTO> responseDTOS = new ArrayList<>();
+    public List<CustomersResponseDTO> getAllCustomer() {
+        List<CustomersResponseDTO> responseDTOS = new ArrayList<>();
         try {
             List<User> customers = userRepository.findAllByRole_Name("CUSTOMER");
             for (User customer: customers) {
-                    CustomerResponseDTO responseDTO = convertor(customer);
+                CustomersResponseDTO responseDTO = CustomersResponseDTO.builder()
+                        .id(customer.getId())
+                        .fullName(customer.getFullName())
+                        .gender(customer.getGender())
+                        .phone(customer.getPhone())
+                        .email(customer.getEmail())
+                        .status(customer.getStatus())
+                        .build();
                     responseDTOS.add(responseDTO);
             }
         }catch (Exception e){

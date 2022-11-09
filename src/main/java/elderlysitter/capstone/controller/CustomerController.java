@@ -5,6 +5,7 @@ import elderlysitter.capstone.dto.request.AddCustomerRequestDTO;
 import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateCustomerRequestDTO;
 import elderlysitter.capstone.dto.response.CustomerResponseDTO;
+import elderlysitter.capstone.dto.response.CustomersResponseDTO;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
@@ -114,9 +115,9 @@ public class CustomerController {
     public ResponseEntity<ResponseDTO> getAllCustomer() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            List<CustomerResponseDTO> customerResponseDTO = customerService.getAllCustomer();
-            if (customerResponseDTO != null) {
-                responseDTO.setData(customerResponseDTO);
+            List<CustomersResponseDTO> customersResponseDTO = customerService.getAllCustomer();
+            if (customersResponseDTO != null) {
+                responseDTO.setData(customersResponseDTO);
                 responseDTO.setSuccessCode(SuccessCode.FIND_ALL_CUSTOMER_SUCCESS);
             } else {
                 responseDTO.setErrorCode(ErrorCode.NOT_FOUND);

@@ -4,6 +4,7 @@ import elderlysitter.capstone.dto.request.AddCustomerRequestDTO;
 import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateCustomerRequestDTO;
 import elderlysitter.capstone.dto.response.CustomerResponseDTO;
+import elderlysitter.capstone.dto.response.CustomersResponseDTO;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface CustomerService {
 
     CustomerResponseDTO unbanCustomer(Long id);
 
-    List<CustomerResponseDTO> getAllCustomer();
+    List<CustomersResponseDTO> getAllCustomer();
 
     CustomerResponseDTO getById(Long id);
 
