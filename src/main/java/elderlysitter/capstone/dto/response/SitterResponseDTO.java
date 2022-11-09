@@ -20,6 +20,7 @@ public class SitterResponseDTO {
     private String address;
     private LocalDate dob;
     private String email;
+    private String gender;
     private String idNumber;
     private String description;
     private BigDecimal avgPrice;
