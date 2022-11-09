@@ -25,6 +25,4 @@ public class UpdateElderRequestDTO {
     private String note;
 
     private Boolean isAllergy;
-
-    private String email;
 }
