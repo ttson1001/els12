@@ -33,8 +33,6 @@ public class CustomerServiceImpl implements CustomerService {
             User customer = User.builder()
                     .password(passwordEncoder.encode(addCustomerRequestDTO.getPassword()))
                     .fullName(addCustomerRequestDTO.getFullName())
-                    .dob(addCustomerRequestDTO.getDob())
-                    .gender(addCustomerRequestDTO.getGender())
                     .status(StatusCode.ACTIVATE.toString())
                     .createDate(LocalDate.now())
                     .role(roleRepository.findByName("CUSTOMER"))
