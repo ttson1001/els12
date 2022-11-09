@@ -157,6 +157,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerResponseDTO responseDTO = null;
         try {
             responseDTO = CustomerResponseDTO.builder()
+                    .id(customer.getId())
                     .fullName(customer.getFullName())
                     .dob(customer.getDob())
                     .address(customer.getAddress())
