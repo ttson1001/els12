@@ -61,6 +61,7 @@ public class CandidateServiceImpl implements CandidateService {
                     .gender(addCandidateRequestDTO.getGender())
                     .phone(addCandidateRequestDTO.getPhone())
                     .createDate(LocalDate.now())
+                    .status(StatusCode.ACTIVATE.toString())
                     .frontIdImgUrl(addCandidateRequestDTO.getFrontIdImgUrl())
                     .backIdImgUrl(addCandidateRequestDTO.getBackIdImgUrl())
                     .avatarImgUrl(addCandidateRequestDTO.getAvatarImgUrl())
@@ -83,7 +84,7 @@ public class CandidateServiceImpl implements CandidateService {
                 sitterServiceRepository.save(sitterService);
             }
             List<AddCertificateRequestDTO> addCertificateRequestDTOList = addCandidateRequestDTO.getAddCertificateRequestDTOS();
-            if (!addCertificateRequestDTOList.isEmpty() || addCertificateRequestDTOList != null) {
+            if (addCertificateRequestDTOList != null) {
                 for (AddCertificateRequestDTO addCertificateRequestDTO : addCertificateRequestDTOList) {
                     CertificateSitter certificateSitter = CertificateSitter.builder()
                             .sitterProfile(candidateProfile)

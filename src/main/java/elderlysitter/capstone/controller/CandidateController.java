@@ -6,9 +6,11 @@ import elderlysitter.capstone.dto.request.AddCandidateRequestDTO;
 import elderlysitter.capstone.dto.response.CandidateResponseCommonDTO;
 import elderlysitter.capstone.dto.response.CandidateResponseDTO;
 import elderlysitter.capstone.dto.response.CandidatesResponseDTO;
+import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.ErrorCode;
 import elderlysitter.capstone.enumCode.SuccessCode;
 import elderlysitter.capstone.services.CandidateService;
+import elderlysitter.capstone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,17 +25,25 @@ public class CandidateController {
     @Autowired
     CandidateService candidateService;
 
+    @Autowired
+    UserService userService;
+
     @PostMapping("add")
     @PermitAll
     public ResponseEntity<ResponseDTO> addCandidate(@RequestBody AddCandidateRequestDTO addCandidateRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            CandidateResponseCommonDTO candidateResponseCommonDTO = candidateService.addCandidate(addCandidateRequestDTO);
-            responseDTO.setData(candidateResponseCommonDTO);
-            if(candidateResponseCommonDTO != null){
-                responseDTO.setSuccessCode(SuccessCode.ADD_CANDIDATE_SUCCESS);
-            }else{
-                responseDTO.setErrorCode(ErrorCode.ADD_CANDIDATE_FAIL);
+            User candidate = userService.findByEmail(addCandidateRequestDTO.getEmail());
+            if(candidate != null) {
+                CandidateResponseCommonDTO candidateResponseCommonDTO = candidateService.addCandidate(addCandidateRequestDTO);
+                responseDTO.setData(candidateResponseCommonDTO);
+                if (candidateResponseCommonDTO != null) {
+                    responseDTO.setSuccessCode(SuccessCode.ADD_CANDIDATE_SUCCESS);
+                } else {
+                    responseDTO.setErrorCode(ErrorCode.ADD_CANDIDATE_FAIL);
+                }
+            }else {
+                responseDTO.setErrorCode(ErrorCode.DUPLICATE_EMAIL);
             }
         }catch (Exception e){
             e.printStackTrace();
