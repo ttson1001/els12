@@ -117,7 +117,7 @@ public class SitterController {
     }
 
     @PutMapping("update")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SITTER')")
     public ResponseEntity<ResponseDTO> updateSitter(@RequestBody UpdateSitterRequestDTO updateSitterRequestDTO){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
