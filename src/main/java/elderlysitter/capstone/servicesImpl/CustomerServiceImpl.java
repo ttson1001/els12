@@ -111,6 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .phone(customer.getPhone())
                         .email(customer.getEmail())
                         .status(customer.getStatus())
+                        .address(customer.getAddress())
                         .build();
                     responseDTOS.add(responseDTO);
             }

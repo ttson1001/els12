@@ -23,4 +23,6 @@ public class CustomersResponseDTO {
 
     private String status;
 
+    private String address;
+
 }
