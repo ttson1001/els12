@@ -17,4 +17,5 @@ public class CandidatesResponseDTO {
     private String email;
     private String address;
     private BigDecimal avgPrice;
+    private String status;
 }

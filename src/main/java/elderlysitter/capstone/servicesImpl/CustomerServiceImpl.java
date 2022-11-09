@@ -172,7 +172,6 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(responseDTO.getEmail());
         return responseDTO;
     }
 }

@@ -61,7 +61,7 @@ public class CandidateServiceImpl implements CandidateService {
                     .gender(addCandidateRequestDTO.getGender())
                     .phone(addCandidateRequestDTO.getPhone())
                     .createDate(LocalDate.now())
-                    .status(StatusCode.ACTIVATE.toString())
+                    .status(StatusCode.NEW.toString())
                     .frontIdImgUrl(addCandidateRequestDTO.getFrontIdImgUrl())
                     .backIdImgUrl(addCandidateRequestDTO.getBackIdImgUrl())
                     .avatarImgUrl(addCandidateRequestDTO.getAvatarImgUrl())
@@ -150,7 +150,7 @@ public class CandidateServiceImpl implements CandidateService {
         try {
             User candidate = userRepository.findUserByEmail(email);
             String fullName = candidate.getFullName();
-            candidate.setStatus("REJECT");
+            candidate.setStatus(StatusCode.REJECTED.toString());
             userRepository.save(candidate);
 
             EmailDTO emailDetails = EmailDTO.builder()
@@ -196,6 +196,7 @@ public class CandidateServiceImpl implements CandidateService {
                         .email(candidate.getEmail())
                         .address(candidate.getEmail())
                         .avgPrice(total.divide(count))
+                        .status(candidate.getStatus())
                         .build();
                 candidatesResponseDTOList.add(candidatesResponseDTO);
             }
