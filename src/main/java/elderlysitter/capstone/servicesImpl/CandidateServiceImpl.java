@@ -51,20 +51,20 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateResponseCommonDTO addCandidate(AddCandidateRequestDTO addCandidateRequestDTO) {
-        CandidateResponseCommonDTO addCandidateResponseDTO = null;
+        CandidateResponseCommonDTO candidateResponseCommonDTO = null;
         try {
             User candidate = User.builder()
                     .role(roleRepository.findByName("CANDIDATE"))
-                    .fullName(addCandidateResponseDTO.getFullName())
+                    .fullName(addCandidateRequestDTO.getFullName())
                     .dob(addCandidateRequestDTO.getDob())
-                    .address(addCandidateResponseDTO.getAddress())
-                    .gender(addCandidateResponseDTO.getGender())
-                    .phone(addCandidateResponseDTO.getPhone())
+                    .address(addCandidateRequestDTO.getAddress())
+                    .gender(addCandidateRequestDTO.getGender())
+                    .phone(addCandidateRequestDTO.getPhone())
                     .createDate(LocalDate.now())
                     .frontIdImgUrl(addCandidateRequestDTO.getFrontIdImgUrl())
                     .backIdImgUrl(addCandidateRequestDTO.getBackIdImgUrl())
                     .avatarImgUrl(addCandidateRequestDTO.getAvatarImgUrl())
-                    .email(addCandidateResponseDTO.getEmail())
+                    .email(addCandidateRequestDTO.getEmail())
                     .build();
             candidate = userRepository.save(candidate);
             SitterProfile candidateProfile = SitterProfile.builder()
@@ -93,11 +93,11 @@ public class CandidateServiceImpl implements CandidateService {
                     certificateSitterRepository.save(certificateSitter);
                 }
             }
-            addCandidateResponseDTO = convertToDTO(candidate);
+            candidateResponseCommonDTO = convertToDTO(candidate);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return addCandidateResponseDTO;
+        return candidateResponseCommonDTO;
     }
 
     @Override
