@@ -34,6 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
                     .password(passwordEncoder.encode(addCustomerRequestDTO.getPassword()))
                     .fullName(addCustomerRequestDTO.getFullName())
                     .status(StatusCode.ACTIVATE.toString())
+                    .email(addCustomerRequestDTO.getEmail())
                     .createDate(LocalDate.now())
                     .role(roleRepository.findByName("CUSTOMER"))
                     .build();
