@@ -79,6 +79,7 @@ public class CandidateServiceImpl implements CandidateService {
                 SitterService sitterService = SitterService.builder()
                         .service(serviceRepository.findById(addSitterServiceRequestDTO.getId()).get())
                         .exp(addSitterServiceRequestDTO.getExp())
+                        .price(addSitterServiceRequestDTO.getServicePrice())
                         .sitterProfile(candidateProfile)
                         .build();
                 sitterServiceRepository.save(sitterService);
