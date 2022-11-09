@@ -74,7 +74,7 @@ public class CandidateServiceImpl implements CandidateService {
                     .build();
             candidateProfile = sitterProfileRepository.save(candidateProfile);
             List<AddSitterServiceRequestDTO> addSitterServiceRequestDTOList = addCandidateRequestDTO.getAddSitterServiceRequestDTOList();
-            for (AddSitterServiceRequestDTO addSitterServiceRequestDTO: addSitterServiceRequestDTOList) {
+            for (AddSitterServiceRequestDTO addSitterServiceRequestDTO : addSitterServiceRequestDTOList) {
                 SitterService sitterService = SitterService.builder()
                         .service(serviceRepository.findById(addSitterServiceRequestDTO.getId()).get())
                         .exp(addSitterServiceRequestDTO.getExp())
@@ -83,13 +83,15 @@ public class CandidateServiceImpl implements CandidateService {
                 sitterServiceRepository.save(sitterService);
             }
             List<AddCertificateRequestDTO> addCertificateRequestDTOList = addCandidateRequestDTO.getAddCertificateRequestDTOS();
-            for (AddCertificateRequestDTO addCertificateRequestDTO: addCertificateRequestDTOList) {
-                CertificateSitter certificateSitter = CertificateSitter.builder()
-                        .sitterProfile(candidateProfile)
-                        .url(addCertificateRequestDTO.getUrl())
-                        .name(addCertificateRequestDTO.getName())
-                        .build();
-                certificateSitterRepository.save(certificateSitter);
+            if (!addCertificateRequestDTOList.isEmpty() || addCertificateRequestDTOList != null) {
+                for (AddCertificateRequestDTO addCertificateRequestDTO : addCertificateRequestDTOList) {
+                    CertificateSitter certificateSitter = CertificateSitter.builder()
+                            .sitterProfile(candidateProfile)
+                            .url(addCertificateRequestDTO.getUrl())
+                            .name(addCertificateRequestDTO.getName())
+                            .build();
+                    certificateSitterRepository.save(certificateSitter);
+                }
             }
             addCandidateResponseDTO = convertToDTO(candidate);
         } catch (Exception e) {
@@ -100,11 +102,11 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateResponseCommonDTO acceptCandidate(String email) {
-        CandidateResponseCommonDTO addCandidateResponseDTO =  null;
+        CandidateResponseCommonDTO addCandidateResponseDTO = null;
         try {
             String password = randomPassword() + "ELS1";
             User candidate = userRepository.findUserByEmail(email);
-            if(candidate == null){
+            if (candidate == null) {
                 return null;
             }
             candidate.setRole(roleRepository.findByName("SITTER"));
@@ -131,7 +133,7 @@ public class CandidateServiceImpl implements CandidateService {
                     .build();
             emailService.sendSimpleMail(emailDetails);
             addCandidateResponseDTO = convertToDTO(candidate);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return addCandidateResponseDTO;
@@ -140,7 +142,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateResponseCommonDTO rejectCandidate(String email) {
-        CandidateResponseCommonDTO addCandidateResponseDTO =  null;
+        CandidateResponseCommonDTO addCandidateResponseDTO = null;
         try {
             User candidate = userRepository.findUserByEmail(email);
             String fullName = candidate.getFullName();
@@ -164,7 +166,7 @@ public class CandidateServiceImpl implements CandidateService {
                     .build();
             emailService.sendSimpleMail(emailDetails);
             addCandidateResponseDTO = convertToDTO(candidate);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return addCandidateResponseDTO;
@@ -176,11 +178,11 @@ public class CandidateServiceImpl implements CandidateService {
         List<CandidatesResponseDTO> candidatesResponseDTOList = new ArrayList<>();
         try {
             List<User> candidates = userRepository.findAllByRole_Name("CANDIDATE");
-            for (User candidate: candidates) {
+            for (User candidate : candidates) {
                 BigDecimal total = BigDecimal.valueOf(0);
                 BigDecimal count = BigDecimal.valueOf(0);
                 List<SitterService> sitterServices = candidate.getSitterProfile().getSitterService();
-                for (SitterService sitterService : sitterServices){
+                for (SitterService sitterService : sitterServices) {
                     count = count.add(BigDecimal.valueOf(1));
                     total = total.add(sitterService.getPrice());
                 }
@@ -193,7 +195,7 @@ public class CandidateServiceImpl implements CandidateService {
                         .build();
                 candidatesResponseDTOList.add(candidatesResponseDTO);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return candidatesResponseDTOList;
@@ -204,21 +206,21 @@ public class CandidateServiceImpl implements CandidateService {
         CandidateResponseDTO candidateResponseDTO = null;
         try {
             User candidate = userRepository.findById(id).get();
-            SitterProfile candidateProfile= candidate.getSitterProfile();
+            SitterProfile candidateProfile = candidate.getSitterProfile();
             List<SitterService> candidateServices = candidate.getSitterProfile().getSitterService();
             List<CandidateServicesResponseDTO> candidateServicesResponseDTOS = new ArrayList<>();
             List<CertificatesResponseDTO> certificatesResponseDTOS = new ArrayList<>();
             List<CertificateSitter> certificateCandidates = candidate.getSitterProfile().getCertificateSitters();
-            for (CertificateSitter certificateCandidate: certificateCandidates) {
-                    CertificatesResponseDTO certificatesResponseDTO = CertificatesResponseDTO.builder()
-                            .name(certificateCandidate.getName())
-                            .url(certificateCandidate.getUrl())
-                            .build();
-                    certificatesResponseDTOS.add(certificatesResponseDTO);
+            for (CertificateSitter certificateCandidate : certificateCandidates) {
+                CertificatesResponseDTO certificatesResponseDTO = CertificatesResponseDTO.builder()
+                        .name(certificateCandidate.getName())
+                        .url(certificateCandidate.getUrl())
+                        .build();
+                certificatesResponseDTOS.add(certificatesResponseDTO);
             }
             BigDecimal count = BigDecimal.valueOf(0);
             BigDecimal total = BigDecimal.valueOf(0);
-            for (SitterService candidateService: candidateServices) {
+            for (SitterService candidateService : candidateServices) {
                 CandidateServicesResponseDTO candidateServicesResponseDTO = CandidateServicesResponseDTO.builder()
                         .name(candidateService.getService().getName())
                         .price(candidateService.getPrice())
@@ -244,13 +246,13 @@ public class CandidateServiceImpl implements CandidateService {
                     .frontIdImgUrl(candidate.getFrontIdImgUrl())
                     .backIdImgUrl(candidate.getBackIdImgUrl())
                     .build();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return candidateResponseDTO;
     }
 
-    private CandidateResponseCommonDTO convertToDTO(User candidate){
+    private CandidateResponseCommonDTO convertToDTO(User candidate) {
         CandidateResponseCommonDTO addCandidateResponseDTO = null;
         try {
             addCandidateResponseDTO = CandidateResponseCommonDTO.builder()
@@ -261,7 +263,7 @@ public class CandidateServiceImpl implements CandidateService {
                     .gender(candidate.getGender())
                     .dob(candidate.getDob())
                     .build();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return addCandidateResponseDTO;
