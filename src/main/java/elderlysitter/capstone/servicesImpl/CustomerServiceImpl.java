@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -98,7 +99,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerResponseDTO> getAllCustomer() {
-        List<CustomerResponseDTO> responseDTOS = null;
+        List<CustomerResponseDTO> responseDTOS = new ArrayList<>();
         try {
             List<User> customers = userRepository.findAllByRole_Name("CUSTOMER");
             for (User customer: customers) {
@@ -171,6 +172,7 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(responseDTO.getEmail());
         return responseDTO;
     }
 }

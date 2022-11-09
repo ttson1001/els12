@@ -24,7 +24,7 @@ public class SitterServiceImpl implements SitterService {
 
     @Override
     public List<SittersResponseDTO> getAllSitter() {
-        List<SittersResponseDTO> sittersResponseDTOList = null;
+        List<SittersResponseDTO> sittersResponseDTOList = new ArrayList<>();
         try {
             List<User> sitters = userRepository.findAllByRole_Name("SITTER");
             for (User sitter : sitters) {
