@@ -33,7 +33,7 @@ public class CustomerController {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             User customer = userService.findByEmail(addCustomerRequestDTO.getEmail());
-            if (customer != null) {
+            if (customer == null) {
                 CustomerResponseDTO customerResponseDTO = customerService.addCustomer(addCustomerRequestDTO);
                 if (customerResponseDTO != null) {
                     responseDTO.setData(customerResponseDTO);

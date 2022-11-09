@@ -34,7 +34,7 @@ public class CandidateController {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             User candidate = userService.findByEmail(addCandidateRequestDTO.getEmail());
-            if(candidate != null) {
+            if(candidate == null) {
                 CandidateResponseCommonDTO candidateResponseCommonDTO = candidateService.addCandidate(addCandidateRequestDTO);
                 responseDTO.setData(candidateResponseCommonDTO);
                 if (candidateResponseCommonDTO != null) {
