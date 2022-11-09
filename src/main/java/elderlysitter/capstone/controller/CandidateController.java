@@ -92,7 +92,7 @@ public class CandidateController {
 
     @GetMapping("candidates")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getAllCandidate(@PathVariable String email){
+    public ResponseEntity<ResponseDTO> getAllCandidate(){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             List<CandidatesResponseDTO> candidatesResponseDTOList = candidateService.getAllCandidate();
