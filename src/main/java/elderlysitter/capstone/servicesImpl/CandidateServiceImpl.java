@@ -132,7 +132,9 @@ public class CandidateServiceImpl implements CandidateService {
                             "Phòng Quản lý Nhân sự.\n" +
                             "(Đây là email được gửi tự động, Quý khách vui lòng không hồi đáp theo địa chỉ email này.)")
                     .build();
+
             emailService.sendSimpleMail(emailDetails);
+            candidate = userRepository.save(candidate);
             addCandidateResponseDTO = convertToDTO(candidate);
         } catch (Exception e) {
             e.printStackTrace();
