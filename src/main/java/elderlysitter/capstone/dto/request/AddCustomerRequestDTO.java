@@ -19,9 +19,5 @@ public class AddCustomerRequestDTO {
 
     private String fullName;
 
-    private LocalDate dob;
-
-    private String gender;
-
     private String email;
 }
