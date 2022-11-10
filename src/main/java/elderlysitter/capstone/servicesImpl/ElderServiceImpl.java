@@ -75,7 +75,7 @@ public class ElderServiceImpl implements ElderService {
     public List<Elder> getAllElderByCustomerEmail(String email) {
         List<Elder> elders = null;
         try {
-            elders = elderRepository.findAllByUser_Email(email);
+            elders = elderRepository.findAllByUser_EmailAndStatus(email,StatusCode.ACTIVATE.toString());
         }catch (Exception e){
             e.printStackTrace();
         }

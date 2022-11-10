@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface ElderRepository extends JpaRepository<Elder, Long> {
     List<Elder> findAllByUser_Email(String email);
+
+    List<Elder> findAllByUser_EmailAndStatus(String email, String status);
 }
