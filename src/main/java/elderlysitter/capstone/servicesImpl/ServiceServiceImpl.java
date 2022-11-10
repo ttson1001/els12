@@ -107,5 +107,16 @@ public class ServiceServiceImpl implements ServiceService {
         return services;
     }
 
+    @Override
+    public Service getServiceById(Long id) {
+        Service service = null;
+        try {
+            service = serviceRepository.findById(id).get();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return service;
+    }
+
 
 }

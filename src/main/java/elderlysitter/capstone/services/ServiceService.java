@@ -18,4 +18,6 @@ public interface ServiceService {
 
     List<Service> getAllServiceByActive();
 
+    Service getServiceById(Long id);
+
 }

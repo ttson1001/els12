@@ -134,4 +134,23 @@ public class ServiceController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping ("get-by-id{id}")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> getServiceById(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            Service service = serviceService.getServiceById(id);
+            responseDTO.setData(service);
+            if(service != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_SERVICE_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_SERVICE_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }
