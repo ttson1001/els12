@@ -39,7 +39,7 @@ public class CategoryController {
     }
 
     @GetMapping("categories")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SITTER','CUSTOMER')")
     public ResponseEntity<ResponseDTO> getAllCategory(){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
