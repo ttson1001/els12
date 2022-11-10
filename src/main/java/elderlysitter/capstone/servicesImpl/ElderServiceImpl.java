@@ -65,6 +65,7 @@ public class ElderServiceImpl implements ElderService {
         try {
             elder = elderRepository.findById(id).get();
             elder.setStatus(StatusCode.DEACTIVATE.toString());
+            elder = elderRepository.save(elder);
         }catch (Exception e){
             e.printStackTrace();
         }
