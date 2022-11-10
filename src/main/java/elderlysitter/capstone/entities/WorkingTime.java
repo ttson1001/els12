@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @AllArgsConstructor
@@ -27,9 +28,6 @@ public class WorkingTime {
     @ManyToOne(fetch = FetchType.EAGER)
     private Booking booking;
 
-    private LocalDate localDate;
-
-    private LocalTime startTime;
-
-    private LocalTime endTime;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 }

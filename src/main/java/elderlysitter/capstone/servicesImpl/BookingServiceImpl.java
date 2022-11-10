@@ -99,9 +99,8 @@ public class BookingServiceImpl implements BookingService {
             for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOS) {
                 WorkingTime workingTime = WorkingTime.builder()
                         .booking(newBooking)
-                        .localDate(addWorkingTimesRequestDTO.getLocalDate())
-                        .startTime(addWorkingTimesRequestDTO.getStartTime())
-                        .endTime(addWorkingTimesRequestDTO.getEndTime())
+                        .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
+                        .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
                         .build();
                 workingTimeRepository.save(workingTime);
             }
@@ -265,9 +264,8 @@ public class BookingServiceImpl implements BookingService {
             List<WorkingTime> workingTimes = booking.getWorkingTimes();
             for (WorkingTime workingTime : workingTimes) {
                 WorkingTimeResponseDTO workingTimeResponseDTO = WorkingTimeResponseDTO.builder()
-                        .localDate(workingTime.getLocalDate())
-                        .startTime(workingTime.getStartTime())
-                        .endTime(workingTime.getEndTime())
+                        .endDateTime(workingTime.getEndDateTime())
+                        .startDateTime(workingTime.getStartDateTime())
                         .build();
                 workingTimeResponseDTOList.add(workingTimeResponseDTO);
             }
@@ -336,9 +334,8 @@ public class BookingServiceImpl implements BookingService {
             List<WorkingTime> workingTimes = booking.getWorkingTimes();
             for (WorkingTime workingTime : workingTimes) {
                 WorkingTimeResponseDTO workingTimeResponseDTO = WorkingTimeResponseDTO.builder()
-                        .localDate(workingTime.getLocalDate())
-                        .startTime(workingTime.getStartTime())
-                        .endTime(workingTime.getEndTime())
+                        .endDateTime(workingTime.getEndDateTime())
+                        .startDateTime(workingTime.getStartDateTime())
                         .build();
                 workingTimeResponseDTOList.add(workingTimeResponseDTO);
             }

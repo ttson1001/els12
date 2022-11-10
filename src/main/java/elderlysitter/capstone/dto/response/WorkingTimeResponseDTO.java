@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -14,9 +15,6 @@ import java.time.LocalTime;
 @Builder
 public class WorkingTimeResponseDTO {
 
-    private LocalDate localDate;
-
-    private LocalTime startTime;
-
-    private LocalTime endTime;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 }
