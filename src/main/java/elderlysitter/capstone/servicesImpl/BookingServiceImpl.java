@@ -114,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingsResponseDTO> getAllBooking() {
-        List<BookingsResponseDTO> bookingsResponseDTOS = null;
+        List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
         try {
             List<Booking> bookings = bookingRepository.findAll();
             for (Booking booking : bookings) {
@@ -149,7 +149,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingsResponseDTO> getAllBookingByStatus(String status) {
-        List<BookingsResponseDTO> bookingsResponseDTOS = null;
+        List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
         try {
             List<Booking> bookings = bookingRepository.findAllByStatus(status);
             for (Booking booking : bookings) {
