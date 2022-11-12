@@ -8,6 +8,7 @@ import elderlysitter.capstone.repository.RoleRepository;
 import elderlysitter.capstone.repository.UserRepository;
 import elderlysitter.capstone.services.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,25 +36,26 @@ public class TestController {
     @GetMapping
     @PermitAll
 
-    public ResponseEntity<ResponseDTO> test(){
+    public ResponseEntity<ResponseDTO> test() {
         String password = "12345678";
         ResponseDTO responseDTO = new ResponseDTO();
         User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
-            boolean s  = passwordEncoder.matches(password,user.getPassword());
+            boolean s = passwordEncoder.matches(password, user.getPassword());
             responseDTO.setData(s);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PostMapping
-    public ResponseEntity<ResponseDTO> test1(@RequestBody LocalDateTime start){
+    public ResponseEntity<ResponseDTO> test1(@RequestBody LocalDateTime start) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             responseDTO.setData(start);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.ok().body(responseDTO);
@@ -86,14 +88,17 @@ public class TestController {
 
     @GetMapping("count-booking/{startDate}/{endDate}")
     @PermitAll
-    public ResponseEntity<ResponseDTO> test3(@PathVariable LocalDateTime startDate, @PathVariable LocalDateTime endDate) {
+    public ResponseEntity<ResponseDTO> test3(@PathVariable String startDate, @PathVariable String endDate) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(bookingService.countBooking(startDate,endDate));
-        }catch (Exception e){
+            LocalDateTime startDateTime = LocalDateTime.parse(startDate);
+            LocalDateTime endDateTime = LocalDateTime.parse(startDate);
+            responseDTO.setData(bookingService.countBooking(startDateTime, endDateTime));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
 
 }
