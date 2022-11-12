@@ -20,7 +20,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllBySitter_EmailAndStatus(String email, String statusName);
 
-    @Query("select count(b) from Booking b where b.createDate between ?1 and ?2")
+    @Query("select count(b.id) from Booking b where b.createDate between ?1 and ?2")
     Long countBookingOnMonth(LocalDateTime startDate,LocalDateTime endDate);
 
 
