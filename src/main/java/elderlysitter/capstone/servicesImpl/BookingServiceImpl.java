@@ -14,6 +14,7 @@ import elderlysitter.capstone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,17 +51,57 @@ public class BookingServiceImpl implements BookingService {
     public BookingDTO addBooking(AddBookingRequestDTO addBookingRequestDTO) {
         UUID uuid = UUID.randomUUID();
         BookingDTO bookingDTO = null;
+        BigDecimal total = BigDecimal.valueOf(0);
+        BigDecimal deposit = BigDecimal.valueOf(0);
         try {
             List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOS = addBookingRequestDTO.getAddWorkingTimesDTOList();
             List<AddBookingServiceRequestDTO> addBookingServiceRequestDTOS = addBookingRequestDTO.getAddBookingServiceRequestDTOS();
 
             User sitter = userService.randomSitter(addBookingServiceRequestDTOS, "");
             if (sitter == null) {
-                return null;
-            }
+                for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
+                    SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), addBookingServiceRequestDTO.getId());
+                    Long commission = sitterService.getService().getCommission();
+                    deposit = deposit.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(60))).multiply((BigDecimal.valueOf(commission).divide(BigDecimal.valueOf(100)))));
+                    deposit = deposit.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size()));
+                    total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(60))));
+                }
 
-            BigDecimal total = BigDecimal.valueOf(0);
-            BigDecimal deposit = BigDecimal.valueOf(0);
+                Booking booking = Booking.builder()
+                        .name(uuid.toString())
+                        .address(addBookingRequestDTO.getAddress())
+                        .place(addBookingRequestDTO.getPlace())
+                        .description(addBookingRequestDTO.getDescription())
+                        .status(StatusCode.CANCEL.toString())
+                        .elder(elderRepository.findById(addBookingRequestDTO.getElderId()).get())
+                        .sitter(sitter)
+                        .deposit(deposit)
+                        .totalPrice(total.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
+                        .user(userRepository.findUserByEmail(addBookingRequestDTO.getEmail()))
+                        .build();
+                bookingRepository.save(booking);
+                Booking newBooking = bookingRepository.findBookingByName(booking.getName());
+                for (int i = 0; i < addBookingRequestDTO.getAddBookingServiceRequestDTOS().size(); i++) {
+                    Service service = serviceRepository.findById(addBookingServiceRequestDTOS.get(i).getId()).get();
+                    BookingDetail bookingDetail = BookingDetail.builder()
+                            .booking(newBooking)
+                            .service(service)
+                            .commission(service.getCommission())
+                            .duration(addBookingRequestDTO.getAddBookingServiceRequestDTOS().get(i).getDuration())
+                            .build();
+                    bookingDetailRepository.save(bookingDetail);
+                }
+                for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOS) {
+                    WorkingTime workingTime = WorkingTime.builder()
+                            .booking(newBooking)
+                            .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
+                            .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
+                            .build();
+                    workingTimeRepository.save(workingTime);
+                }
+                bookingDTO = convertBookingToBookingDTO(newBooking);
+                return bookingDTO;
+            }
 
             for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
                 SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), addBookingServiceRequestDTO.getId());
@@ -182,6 +223,17 @@ public class BookingServiceImpl implements BookingService {
             e.printStackTrace();
         }
         return bookingDTO;
+    }
+
+    @Override
+    public Long countBooking(LocalDateTime startDate, LocalDateTime endDate) {
+        Long count = 0L;
+        try {
+            count = bookingRepository.countBookingOnMonth(startDate,endDate);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return count;
     }
 
     public BookingResponseDTO convertBookingToBookingResponseDTO(Booking booking) {
@@ -370,6 +422,7 @@ public class BookingServiceImpl implements BookingService {
         }
         return bookingDTO;
     }
+
 
 
 }

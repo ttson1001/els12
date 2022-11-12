@@ -5,6 +5,7 @@ import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.response.BookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingsResponseDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingService {
@@ -17,4 +18,6 @@ public interface BookingService {
     List<BookingsResponseDTO> getAllBookingByStatus(String status);
 
     BookingDTO acceptBookingForSitter(Long id);
+
+    Long countBooking(LocalDateTime startDate, LocalDateTime endDate);
 }

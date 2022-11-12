@@ -51,6 +51,9 @@ public class Booking {
 
     private String status;
 
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
     @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;

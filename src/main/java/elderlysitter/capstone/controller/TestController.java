@@ -3,8 +3,10 @@ package elderlysitter.capstone.controller;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.entities.Role;
 import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.repository.BookingRepository;
 import elderlysitter.capstone.repository.RoleRepository;
 import elderlysitter.capstone.repository.UserRepository;
+import elderlysitter.capstone.services.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +29,9 @@ public class TestController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    BookingService bookingService;
+
     @GetMapping
     @PermitAll
 
@@ -44,7 +49,7 @@ public class TestController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PostMapping
-    public ResponseEntity<ResponseDTO> test2(@RequestBody LocalDateTime start){
+    public ResponseEntity<ResponseDTO> test1(@RequestBody LocalDateTime start){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             responseDTO.setData(start);
@@ -56,7 +61,7 @@ public class TestController {
 
     @GetMapping("add-full-role")
     @PermitAll
-    public ResponseEntity<ResponseDTO> test1() {
+    public ResponseEntity<ResponseDTO> test2() {
         ResponseDTO responseDTO = new ResponseDTO();
         Role role = Role.builder()
                 .id(1L)
@@ -78,4 +83,17 @@ public class TestController {
         roleRepository.save(role3);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("count-booking/{startDate}/{endDate}")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> test3(@PathVariable LocalDateTime startDate, @PathVariable LocalDateTime endDate) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.countBooking(startDate,endDate));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }
