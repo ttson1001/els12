@@ -23,17 +23,17 @@ public class BookingController {
 
     @PostMapping("add")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> addBooking(@RequestBody AddBookingRequestDTO addBookingRequestDTO){
+    public ResponseEntity<ResponseDTO> addBooking(@RequestBody AddBookingRequestDTO addBookingRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             BookingDTO bookingDTO = bookingService.addBooking(addBookingRequestDTO);
-            if(addBookingRequestDTO != null){
+            if (addBookingRequestDTO != null) {
                 responseDTO.setData(bookingDTO);
                 responseDTO.setSuccessCode(SuccessCode.ADD_BOOKING_SUCCESS);
-            }else {
+            } else {
                 responseDTO.setErrorCode(ErrorCode.ADD_BOOKING_FAIL);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.ADD_BOOKING_ERROR);
         }
@@ -42,17 +42,17 @@ public class BookingController {
 
     @GetMapping("bookings")
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','SITTER')")
-    public ResponseEntity<ResponseDTO> getAllBooking(){
+    public ResponseEntity<ResponseDTO> getAllBooking() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            List<BookingsResponseDTO> bookingsResponseDTOS  = bookingService.getAllBooking();
-            if(bookingsResponseDTOS != null){
+            List<BookingsResponseDTO> bookingsResponseDTOS = bookingService.getAllBooking();
+            if (bookingsResponseDTOS != null) {
                 responseDTO.setData(bookingsResponseDTOS);
                 responseDTO.setSuccessCode(SuccessCode.FIND_ALL_BOOKING_SUCCESS);
-            }else {
+            } else {
                 responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.FIND_ALL_BOOKING_ERROR);
         }
@@ -61,17 +61,17 @@ public class BookingController {
 
     @GetMapping("get-by-id/{id}")
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','SITTER')")
-    public ResponseEntity<ResponseDTO> getBookingById(@PathVariable Long id){
+    public ResponseEntity<ResponseDTO> getBookingById(@PathVariable Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            BookingResponseDTO bookingResponseDTO  = bookingService.getBookingById(id);
-            if(bookingResponseDTO != null){
+            BookingResponseDTO bookingResponseDTO = bookingService.getBookingById(id);
+            if (bookingResponseDTO != null) {
                 responseDTO.setData(bookingResponseDTO);
                 responseDTO.setSuccessCode(SuccessCode.FIND_BOOKING_SUCCESS);
-            }else {
+            } else {
                 responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.FIND_BOOKING_ERROR);
         }
@@ -80,17 +80,17 @@ public class BookingController {
 
     @GetMapping("bookings-by-status/{status}")
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','SITTER')")
-    public ResponseEntity<ResponseDTO> getAllBookingByStatus(@PathVariable String status){
+    public ResponseEntity<ResponseDTO> getAllBookingByStatus(@PathVariable String status) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            List<BookingsResponseDTO> bookingsResponseDTOS  = bookingService.getAllBookingByStatus(status);
-            if(bookingsResponseDTOS != null){
+            List<BookingsResponseDTO> bookingsResponseDTOS = bookingService.getAllBookingByStatus(status);
+            if (bookingsResponseDTOS != null) {
                 responseDTO.setData(bookingsResponseDTOS);
                 responseDTO.setSuccessCode(SuccessCode.FIND_ALL_BOOKING_SUCCESS);
-            }else {
+            } else {
                 responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.FIND_ALL_BOOKING_ERROR);
         }
@@ -99,21 +99,94 @@ public class BookingController {
 
     @GetMapping("accept/{id}")
     @PreAuthorize("hasRole('SITTER')")
-    public ResponseEntity<ResponseDTO> acceptBookingForSitter(@PathVariable Long id){
+    public ResponseEntity<ResponseDTO> acceptBookingForSitter(@PathVariable Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            BookingDTO bookingDTO  = bookingService.acceptBookingForSitter(id);
-            if(bookingDTO != null){
+            BookingDTO bookingDTO = bookingService.acceptBookingForSitter(id);
+            if (bookingDTO != null) {
                 responseDTO.setData(bookingDTO);
                 responseDTO.setSuccessCode(SuccessCode.ACCEPT_BOOKING_SUCCESS);
-            }else {
+            } else {
                 responseDTO.setErrorCode(ErrorCode.ACCEPT_BOOKING_FAIL);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.ACCEPT_BOOKING_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("count-booking/{startDate}/{endDate}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> countBooking(@PathVariable String startDate, @PathVariable String endDate) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.countBooking(startDate, endDate));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("revenue/{startDate}/{endDate}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> sumDeposit(@PathVariable String startDate, @PathVariable String endDate) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.sumDeposit(startDate, endDate));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("bookings-by-customer-email/{cusEmail}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> findAllByCustomerEmail(@PathVariable String cusEmail) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.findAllByCustomerEmail(cusEmail));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("bookings-by-customer-email/{cusEmail}/{status}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> findAllByCustomerEmailAndStatus(@PathVariable String cusEmail, @PathVariable String status) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.findAllByCustomerEmailAndStatus(cusEmail, status));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("bookings-by-siiter-email/{sitterEmail}")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> findAllBySitterEmail(@PathVariable String sitterEmail) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.findAllBySitterEmail(sitterEmail));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("bookings-by-customer-email/{sitterEmail}/{status}")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> findAllBySitter_EmailAndStatus(@PathVariable String sitterEmail, @PathVariable String status) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.findAllBySitter_EmailAndStatus(sitterEmail, status));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 
 }

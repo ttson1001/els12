@@ -91,14 +91,25 @@ public class TestController {
     public ResponseEntity<ResponseDTO> test3(@PathVariable String startDate, @PathVariable String endDate) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            LocalDateTime startDateTime = LocalDateTime.parse(startDate);
-            LocalDateTime endDateTime = LocalDateTime.parse(startDate);
-            responseDTO.setData(bookingService.countBooking(startDateTime, endDateTime));
+            responseDTO.setData(bookingService.countBooking(startDate, endDate));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+    @GetMapping("revenue/{startDate}/{endDate}")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> test4(@PathVariable String startDate, @PathVariable String endDate) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(bookingService.sumDeposit(startDate, endDate));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
 
 
 }

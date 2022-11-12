@@ -52,7 +52,7 @@ public class Booking {
     private String status;
 
     @Column(name = "create_date")
-    private LocalDateTime createDate;
+    private LocalDate createDate;
 
     @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.EAGER)

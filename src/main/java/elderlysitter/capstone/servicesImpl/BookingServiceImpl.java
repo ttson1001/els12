@@ -14,6 +14,7 @@ import elderlysitter.capstone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -226,14 +227,117 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Long countBooking(LocalDateTime startDate, LocalDateTime endDate) {
-        Long count = 0L;
+    public List<BookingsResponseDTO> findAllByCustomerEmail(String customerEmail) {
+        List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
         try {
-            count = bookingRepository.countBookingOnMonth(startDate,endDate);
+            List<Booking> bookings = bookingRepository.findAllByUser_Email(customerEmail);
+            for (Booking booking : bookings) {
+                BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
+                        .id(booking.getId())
+                        .name(booking.getName())
+                        .sitterName(booking.getSitter().getFullName())
+                        .place(booking.getPlace())
+                        .deposit(booking.getDeposit())
+                        .totalPrice(booking.getTotalPrice())
+                        .status(booking.getStatus())
+                        .build();
+                bookingsResponseDTOS.add(bookingsResponseDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookingsResponseDTOS;
+    }
+
+    @Override
+    public List<BookingsResponseDTO> findAllBySitterEmail(String sitterEmail) {
+        List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
+        try {
+            List<Booking> bookings = bookingRepository.findAllBySitter_Email(sitterEmail);
+            for (Booking booking : bookings) {
+                BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
+                        .id(booking.getId())
+                        .name(booking.getName())
+                        .sitterName(booking.getSitter().getFullName())
+                        .place(booking.getPlace())
+                        .deposit(booking.getDeposit())
+                        .totalPrice(booking.getTotalPrice())
+                        .status(booking.getStatus())
+                        .build();
+                bookingsResponseDTOS.add(bookingsResponseDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookingsResponseDTOS;
+    }
+
+    @Override
+    public List<BookingsResponseDTO> findAllByCustomerEmailAndStatus(String customerEmail, String status) {
+        List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
+        try {
+            List<Booking> bookings = bookingRepository.findAllByUser_EmailAndStatus(customerEmail,status);
+            for (Booking booking : bookings) {
+                BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
+                        .id(booking.getId())
+                        .name(booking.getName())
+                        .sitterName(booking.getSitter().getFullName())
+                        .place(booking.getPlace())
+                        .deposit(booking.getDeposit())
+                        .totalPrice(booking.getTotalPrice())
+                        .status(booking.getStatus())
+                        .build();
+                bookingsResponseDTOS.add(bookingsResponseDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookingsResponseDTOS;
+    }
+
+    @Override
+    public List<BookingsResponseDTO> findAllBySitter_EmailAndStatus(String sitterEmail, String status) {
+        List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
+        try {
+            List<Booking> bookings = bookingRepository.findAllBySitter_EmailAndStatus(sitterEmail,status);
+            for (Booking booking : bookings) {
+                BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
+                        .id(booking.getId())
+                        .name(booking.getName())
+                        .sitterName(booking.getSitter().getFullName())
+                        .place(booking.getPlace())
+                        .deposit(booking.getDeposit())
+                        .totalPrice(booking.getTotalPrice())
+                        .status(booking.getStatus())
+                        .build();
+                bookingsResponseDTOS.add(bookingsResponseDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookingsResponseDTOS;
+    }
+
+    @Override
+    public Long countBooking(String startDate, String endDate) {
+        Long count = 0l;
+        try {
+             count = bookingRepository.countBookingOnMonth(LocalDate.parse(startDate), LocalDate.parse(endDate));
         }catch (Exception e){
             e.printStackTrace();
         }
         return count;
+    }
+
+    @Override
+    public BigDecimal sumDeposit(String startDate, String endDate) {
+        BigDecimal sum = BigDecimal.valueOf(0);
+        try {
+            sum = bookingRepository.totalRevenue(LocalDate.parse(startDate), LocalDate.parse(endDate));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return sum;
     }
 
     public BookingResponseDTO convertBookingToBookingResponseDTO(Booking booking) {
