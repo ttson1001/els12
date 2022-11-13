@@ -1,5 +1,6 @@
 package elderlysitter.capstone.services;
 
+import elderlysitter.capstone.dto.ServiceDTO;
 import elderlysitter.capstone.dto.request.AddServiceRequestDTO;
 import elderlysitter.capstone.dto.request.UpdateServiceRequestDTO;
 import elderlysitter.capstone.entities.Service;
@@ -19,5 +20,7 @@ public interface ServiceService {
     List<Service> getAllServiceByActive();
 
     Service getServiceById(Long id);
+
+    List<ServiceDTO> reportService();
 
 }

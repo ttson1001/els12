@@ -2,11 +2,14 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.entities.Role;
+import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.repository.BookingRepository;
 import elderlysitter.capstone.repository.RoleRepository;
+import elderlysitter.capstone.repository.ServiceRepository;
 import elderlysitter.capstone.repository.UserRepository;
 import elderlysitter.capstone.services.BookingService;
+import elderlysitter.capstone.services.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,9 @@ public class TestController {
 
     @Autowired
     BookingService bookingService;
+
+    @Autowired
+    ServiceService service;
 
     @GetMapping
     @PermitAll
@@ -103,6 +109,18 @@ public class TestController {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             responseDTO.setData(bookingService.sumDeposit(startDate, endDate));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("report-service")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> test5() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(service.reportService());
         } catch (Exception e) {
             e.printStackTrace();
         }

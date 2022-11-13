@@ -182,7 +182,7 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("bookings-by-siiter-email/{sitterEmail}")
+    @GetMapping("bookings-by-sitter-email/{sitterEmail}")
     @PreAuthorize("hasRole('SITTER')")
     public ResponseEntity<ResponseDTO> findAllBySitterEmail(@PathVariable String sitterEmail) {
         ResponseDTO responseDTO = new ResponseDTO();
@@ -201,7 +201,7 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("bookings-by-customer-email/{sitterEmail}/{status}")
+    @GetMapping("bookings-by-sitter-email/{sitterEmail}/{status}")
     @PreAuthorize("hasRole('SITTER')")
     public ResponseEntity<ResponseDTO> findAllBySitter_EmailAndStatus(@PathVariable String sitterEmail, @PathVariable String status) {
         ResponseDTO responseDTO = new ResponseDTO();

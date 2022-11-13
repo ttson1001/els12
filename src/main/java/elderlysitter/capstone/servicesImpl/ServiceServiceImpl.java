@@ -1,14 +1,17 @@
 package elderlysitter.capstone.servicesImpl;
 
+import elderlysitter.capstone.dto.ServiceDTO;
 import elderlysitter.capstone.dto.request.AddServiceRequestDTO;
 import elderlysitter.capstone.dto.request.UpdateServiceRequestDTO;
 import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.enumCode.StatusCode;
+import elderlysitter.capstone.repository.BookingDetailRepository;
 import elderlysitter.capstone.repository.CategoryRepository;
 import elderlysitter.capstone.repository.ServiceRepository;
 import elderlysitter.capstone.services.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,6 +23,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private BookingDetailRepository bookingDetailRepository;
     @Override
     public Service addService(AddServiceRequestDTO addServiceRequestDTO) {
         Service service = null;
@@ -116,6 +122,17 @@ public class ServiceServiceImpl implements ServiceService {
             e.printStackTrace();
         }
         return service;
+    }
+
+    @Override
+    public List<ServiceDTO> reportService() {
+        List<ServiceDTO> serviceDTOS = new ArrayList<>();
+        try {
+            serviceDTOS = bookingDetailRepository.reportService();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return serviceDTOS;
     }
 
 
