@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ServiceDTO {
     private String name;
-    private Long amount;
+    private Long numberOfBooked;
 }
