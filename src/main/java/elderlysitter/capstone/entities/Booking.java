@@ -70,7 +70,7 @@ public class Booking {
     @OneToOne(mappedBy = "booking")
     private Report report;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private Payment payment;
 
     @JsonIgnore

@@ -1,6 +1,7 @@
 package elderlysitter.capstone.servicesImpl;
 
 import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateSitterRequestDTO;
 import elderlysitter.capstone.dto.response.*;
 import elderlysitter.capstone.entities.CertificateSitter;
@@ -10,6 +11,7 @@ import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.UserRepository;
 import elderlysitter.capstone.services.SitterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +22,9 @@ import java.util.List;
 public class SitterServiceImpl implements SitterService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -229,6 +234,32 @@ public class SitterServiceImpl implements SitterService {
                     .gender(sitter.getGender())
                     .fullName(sitter.getGender())
                     .build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return sitterDTO;
+    }
+
+    @Override
+    public SitterDTO changePassword(ChangePasswordDTO changePasswordDTO) {
+        SitterDTO sitterDTO = null;
+        try {
+            User sitter = userRepository.findUserByEmail(changePasswordDTO.getEmail());
+            Boolean check = passwordEncoder.matches(changePasswordDTO.getOldPassword(), sitter.getPassword());
+            if(check == true){
+                sitter.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+                sitter = userRepository.save(sitter);
+                sitterDTO = SitterDTO.builder()
+                        .id(sitter.getId())
+                        .avatarImgUrl(sitter.getAvatarImgUrl())
+                        .dob(sitter.getDob())
+                        .email(sitter.getEmail())
+                        .phone(sitter.getPhone())
+                        .address(sitter.getAddress())
+                        .gender(sitter.getGender())
+                        .fullName(sitter.getGender())
+                        .build();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

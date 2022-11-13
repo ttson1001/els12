@@ -1,4 +1,4 @@
-package elderlysitter.capstone.dto.response;
+package elderlysitter.capstone.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,15 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PaymentResponseDTO {
+public class AddPaymentRequestDTO {
     private String paymentType;
-    private String cusName;
-    private LocalDateTime dateTime;
+
+    private String email;
+
     private BigDecimal amount;
+
+    private Long bookingId;
 }

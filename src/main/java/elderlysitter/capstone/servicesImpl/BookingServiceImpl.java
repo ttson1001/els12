@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -349,6 +348,7 @@ public class BookingServiceImpl implements BookingService {
                     .gender(booking.getElder().getGender())
                     .dob(booking.getElder().getDob())
                     .note(booking.getElder().getNote())
+                    .healthStatus(booking.getElder().getHealthStatus())
                     .isAllergy(booking.getElder().getIsAllergy())
                     .build();
 

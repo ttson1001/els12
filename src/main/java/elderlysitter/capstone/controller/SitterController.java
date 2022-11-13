@@ -3,6 +3,7 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateSitterRequestDTO;
 import elderlysitter.capstone.dto.response.SitterResponseDTO;
 import elderlysitter.capstone.dto.response.SittersResponseDTO;
@@ -131,6 +132,25 @@ public class SitterController {
         }catch (Exception e){
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.UPDATE_SITTER_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("change-password")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            SitterDTO sitterDTO = sitterService.changePassword(changePasswordDTO);
+            if (sitterDTO != null) {
+                responseDTO.setData(sitterDTO);
+                responseDTO.setSuccessCode(SuccessCode.CHANGE_PASSWORD_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.CHANGE_PASSWORD_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.CHANGE_PASSWORD_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }

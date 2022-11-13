@@ -1,6 +1,7 @@
 package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.dto.ServiceDTO;
 import elderlysitter.capstone.dto.request.AddServiceRequestDTO;
 import elderlysitter.capstone.dto.request.UpdateServiceRequestDTO;
 import elderlysitter.capstone.entities.Service;
@@ -150,6 +151,25 @@ public class ServiceController {
         }catch (Exception e){
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.FIND_SERVICE_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("report-service")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> reportService() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<ServiceDTO> serviceDTOS = serviceService.reportService();
+            responseDTO.setData(serviceDTOS);
+            if(serviceDTOS != null){
+                responseDTO.setSuccessCode(SuccessCode.REPORT_SERVICE_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.REPORT_SERVICE_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.REPORT_SERVICE_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }

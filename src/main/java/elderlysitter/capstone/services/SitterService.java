@@ -1,6 +1,7 @@
 package elderlysitter.capstone.services;
 
 import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateSitterRequestDTO;
 import elderlysitter.capstone.dto.response.SitterResponseDTO;
 import elderlysitter.capstone.dto.response.SittersResponseDTO;
@@ -20,5 +21,6 @@ public interface SitterService {
 
     SitterDTO updateSitter (UpdateSitterRequestDTO updateSitterRequestDTO);
 
+    SitterDTO changePassword(ChangePasswordDTO changePasswordDTO);
 
 }
