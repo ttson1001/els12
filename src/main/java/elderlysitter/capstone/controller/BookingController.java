@@ -2,6 +2,7 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.BookingDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.dto.request.AddBookingImgRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.response.BookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingsResponseDTO;
@@ -216,6 +217,25 @@ public class BookingController {
         } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.FIND_ALL_BOOKING_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("check-booking-customer/{bookingId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> checkBookingForCustomer(@PathVariable Long bookingId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            BookingsResponseDTO bookingsResponseDTO = bookingService.checkBookingForCustomer(bookingId);
+            if (bookingsResponseDTO != null) {
+                responseDTO.setData(bookingsResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.CHECK_BOOKING_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.CHECK_BOOKING_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.CHECK_BOOKING_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }

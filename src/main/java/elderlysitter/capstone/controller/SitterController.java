@@ -99,7 +99,7 @@ public class SitterController {
     }
 
     @GetMapping("get-by-email/{email}")
-    @PreAuthorize("hasRole('SITTER')")
+    @PreAuthorize("hasAnyRole('SITTER','CUSTOMER')")
     public ResponseEntity<ResponseDTO> getSitterByEmail(@PathVariable String email){
         ResponseDTO responseDTO = new ResponseDTO();
         try {

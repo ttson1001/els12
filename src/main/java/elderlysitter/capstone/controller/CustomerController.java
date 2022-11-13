@@ -4,6 +4,7 @@ import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.request.AddCustomerRequestDTO;
 import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateCustomerRequestDTO;
+import elderlysitter.capstone.dto.response.BookingsResponseDTO;
 import elderlysitter.capstone.dto.response.CustomerResponseDTO;
 import elderlysitter.capstone.dto.response.CustomersResponseDTO;
 import elderlysitter.capstone.entities.User;
@@ -27,6 +28,7 @@ public class CustomerController {
 
     @Autowired
     private UserService userService;
+
 
     @PostMapping("add")
     @PermitAll
@@ -185,5 +187,7 @@ public class CustomerController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
+
 
 }

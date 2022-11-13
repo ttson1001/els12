@@ -1,4 +1,4 @@
-package elderlysitter.capstone.dto.response;
+package elderlysitter.capstone.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookingImgResponseDTO {
+public class AddBookingImgRequestDTO {
 
-    private LocalDateTime localDateTime;
+    private Long  bookingId;
 
     private String url;
 }

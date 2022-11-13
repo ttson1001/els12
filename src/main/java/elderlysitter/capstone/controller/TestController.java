@@ -18,8 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("test")
@@ -127,6 +130,26 @@ public class TestController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+//    public static void main(String[] args) {
+////        String date = "2022-11-14T00:00:00";
+////
+////        LocalDate date1 = LocalDateTime.parse(date).toLocalDate();
+////
+////        LocalDateTime localDateTime = LocalDateTime.now();
+////
+////        LocalDate localDate = localDateTime.toLocalDate();
+////        System.out.println(date1);
+////        System.out.println(localDate);
+////        System.out.println(date1.isEqual(localDate));
+//
+//        List<String> s = new ArrayList<>();
+//        s.add("s");
+//        s.add("m");
+//        System.out.println(s.get(s.size()-1));
+//
+//
+//
+//    }
 
 
 

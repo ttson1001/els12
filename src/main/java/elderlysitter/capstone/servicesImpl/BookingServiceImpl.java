@@ -339,6 +339,28 @@ public class BookingServiceImpl implements BookingService {
         return sum;
     }
 
+    @Override
+    public BookingsResponseDTO checkBookingForCustomer(Long bookingId) {
+        BookingsResponseDTO bookingsResponseDTO = null;
+        try {
+            Booking booking = bookingRepository.findById(bookingId).get();
+            booking.setStatus(StatusCode.DONE.toString());
+            booking = bookingRepository.save(booking);
+            bookingsResponseDTO = BookingsResponseDTO.builder()
+                    .id(booking.getId())
+                    .name(booking.getName())
+                    .sitterName(booking.getSitter().getFullName())
+                    .place(booking.getPlace())
+                    .deposit(booking.getDeposit())
+                    .totalPrice(booking.getTotalPrice())
+                    .status(booking.getStatus())
+                    .build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return bookingsResponseDTO;
+    }
+
     public BookingResponseDTO convertBookingToBookingResponseDTO(Booking booking) {
         BookingResponseDTO bookingResponseDTO = null;
         try {
