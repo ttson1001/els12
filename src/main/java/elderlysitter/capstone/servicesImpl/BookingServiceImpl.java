@@ -221,6 +221,8 @@ public class BookingServiceImpl implements BookingService {
                     .customerName(booking.getUser().getFullName())
                     .totalPrice(booking.getTotalPrice())
                     .totalTime(totalTime)
+                    .startDate(booking.getWorkingTimes().get(0).getStartDateTime().toLocalDate())
+                    .endDate(booking.getWorkingTimes().get(booking.getWorkingTimes().size()-1).getEndDateTime().toLocalDate())
                     .bookingDetailResponseDTOList(bookingDetailResponseDTOList)
                     .build();
         } catch (Exception e) {
