@@ -118,7 +118,7 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("count-booking")
+    @PostMapping("count-booking")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> countBooking(@RequestBody DateRequestDTO dateRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
@@ -132,7 +132,7 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("revenue")
+    @PostMapping("revenue")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> sumDeposit(@RequestBody DateRequestDTO dateRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();

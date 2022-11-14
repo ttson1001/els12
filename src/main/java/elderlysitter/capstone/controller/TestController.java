@@ -1,6 +1,7 @@
 package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.dto.request.DateRequestDTO;
 import elderlysitter.capstone.entities.Role;
 import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.entities.SitterService;
@@ -100,12 +101,12 @@ public class TestController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("count-booking/{startDate}/{endDate}")
+    @PostMapping("count-booking")
     @PermitAll
-    public ResponseEntity<ResponseDTO> test3(@PathVariable String startDate, @PathVariable String endDate) {
+    public ResponseEntity<ResponseDTO> test3(@RequestBody DateRequestDTO dateRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(bookingService.countBooking(startDate, endDate));
+            responseDTO.setData(bookingService.countBooking(dateRequestDTO.getStartDate(), dateRequestDTO.getEndDate()));
         } catch (Exception e) {
             e.printStackTrace();
         }
