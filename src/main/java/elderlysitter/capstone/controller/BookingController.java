@@ -4,6 +4,7 @@ import elderlysitter.capstone.dto.BookingDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.request.AddBookingImgRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
+import elderlysitter.capstone.dto.request.DateRequestDTO;
 import elderlysitter.capstone.dto.response.BookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingsResponseDTO;
 import elderlysitter.capstone.enumCode.ErrorCode;
@@ -117,12 +118,12 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("count-booking/{startDate}/{endDate}")
+    @GetMapping("count-booking")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> countBooking(@PathVariable String startDate, @PathVariable String endDate) {
+    public ResponseEntity<ResponseDTO> countBooking(@RequestBody DateRequestDTO dateRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-                responseDTO.setData(bookingService.countBooking(startDate,endDate));
+                responseDTO.setData(bookingService.countBooking(dateRequestDTO.getStartDate(), dateRequestDTO.getEndDate()));
                 responseDTO.setSuccessCode(SuccessCode.COUNT_BOOKING_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,12 +132,12 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("revenue/{startDate}/{endDate}")
+    @GetMapping("revenue")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> sumDeposit(@PathVariable String startDate, @PathVariable String endDate) {
+    public ResponseEntity<ResponseDTO> sumDeposit(@RequestBody DateRequestDTO dateRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(bookingService.sumDeposit(startDate, endDate));
+            responseDTO.setData(bookingService.sumDeposit(dateRequestDTO.getStartDate(), dateRequestDTO.getEndDate()));
             responseDTO.setSuccessCode(SuccessCode.GET_REVENUE_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
