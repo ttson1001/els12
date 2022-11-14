@@ -27,7 +27,7 @@ public class SitterResponseDTO {
     private String avatarUrl;
     private String frontIdImgUrl;
     private String backIdImgUrl;
-    private Float ratingStart;
+    private Float ratingStar;
     private List<CertificatesResponseDTO> certificatesResponseDTOS;
     private List<SitterServicesResponseDTO> sitterServicesResponseDTOS;
 }

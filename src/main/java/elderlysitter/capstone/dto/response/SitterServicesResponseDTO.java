@@ -13,5 +13,6 @@ import java.math.BigDecimal;
 public class SitterServicesResponseDTO {
     private String name;
     private Long exp;
+    private Integer duration;
     private BigDecimal price;
 }

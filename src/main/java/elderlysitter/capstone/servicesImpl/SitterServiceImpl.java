@@ -5,9 +5,11 @@ import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateSitterRequestDTO;
 import elderlysitter.capstone.dto.response.*;
 import elderlysitter.capstone.entities.CertificateSitter;
+import elderlysitter.capstone.entities.Rating;
 import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.StatusCode;
+import elderlysitter.capstone.repository.RatingRepository;
 import elderlysitter.capstone.repository.UserRepository;
 import elderlysitter.capstone.services.SitterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class SitterServiceImpl implements SitterService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RatingRepository ratingRepository;
 
 
     @Override
@@ -74,7 +79,7 @@ public class SitterServiceImpl implements SitterService {
                     .phone(sitter.getPhone())
                     .address(sitter.getAddress())
                     .gender(sitter.getGender())
-                    .fullName(sitter.getGender())
+                    .fullName(sitter.getFullName())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,7 +102,7 @@ public class SitterServiceImpl implements SitterService {
                     .phone(sitter.getPhone())
                     .address(sitter.getAddress())
                     .gender(sitter.getGender())
-                    .fullName(sitter.getGender())
+                    .fullName(sitter.getFullName())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,12 +114,12 @@ public class SitterServiceImpl implements SitterService {
     public SitterResponseDTO getSitterById(Long id) {
         SitterResponseDTO sitterResponseDTO = null;
         try {
-            User candidate = userRepository.findById(id).get();
-            SitterProfile sitterProfile = candidate.getSitterProfile();
-            List<elderlysitter.capstone.entities.SitterService> sitterServices = candidate.getSitterProfile().getSitterService();
+            User sitter = userRepository.findById(id).get();
+            SitterProfile sitterProfile = sitter.getSitterProfile();
+            List<elderlysitter.capstone.entities.SitterService> sitterServices = sitter.getSitterProfile().getSitterService();
             List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
             List<CertificatesResponseDTO> certificatesResponseDTOS = new ArrayList<>();
-            List<CertificateSitter> certificateSitters = candidate.getSitterProfile().getCertificateSitters();
+            List<CertificateSitter> certificateSitters = sitter.getSitterProfile().getCertificateSitters();
             for (CertificateSitter certificateSitter : certificateSitters) {
                 CertificatesResponseDTO certificatesResponseDTO = CertificatesResponseDTO.builder()
                         .name(certificateSitter.getName())
@@ -128,6 +133,7 @@ public class SitterServiceImpl implements SitterService {
                 SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
                         .name(sitterService.getService().getName())
                         .price(sitterService.getPrice())
+                        .duration(sitterService.getService().getDuration())
                         .exp(sitterService.getExp())
                         .build();
                 total = total.add(sitterService.getPrice());
@@ -135,22 +141,22 @@ public class SitterServiceImpl implements SitterService {
                 sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
             }
             sitterResponseDTO = SitterResponseDTO.builder()
-                    .id(candidate.getId())
-                    .fullName(candidate.getFullName())
-                    .phone(candidate.getPhone())
-                    .address(candidate.getAddress())
-                    .dob(candidate.getDob())
-                    .email(candidate.getEmail())
+                    .id(sitter.getId())
+                    .fullName(sitter.getFullName())
+                    .phone(sitter.getPhone())
+                    .address(sitter.getAddress())
+                    .dob(sitter.getDob())
+                    .email(sitter.getEmail())
                     .idNumber(sitterProfile.getIdNumber())
                     .description(sitterProfile.getDescription())
                     .avgPrice(total.divide(count))
-                    .gender(candidate.getGender())
+                    .gender(sitter.getGender())
                     .certificatesResponseDTOS(certificatesResponseDTOS)
                     .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
-                    .avatarUrl(candidate.getAvatarImgUrl())
-                    .ratingStart(4F)
-                    .frontIdImgUrl(candidate.getFrontIdImgUrl())
-                    .backIdImgUrl(candidate.getBackIdImgUrl())
+                    .avatarUrl(sitter.getAvatarImgUrl())
+                    .ratingStar(averageStarOfSitter(sitter.getEmail()))
+                    .frontIdImgUrl(sitter.getFrontIdImgUrl())
+                    .backIdImgUrl(sitter.getBackIdImgUrl())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,12 +168,12 @@ public class SitterServiceImpl implements SitterService {
     public SitterResponseDTO getSitterByEmail(String email) {
         SitterResponseDTO sitterResponseDTO = null;
         try {
-            User candidate = userRepository.findUserByEmail(email);
-            SitterProfile sitterProfile = candidate.getSitterProfile();
-            List<elderlysitter.capstone.entities.SitterService> sitterServices = candidate.getSitterProfile().getSitterService();
+            User sitter = userRepository.findUserByEmail(email);
+            SitterProfile sitterProfile = sitter.getSitterProfile();
+            List<elderlysitter.capstone.entities.SitterService> sitterServices = sitter.getSitterProfile().getSitterService();
             List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
             List<CertificatesResponseDTO> certificatesResponseDTOS = new ArrayList<>();
-            List<CertificateSitter> certificateSitters = candidate.getSitterProfile().getCertificateSitters();
+            List<CertificateSitter> certificateSitters = sitter.getSitterProfile().getCertificateSitters();
             for (CertificateSitter certificateSitter : certificateSitters) {
                 CertificatesResponseDTO certificatesResponseDTO = CertificatesResponseDTO.builder()
                         .name(certificateSitter.getName())
@@ -181,6 +187,7 @@ public class SitterServiceImpl implements SitterService {
                 SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
                         .name(sitterService.getService().getName())
                         .price(sitterService.getPrice())
+                        .duration(sitterService.getService().getDuration())
                         .exp(sitterService.getExp())
                         .build();
                 total = total.add(sitterService.getPrice());
@@ -188,22 +195,22 @@ public class SitterServiceImpl implements SitterService {
                 sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
             }
             sitterResponseDTO = SitterResponseDTO.builder()
-                    .id(candidate.getId())
-                    .fullName(candidate.getFullName())
-                    .phone(candidate.getPhone())
-                    .address(candidate.getAddress())
-                    .dob(candidate.getDob())
-                    .email(candidate.getEmail())
+                    .id(sitter.getId())
+                    .fullName(sitter.getFullName())
+                    .phone(sitter.getPhone())
+                    .address(sitter.getAddress())
+                    .dob(sitter.getDob())
+                    .email(sitter.getEmail())
                     .idNumber(sitterProfile.getIdNumber())
                     .description(sitterProfile.getDescription())
                     .avgPrice(total.divide(count))
-                    .gender(candidate.getGender())
-                    .ratingStart(4F)
+                    .gender(sitter.getGender())
+                    .ratingStar(averageStarOfSitter(sitter.getEmail()))
                     .certificatesResponseDTOS(certificatesResponseDTOS)
                     .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
-                    .avatarUrl(candidate.getAvatarImgUrl())
-                    .frontIdImgUrl(candidate.getFrontIdImgUrl())
-                    .backIdImgUrl(candidate.getBackIdImgUrl())
+                    .avatarUrl(sitter.getAvatarImgUrl())
+                    .frontIdImgUrl(sitter.getFrontIdImgUrl())
+                    .backIdImgUrl(sitter.getBackIdImgUrl())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,9 +239,9 @@ public class SitterServiceImpl implements SitterService {
                     .phone(sitter.getPhone())
                     .address(sitter.getAddress())
                     .gender(sitter.getGender())
-                    .fullName(sitter.getGender())
+                    .fullName(sitter.getFullName())
                     .build();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return sitterDTO;
@@ -246,7 +253,7 @@ public class SitterServiceImpl implements SitterService {
         try {
             User sitter = userRepository.findUserByEmail(changePasswordDTO.getEmail());
             Boolean check = passwordEncoder.matches(changePasswordDTO.getOldPassword(), sitter.getPassword());
-            if(check == true){
+            if (check == true) {
                 sitter.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
                 sitter = userRepository.save(sitter);
                 sitterDTO = SitterDTO.builder()
@@ -257,12 +264,29 @@ public class SitterServiceImpl implements SitterService {
                         .phone(sitter.getPhone())
                         .address(sitter.getAddress())
                         .gender(sitter.getGender())
-                        .fullName(sitter.getGender())
+                        .fullName(sitter.getFullName())
                         .build();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return sitterDTO;
+    }
+
+    private Float averageStarOfSitter(String email) {
+        Float star = 0F;
+        try {
+            List<Rating> ratings = ratingRepository.findAllBySitter_Email(email);
+            for (Rating rating : ratings) {
+                star = star + rating.getStar();
+            }
+
+            star = star/ratings.size();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return star;
+
     }
 }

@@ -1,6 +1,5 @@
-package elderlysitter.capstone.dto.response;
+package elderlysitter.capstone.dto.request;
 
-import elderlysitter.capstone.dto.SitterDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RatingResponseDTO {
-    private SitterDTO sitterDTO;
+public class AddRatingRequestDTO {
+    private Long bookingId;
+    private Float star;
     private String comment;
-    private Float rate;
 }
