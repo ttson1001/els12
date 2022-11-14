@@ -277,12 +277,13 @@ public class SitterServiceImpl implements SitterService {
         Float star = 0F;
         try {
             List<Rating> ratings = ratingRepository.findAllBySitter_Email(email);
-            for (Rating rating : ratings) {
-                star = star + rating.getStar();
+            if(ratings != null) {
+                for (Rating rating : ratings) {
+                    star = star + rating.getStar();
+                }
+
+                star = star / ratings.size();
             }
-
-            star = star/ratings.size();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
