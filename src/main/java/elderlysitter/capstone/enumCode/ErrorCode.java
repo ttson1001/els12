@@ -63,7 +63,9 @@ public enum ErrorCode {
     CHECK_BOOKING_FAIL,
     CHECK_BOOKING_ERROR,
     CHECK_OUT_FAIL,
-    CHECK_OUT_ERROR
+    CHECK_OUT_ERROR,
+    RATE_FAIL,
+    RATE_ERROR
 
 
 
