@@ -135,5 +135,16 @@ public class ServiceServiceImpl implements ServiceService {
         return serviceDTOS;
     }
 
+    @Override
+    public List<Service> getAllServiceByCategoryID(Long id) {
+        List<Service> services = new ArrayList<>();
+        try {
+            services = serviceRepository.findAllByCategory_Id(id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return services;
+    }
+
 
 }

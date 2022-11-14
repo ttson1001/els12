@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ServiceRepository extends JpaRepository<Service,Long> {
     List<Service> findAllByStatus(String status);
+
+    List<Service> findAllByCategory_Id(Long id);
 }

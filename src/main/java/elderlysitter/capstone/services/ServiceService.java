@@ -22,5 +22,6 @@ public interface ServiceService {
     Service getServiceById(Long id);
 
     List<ServiceDTO> reportService();
+    List<Service> getAllServiceByCategoryID(Long id);
 
 }

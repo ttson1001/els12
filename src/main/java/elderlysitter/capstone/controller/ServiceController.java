@@ -156,7 +156,7 @@ public class ServiceController {
     }
 
     @GetMapping("report-service")
-    @PermitAll
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> reportService() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
@@ -170,6 +170,25 @@ public class ServiceController {
         } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.REPORT_SERVICE_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("services-by-category-id/{id}")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> getAllServiceByCategoryID(@PathVariable Long id) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<Service> services = serviceService.getAllServiceByCategoryID(id);
+            responseDTO.setData(services);
+            if(services != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_SERVICE_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_SERVICE_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }
