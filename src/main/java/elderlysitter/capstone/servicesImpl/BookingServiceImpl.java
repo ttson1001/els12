@@ -189,6 +189,47 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public AdminBookingResponseDTO getBookingByIdForAdmin(Long id) {
+        AdminBookingResponseDTO adminBookingResponseDTO = null;
+        try {
+            Long totalTime = 0L;
+            Booking booking = bookingRepository.findById(id).get();
+            List<BookingDetailResponseDTO> bookingDetailResponseDTOList = new ArrayList<>();
+            List<BookingDetail> bookingDetails = booking.getBookingDetails();
+            if (bookingDetails.isEmpty()) {
+                bookingDetailResponseDTOList = null;
+            } else {
+                for (BookingDetail bookingDetail : bookingDetails
+                ) {
+                    totalTime = totalTime + bookingDetail.getDuration();
+                    BookingDetailResponseDTO bookingDetailResponseDTO = BookingDetailResponseDTO.builder()
+                            .id(bookingDetail.getId())
+                            .serviceName(bookingDetail.getService().getName())
+                            .commission(bookingDetail.getCommission())
+                            .duration(bookingDetail.getDuration())
+                            .price(bookingDetail.getPrice())
+                            .build();
+                    bookingDetailResponseDTOList.add(bookingDetailResponseDTO);
+                }
+            }
+
+            adminBookingResponseDTO = AdminBookingResponseDTO.builder()
+                    .address(booking.getAddress())
+                    .description(booking.getDescription())
+                    .place(booking.getPlace())
+                    .sitterName(booking.getSitter().getFullName())
+                    .customerName(booking.getUser().getFullName())
+                    .totalPrice(booking.getTotalPrice())
+                    .totalTime(totalTime)
+                    .bookingDetailResponseDTOList(bookingDetailResponseDTOList)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return adminBookingResponseDTO;
+    }
+
+    @Override
     public List<BookingsResponseDTO> getAllBookingByStatus(String status) {
         List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
         try {
@@ -424,7 +465,7 @@ public class BookingServiceImpl implements BookingService {
             List<BookingDetailResponseDTO> bookingDetailResponseDTOList = new ArrayList<>();
             List<BookingDetail> bookingDetails = booking.getBookingDetails();
             if (bookingDetails.isEmpty()) {
-                bookingImgResponseDTOList = null;
+                bookingDetailResponseDTOList = null;
             } else {
                 for (BookingDetail bookingDetail : bookingDetails
                 ) {

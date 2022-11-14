@@ -3,6 +3,7 @@ package elderlysitter.capstone.services;
 import elderlysitter.capstone.dto.BookingDTO;
 import elderlysitter.capstone.dto.request.AddBookingImgRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
+import elderlysitter.capstone.dto.response.AdminBookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingsResponseDTO;
 
@@ -15,6 +16,8 @@ public interface BookingService {
     List<BookingsResponseDTO> getAllBooking();
 
     BookingResponseDTO getBookingById(Long id);
+
+    AdminBookingResponseDTO getBookingByIdForAdmin(Long id);
 
     List<BookingsResponseDTO> getAllBookingByStatus(String status);
 

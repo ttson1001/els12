@@ -62,11 +62,30 @@ public class BookingController {
     }
 
     @GetMapping("get-by-id/{id}")
-    @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','SITTER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER','SITTER')")
     public ResponseEntity<ResponseDTO> getBookingById(@PathVariable Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             BookingResponseDTO bookingResponseDTO = bookingService.getBookingById(id);
+            if (bookingResponseDTO != null) {
+                responseDTO.setData(bookingResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.FIND_BOOKING_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_BOOKING_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("get-by-id-for-admin/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getBookingByIdForAdmin(@PathVariable Long id) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            BookingResponseDTO bookingResponseDTO = bookingService.getBookingByIdForAdmin(id);
             if (bookingResponseDTO != null) {
                 responseDTO.setData(bookingResponseDTO);
                 responseDTO.setSuccessCode(SuccessCode.FIND_BOOKING_SUCCESS);
