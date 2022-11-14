@@ -86,8 +86,9 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                 booking.setTotalPrice(total.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
                 booking.setDeposit(deposit.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
                 bookingRepository.save(booking);
+            }else {
+//                bookingRepository.
             }
-
 
 
 

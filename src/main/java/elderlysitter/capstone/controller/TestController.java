@@ -3,13 +3,14 @@ package elderlysitter.capstone.controller;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.entities.Role;
 import elderlysitter.capstone.entities.Service;
+import elderlysitter.capstone.entities.SitterService;
 import elderlysitter.capstone.entities.User;
-import elderlysitter.capstone.repository.BookingRepository;
-import elderlysitter.capstone.repository.RoleRepository;
-import elderlysitter.capstone.repository.ServiceRepository;
-import elderlysitter.capstone.repository.UserRepository;
+import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.BookingService;
+import elderlysitter.capstone.services.RatingService;
 import elderlysitter.capstone.services.ServiceService;
+import elderlysitter.capstone.servicesImpl.RatingServiceImpl;
+import elderlysitter.capstone.servicesImpl.SitterServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,9 @@ public class TestController {
     @Autowired
     ServiceService service;
 
+    @Autowired
+    SitterServiceImpl sitterService;
+
     @GetMapping
     @PermitAll
 
@@ -60,10 +64,11 @@ public class TestController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> test1(@RequestBody LocalDateTime start) {
+    public ResponseEntity<ResponseDTO> test1() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            responseDTO.setData(start);
+
+            responseDTO.setData(sitterService.averageStarOfSitter("son"));
         } catch (Exception e) {
             e.printStackTrace();
         }

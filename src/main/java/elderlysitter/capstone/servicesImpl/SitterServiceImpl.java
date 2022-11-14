@@ -273,11 +273,11 @@ public class SitterServiceImpl implements SitterService {
         return sitterDTO;
     }
 
-    private Float averageStarOfSitter(String email) {
+    public Float averageStarOfSitter(String email) {
         Float star = 0F;
         try {
             List<Rating> ratings = ratingRepository.findAllBySitter_Email(email);
-            if(ratings != null) {
+            if(!ratings.isEmpty()) {
                 for (Rating rating : ratings) {
                     star = star + rating.getStar();
                 }
@@ -290,4 +290,5 @@ public class SitterServiceImpl implements SitterService {
         return star;
 
     }
+
 }
