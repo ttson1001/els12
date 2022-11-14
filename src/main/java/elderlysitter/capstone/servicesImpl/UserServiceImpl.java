@@ -32,11 +32,10 @@ public class UserServiceImpl implements UserService {
         try {
             List<User> users = userRepository.findAllByRole_Name("SITTER");
             int count = 0;
-            int flag = 0;
             for (User user : users
             ) {
-                if (email.equalsIgnoreCase(user.getEmail())){flag = 1;}
-                if(flag != 1){
+                if (email.equalsIgnoreCase(user.getEmail())){}
+                else {
                     List<SitterService> sitterServices = user.getSitterProfile().getSitterService();
                     for (SitterService sitterService : sitterServices) {
                         for (AddBookingServiceRequestDTO addbookingServiceRequestDTO : addBookingServiceRequestDTOS) {

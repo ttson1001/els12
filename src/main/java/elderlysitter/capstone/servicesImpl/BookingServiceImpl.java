@@ -216,7 +216,7 @@ public class BookingServiceImpl implements BookingService {
         BookingDTO bookingDTO = null;
         try {
             Booking booking = bookingRepository.findById(id).get();
-            booking.setStatus(StatusCode.WAITING_FOR_SITTER.toString());
+            booking.setStatus(StatusCode.WAITING_FOR_DATE.toString());
             booking = bookingRepository.save(booking);
             bookingDTO = convertBookingToBookingDTO(booking);
         }catch (Exception e){
