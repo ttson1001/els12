@@ -59,6 +59,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Elder> elders;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<SitterCancel> SitterCancel;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
@@ -72,4 +76,6 @@ public class User {
     @JsonIgnore
     @OneToOne(mappedBy = "user")
     private SitterProfile sitterProfile;
+
+
 }

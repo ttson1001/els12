@@ -6,8 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -80,6 +78,12 @@ public class Booking {
     @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<BookingImg> bookingImgs;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "booking")
+    private List<SitterCancel> sitterCancels;
+
+
 
 
 

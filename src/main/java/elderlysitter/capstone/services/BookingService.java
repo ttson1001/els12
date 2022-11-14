@@ -33,4 +33,6 @@ public interface BookingService {
     BigDecimal sumDeposit(String startDateTime, String endDateTime);
 
     BookingsResponseDTO checkBookingForCustomer(Long bookingId);
+
+
 }

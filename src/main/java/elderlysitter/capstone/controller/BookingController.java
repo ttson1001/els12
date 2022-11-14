@@ -98,7 +98,7 @@ public class BookingController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("accept/{id}")
+    @PutMapping("accept/{id}")
     @PreAuthorize("hasRole('SITTER')")
     public ResponseEntity<ResponseDTO> acceptBookingForSitter(@PathVariable Long id) {
         ResponseDTO responseDTO = new ResponseDTO();

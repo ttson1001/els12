@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import java.util.List;
 
 @RestController
@@ -39,7 +40,7 @@ public class CategoryController {
     }
 
     @GetMapping("categories")
-    @PreAuthorize("hasAnyRole('ADMIN','SITTER','CUSTOMER')")
+    @PermitAll
     public ResponseEntity<ResponseDTO> getAllCategory(){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
