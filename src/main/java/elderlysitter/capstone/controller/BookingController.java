@@ -5,6 +5,7 @@ import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.request.AddBookingImgRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.request.DateRequestDTO;
+import elderlysitter.capstone.dto.response.AdminBookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingsResponseDTO;
 import elderlysitter.capstone.enumCode.ErrorCode;
@@ -85,9 +86,9 @@ public class BookingController {
     public ResponseEntity<ResponseDTO> getBookingByIdForAdmin(@PathVariable Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            BookingResponseDTO bookingResponseDTO = bookingService.getBookingByIdForAdmin(id);
-            if (bookingResponseDTO != null) {
-                responseDTO.setData(bookingResponseDTO);
+            AdminBookingResponseDTO adminBookingResponseDTO = bookingService.getBookingByIdForAdmin(id);
+            if (adminBookingResponseDTO != null) {
+                responseDTO.setData(adminBookingResponseDTO);
                 responseDTO.setSuccessCode(SuccessCode.FIND_BOOKING_SUCCESS);
             } else {
                 responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
