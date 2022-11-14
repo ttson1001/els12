@@ -1,9 +1,9 @@
 package elderlysitter.capstone.servicesImpl;
 
 import elderlysitter.capstone.dto.request.AddBookingServiceRequestDTO;
-import elderlysitter.capstone.dto.response.BookingResponseDTO;
 import elderlysitter.capstone.dto.response.SitterCancelResponseDTO;
 import elderlysitter.capstone.entities.*;
+import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.SitterCancelService;
 import elderlysitter.capstone.services.UserService;
@@ -45,11 +45,7 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                     .bookingName(sitterCancel.getBooking().getName())
                     .sitterName(sitterCancel.getUser().getFullName())
                     .build();
-            User sitter = changeSitter(booking);
-
-
-
-
+            changeSitter(booking);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -57,6 +53,7 @@ public class SitterCancelServiceImpl implements SitterCancelService {
     }
 
     private User changeSitter(Booking booking){
+
         User sitter = null;
         try {
             List<AddBookingServiceRequestDTO> addBookingServiceRequestDTOS = new ArrayList<>();
@@ -83,17 +80,21 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                     bookingDetail.setPrice(price.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
                     bookingDetailRepository.save(bookingDetail);
                 }
+                booking.setSitter(sitter);
                 booking.setTotalPrice(total.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
                 booking.setDeposit(deposit.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
                 bookingRepository.save(booking);
             }else {
-//                bookingRepository.
+                booking.setSitter(null);
+                booking.setTotalPrice(null);
+                booking.setStatus(StatusCode.SITTER_NOT_FOUND.toString());
+                booking.setDeposit(null);
+                for (BookingDetail bookingDetail: bookingDetails) {
+                    bookingDetail.setPrice(null);
+                    bookingDetailRepository.save(bookingDetail);
+                }
+                bookingRepository.save(booking);
             }
-
-
-
-
-
 
         }catch (Exception e){
             e.printStackTrace();
