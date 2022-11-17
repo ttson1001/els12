@@ -106,9 +106,9 @@ public class BookingServiceImpl implements BookingService {
             for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
                 SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), addBookingServiceRequestDTO.getId());
                 Long commission = sitterService.getService().getCommission();
-                deposit = deposit.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(60))).multiply((BigDecimal.valueOf(commission).divide(BigDecimal.valueOf(100)))));
+                deposit = deposit.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))).multiply((BigDecimal.valueOf(commission).divide(BigDecimal.valueOf(100)))));
                 deposit = deposit.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size()));
-                total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(60))));
+                total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
             }
 
             Booking booking = Booking.builder()

@@ -16,4 +16,7 @@ public class BookingImgResponseDTO {
     private LocalDateTime localDateTime;
 
     private String url;
+//
+//    private String checkInUrl;
+//    private String checkOutUrl;
 }
