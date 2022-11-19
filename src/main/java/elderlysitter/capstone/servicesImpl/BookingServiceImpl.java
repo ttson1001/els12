@@ -195,6 +195,8 @@ public class BookingServiceImpl implements BookingService {
             Long totalTime = 0L;
             Booking booking = bookingRepository.findById(id).get();
             List<BookingDetailResponseDTO> bookingDetailResponseDTOList = new ArrayList<>();
+            List<BookingImgResponseDTO> bookingImgResponseDTOList = new ArrayList<>();
+            List<BookingImg> bookingImgs = booking.getBookingImgs();
             List<BookingDetail> bookingDetails = booking.getBookingDetails();
             if (bookingDetails.isEmpty()) {
                 bookingDetailResponseDTOList = null;
@@ -212,6 +214,19 @@ public class BookingServiceImpl implements BookingService {
                     bookingDetailResponseDTOList.add(bookingDetailResponseDTO);
                 }
             }
+            if(bookingImgs.isEmpty()){
+                bookingImgResponseDTOList = null;
+            } else {
+                for ( BookingImg bookingImg: bookingImgs
+                     ) {
+                    BookingImgResponseDTO bookingImgResponseDTO = BookingImgResponseDTO.builder()
+                            .localDateTime(bookingImg.getLocalDateTime())
+                            .checkInUrl(bookingImg.getCheckInUrl())
+                            .checkOutUrl(bookingImg.getCheckOutUrl())
+                            .build();
+                    bookingImgResponseDTOList.add(bookingImgResponseDTO);
+                }
+            }
 
             adminBookingResponseDTO = AdminBookingResponseDTO.builder()
                     .address(booking.getAddress())
@@ -224,6 +239,7 @@ public class BookingServiceImpl implements BookingService {
                     .startDate(booking.getWorkingTimes().get(0).getStartDateTime().toLocalDate())
                     .endDate(booking.getWorkingTimes().get(booking.getWorkingTimes().size()-1).getEndDateTime().toLocalDate())
                     .bookingDetailResponseDTOList(bookingDetailResponseDTOList)
+                    .bookingImgResponseDTOList(bookingImgResponseDTOList)
                     .build();
         } catch (Exception e) {
             e.printStackTrace();

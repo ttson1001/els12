@@ -51,7 +51,9 @@ public enum SuccessCode {
 
     CHECK_BOOKING_SUCCESS,
     CHECK_OUT_SUCCESS,
-    RATE_SUCCESS
+    RATE_SUCCESS,
+
+    REPORT_SUCCESS
 
 
 

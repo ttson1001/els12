@@ -24,5 +24,6 @@ public class AdminBookingResponseDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private List<BookingDetailResponseDTO> bookingDetailResponseDTOList;
+    private List<BookingImgResponseDTO> bookingImgResponseDTOList;
 
 }

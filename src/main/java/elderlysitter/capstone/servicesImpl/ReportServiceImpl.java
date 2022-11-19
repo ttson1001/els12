@@ -10,7 +10,9 @@ import elderlysitter.capstone.repository.BookingRepository;
 import elderlysitter.capstone.repository.ReportRepository;
 import elderlysitter.capstone.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReportServiceImpl implements ReportService {
     @Autowired
     ReportRepository reportRepository;

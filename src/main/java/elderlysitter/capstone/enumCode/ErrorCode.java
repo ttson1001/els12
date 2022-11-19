@@ -67,7 +67,9 @@ public enum ErrorCode {
     RATE_FAIL,
     RATE_ERROR,
     SITTER_CANCEL_ERROR,
-    SITTER_CANCEL_FAIL
+    SITTER_CANCEL_FAIL,
+    REPORT_FAIL,
+    REPORT_ERROR
 
 
 
