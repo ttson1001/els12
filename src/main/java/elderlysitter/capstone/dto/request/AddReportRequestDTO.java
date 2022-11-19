@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddRatingRequestDTO {
+public class AddReportRequestDTO {
     private Long bookingId;
-    private Float star;
     private String comment;
-    private Boolean diligent;
-    private Boolean onTime;
-    private Boolean enthusiasm;
 }

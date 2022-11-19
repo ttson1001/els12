@@ -25,6 +25,12 @@ public class Rating {
     @ManyToOne(fetch = FetchType.EAGER)
     private  User sitter;
 
+    private Boolean diligent;
+
+    private Boolean onTime;
+
+    private Boolean enthusiasm;
+
     private String comment;
     private Float star;
 

@@ -13,5 +13,8 @@ import lombok.NoArgsConstructor;
 public class RatingResponseDTO {
     private SitterDTO sitterDTO;
     private String comment;
+    private Boolean diligent;
+    private Boolean onTime;
+    private Boolean enthusiasm;
     private Float rate;
 }

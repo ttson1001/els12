@@ -41,12 +41,18 @@ public class RatingServiceImpl implements RatingService {
                     .booking(booking)
                     .sitter(booking.getSitter())
                     .star(addRatingRequestDTO.getStar())
+                    .onTime(addRatingRequestDTO.getOnTime())
+                    .diligent(addRatingRequestDTO.getDiligent())
+                    .enthusiasm(addRatingRequestDTO.getEnthusiasm())
                     .comment(addRatingRequestDTO.getComment())
                     .build();
             rating = ratingRepository.save(rating);
             ratingResponseDTO = RatingResponseDTO.builder()
                     .sitterDTO(sitterDTO)
                     .rate(rating.getStar())
+                    .onTime(rating.getOnTime())
+                    .diligent(rating.getDiligent())
+                    .enthusiasm(rating.getEnthusiasm())
                     .comment(rating.getComment())
                     .build();
         }catch (Exception e){
