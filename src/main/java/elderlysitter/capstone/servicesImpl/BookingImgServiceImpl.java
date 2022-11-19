@@ -29,7 +29,7 @@ public class BookingImgServiceImpl implements BookingImgService {
             Booking booking = bookingRepository.findById(addBookingImgRequestDTO.getBookingId()).get();
             BookingImg bookingImg = BookingImg.builder()
                     .booking(booking)
-                    .url(addBookingImgRequestDTO.getUrl())
+                    .checkInUrl(addBookingImgRequestDTO.getUrl())
                     .localDateTime(LocalDateTime.now())
                     .build();
             bookingImg = bookingImgRepository.save(bookingImg);
@@ -37,7 +37,7 @@ public class BookingImgServiceImpl implements BookingImgService {
             bookingRepository.save(booking);
             bookingImgResponseDTO = BookingImgResponseDTO.builder()
                     .localDateTime(bookingImg.getLocalDateTime())
-                    .url(bookingImg.getUrl())
+                    .checkInUrl(bookingImg.getCheckInUrl())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,11 +52,8 @@ public class BookingImgServiceImpl implements BookingImgService {
         try {
             Booking booking = bookingRepository.findById(addBookingImgRequestDTO.getBookingId()).get();
             LocalDate endDate = booking.getWorkingTimes().get(booking.getWorkingTimes().size() - 1).getEndDateTime().toLocalDate();
-            BookingImg bookingImg = BookingImg.builder()
-                    .booking(booking)
-                    .url(addBookingImgRequestDTO.getUrl())
-                    .localDateTime(LocalDateTime.now())
-                    .build();
+            BookingImg bookingImg = bookingImgRepository.findByBooking_Id(addBookingImgRequestDTO.getBookingId());
+            bookingImg.setCheckOutUrl(addBookingImgRequestDTO.getUrl());
             bookingImg = bookingImgRepository.save(bookingImg);
             if (now.isEqual(endDate)) {
                 booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_CHECK.toString());
@@ -66,7 +63,7 @@ public class BookingImgServiceImpl implements BookingImgService {
             bookingRepository.save(booking);
             bookingImgResponseDTO = BookingImgResponseDTO.builder()
                     .localDateTime(bookingImg.getLocalDateTime())
-                    .url(bookingImg.getUrl())
+                    .checkOutUrl(bookingImg.getCheckOutUrl())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();

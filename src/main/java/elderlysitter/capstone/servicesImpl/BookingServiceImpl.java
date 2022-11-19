@@ -450,7 +450,8 @@ public class BookingServiceImpl implements BookingService {
                 ) {
                     BookingImgResponseDTO bookingImgResponseDTO = BookingImgResponseDTO.builder()
                             .localDateTime(bookingImg.getLocalDateTime())
-                            .url(bookingImg.getUrl())
+                            .checkInUrl(bookingImg.getCheckInUrl())
+                            .checkOutUrl(bookingImg.getCheckOutUrl())
                             .build();
                     bookingImgResponseDTOList.add(bookingImgResponseDTO);
                 }
