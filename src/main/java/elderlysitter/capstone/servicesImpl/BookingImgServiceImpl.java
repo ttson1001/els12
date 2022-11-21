@@ -4,15 +4,18 @@ import elderlysitter.capstone.dto.request.AddBookingImgRequestDTO;
 import elderlysitter.capstone.dto.response.BookingImgResponseDTO;
 import elderlysitter.capstone.entities.Booking;
 import elderlysitter.capstone.entities.BookingImg;
+import elderlysitter.capstone.entities.WorkingTime;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.BookingImgRepository;
 import elderlysitter.capstone.repository.BookingRepository;
+import elderlysitter.capstone.repository.WorkingTimeRepository;
 import elderlysitter.capstone.services.BookingImgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class BookingImgServiceImpl implements BookingImgService {
@@ -21,6 +24,9 @@ public class BookingImgServiceImpl implements BookingImgService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private WorkingTimeRepository workingTimeRepository;
 
     @Override
     public BookingImgResponseDTO checkIn(AddBookingImgRequestDTO addBookingImgRequestDTO) {
@@ -59,6 +65,14 @@ public class BookingImgServiceImpl implements BookingImgService {
                 booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_CHECK.toString());
             } else {
                 booking.setStatus(StatusCode.WAITING_FOR_NEXT_DATE.toString());
+            }
+            List<WorkingTime> workingTimes = booking.getWorkingTimes();
+            for (WorkingTime workingTime : workingTimes
+            ) {
+                if(workingTime.getEndDateTime().toLocalDate().isEqual(now)){
+                    workingTime.setStatus("DONE");
+                    workingTimeRepository.save(workingTime);
+                }
             }
             bookingRepository.save(booking);
             bookingImgResponseDTO = BookingImgResponseDTO.builder()

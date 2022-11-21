@@ -1,8 +1,8 @@
 package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.BookingDTO;
+import elderlysitter.capstone.dto.PayForSitterDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
-import elderlysitter.capstone.dto.request.AddBookingImgRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.request.DateRequestDTO;
 import elderlysitter.capstone.dto.response.AdminBookingResponseDTO;
@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -260,6 +261,32 @@ public class BookingController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("pay-for-sitter/{bookingId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> payForSitter(@PathVariable Long bookingId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            BigDecimal bigDecimal = bookingService.payForSitter(bookingId);
+            PayForSitterDTO payForSitterDTO = PayForSitterDTO.builder()
+                    .totalSitter(bigDecimal)
+                    .build();
+            if (payForSitterDTO != null) {
+                responseDTO.setData(payForSitterDTO);
+                responseDTO.setSuccessCode(SuccessCode.PAID_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.PAID_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.PAID_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
+
+
 
 
 }

@@ -12,5 +12,7 @@ public interface UserService {
 
     User loginByGmail(LoginGmailRequestDTO loginGmailRequestDTO);
 
+    User forgotPassword(String email);
+
 
 }

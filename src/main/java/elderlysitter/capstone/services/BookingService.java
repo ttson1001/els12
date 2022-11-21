@@ -1,16 +1,20 @@
 package elderlysitter.capstone.services;
 
 import elderlysitter.capstone.dto.BookingDTO;
+import elderlysitter.capstone.dto.ReduceDateDTO;
 import elderlysitter.capstone.dto.request.AddBookingImgRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.response.AdminBookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingResponseDTO;
 import elderlysitter.capstone.dto.response.BookingsResponseDTO;
+import elderlysitter.capstone.entities.WorkingTime;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface BookingService {
+
+    BigDecimal payForSitter(Long bookingId);
     BookingDTO addBooking(AddBookingRequestDTO addBookingRequestDTO);
 
     List<BookingsResponseDTO> getAllBooking();

@@ -3,9 +3,7 @@ package elderlysitter.capstone.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @AllArgsConstructor
 @Entity
@@ -30,4 +28,5 @@ public class WorkingTime {
 
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
+    private String status;
 }

@@ -1,5 +1,6 @@
 package elderlysitter.capstone.controller;
 
+import elderlysitter.capstone.dto.ForgotPasswordDTO;
 import elderlysitter.capstone.dto.request.LoginGmailRequestDTO;
 import elderlysitter.capstone.services.UserService;
 import elderlysitter.capstone.dto.request.LoginRequestDTO;
@@ -92,7 +93,7 @@ public class AuthenController {
             SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("CUSTOMER");
             simpleGrantedAuthorities.add(simpleGrantedAuthority);
             User user = userServices.loginByGmail(loginGmailRequestDTO);
-            Authentication authenticate = new UsernamePasswordAuthenticationToken(user.getEmail(),null);
+            Authentication authenticate = new UsernamePasswordAuthenticationToken(user.getEmail(), null);
             if (user != null) {
                 System.out.println(authenticate.getName());
                 User userAuthenticated = userServices.findByEmail(authenticate.getName());
@@ -116,12 +117,30 @@ public class AuthenController {
             } else {
                 responseDTO.setErrorCode(ErrorCode.LOGIN_FAIL);
             }
-            }catch(Exception e){
-                e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-        return ResponseEntity.ok().body(responseDTO);
         }
-
-
+        return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PutMapping("forgot-password")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> forgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            User user = userServices.forgotPassword(forgotPasswordDTO.getEmail());
+            if (user != null) {
+                responseDTO.setData(user);
+                responseDTO.setSuccessCode(SuccessCode.FORGOT_PASSWORD_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.FORGOT_PASSWORD_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FORGOT_PASSWORD_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+}

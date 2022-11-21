@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 
 public enum SuccessCode {
+    REDUCE_SUCCESS,
+    FIND_ALL_WORKING_TIME_SUCCESS,
+    FORGOT_PASSWORD_SUCCESS,
     LOGIN_SUCCESS,
     SITTER_CANCEL_SUCCESS,
     ADD_ELDER_SUCCESS,

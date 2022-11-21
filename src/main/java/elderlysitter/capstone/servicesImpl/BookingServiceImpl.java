@@ -1,6 +1,7 @@
 package elderlysitter.capstone.servicesImpl;
 
 import elderlysitter.capstone.dto.BookingDTO;
+import elderlysitter.capstone.dto.ReduceDateDTO;
 import elderlysitter.capstone.dto.SitterDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingServiceRequestDTO;
@@ -47,6 +48,24 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     WorkingTimeRepository workingTimeRepository;
 
+
+    @Override
+    public BigDecimal payForSitter(Long bookingId) {
+        BigDecimal sitterTotal = BigDecimal.valueOf(0);
+        BigDecimal workingTime = BigDecimal.valueOf(workingTimeRepository.findAllByBooking_IdAndStatus(bookingId,"DONE").size());
+        try {
+            Booking booking = bookingRepository.findById(bookingId).get();
+            BigDecimal total = booking.getTotalPrice().divide(BigDecimal.valueOf(booking.getWorkingTimes().size()));
+            BigDecimal deposit = booking.getDeposit().divide(BigDecimal.valueOf(booking.getWorkingTimes().size()));
+            total = total.multiply(workingTime);
+            deposit =deposit.multiply(workingTime);
+            sitterTotal = total.add(deposit);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return sitterTotal;
+    }
+
     @Override
     public BookingDTO addBooking(AddBookingRequestDTO addBookingRequestDTO) {
         UUID uuid = UUID.randomUUID();
@@ -88,6 +107,7 @@ public class BookingServiceImpl implements BookingService {
                             .booking(newBooking)
                             .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
                             .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
+                            .status("ACTIVATE")
                             .build();
                     workingTimeRepository.save(workingTime);
                 }
@@ -117,15 +137,15 @@ public class BookingServiceImpl implements BookingService {
                     .build();
             bookingRepository.save(booking);
             Booking newBooking = bookingRepository.findBookingByName(booking.getName());
-            for (AddBookingServiceRequestDTO addBookingServiceRequestDTO: addBookingServiceRequestDTOS ) {
+            for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
                 Service service = serviceRepository.findById(addBookingServiceRequestDTO.getId()).get();
-                SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(),service.getId());
+                SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), service.getId());
                 BigDecimal price = (sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
                 BookingDetail bookingDetail = BookingDetail.builder()
                         .booking(newBooking)
                         .service(service)
                         .commission(service.getCommission())
-                        .duration(addBookingServiceRequestDTO.getDuration()* addWorkingTimesRequestDTOS.size())
+                        .duration(addBookingServiceRequestDTO.getDuration() * addWorkingTimesRequestDTOS.size())
                         .price(price.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
                         .build();
                 bookingDetailRepository.save(bookingDetail);
@@ -135,6 +155,7 @@ public class BookingServiceImpl implements BookingService {
                         .booking(newBooking)
                         .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
                         .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
+                        .status("ACTIVATE")
                         .build();
                 workingTimeRepository.save(workingTime);
             }
@@ -155,7 +176,7 @@ public class BookingServiceImpl implements BookingService {
                 BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
                         .id(booking.getId())
                         .name(booking.getName())
-                        .sitterName(booking.getSitter()== null?null: booking.getSitter().getFullName())
+                        .sitterName(booking.getSitter() == null ? null : booking.getSitter().getFullName())
                         .place(booking.getPlace())
                         .deposit(booking.getDeposit())
                         .totalPrice(booking.getTotalPrice())
@@ -207,11 +228,11 @@ public class BookingServiceImpl implements BookingService {
                     bookingDetailResponseDTOList.add(bookingDetailResponseDTO);
                 }
             }
-            if(bookingImgs.isEmpty()){
+            if (bookingImgs.isEmpty()) {
                 bookingImgResponseDTOList = null;
             } else {
-                for ( BookingImg bookingImg: bookingImgs
-                     ) {
+                for (BookingImg bookingImg : bookingImgs
+                ) {
                     BookingImgResponseDTO bookingImgResponseDTO = BookingImgResponseDTO.builder()
                             .localDateTime(bookingImg.getLocalDateTime())
                             .checkInUrl(bookingImg.getCheckInUrl())
@@ -230,7 +251,7 @@ public class BookingServiceImpl implements BookingService {
                     .totalPrice(booking.getTotalPrice())
                     .totalTime(totalTime)
                     .startDate(booking.getWorkingTimes().get(0).getStartDateTime().toLocalDate())
-                    .endDate(booking.getWorkingTimes().get(booking.getWorkingTimes().size()-1).getEndDateTime().toLocalDate())
+                    .endDate(booking.getWorkingTimes().get(booking.getWorkingTimes().size() - 1).getEndDateTime().toLocalDate())
                     .bookingDetailResponseDTOList(bookingDetailResponseDTOList)
                     .bookingImgResponseDTOList(bookingImgResponseDTOList)
                     .build();
@@ -271,7 +292,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_PAYMENT.toString());
             booking = bookingRepository.save(booking);
             bookingDTO = convertBookingToBookingDTO(booking);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return bookingDTO;
@@ -286,7 +307,7 @@ public class BookingServiceImpl implements BookingService {
                 BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
                         .id(booking.getId())
                         .name(booking.getName())
-                        .sitterName(booking.getSitter()==null?null:booking.getSitter().getFullName())
+                        .sitterName(booking.getSitter() == null ? null : booking.getSitter().getFullName())
                         .place(booking.getPlace())
                         .deposit(booking.getDeposit())
                         .totalPrice(booking.getTotalPrice())
@@ -309,7 +330,7 @@ public class BookingServiceImpl implements BookingService {
                 BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
                         .id(booking.getId())
                         .name(booking.getName())
-                        .sitterName(booking.getSitter()==null?null:booking.getSitter().getFullName())
+                        .sitterName(booking.getSitter() == null ? null : booking.getSitter().getFullName())
                         .place(booking.getPlace())
                         .deposit(booking.getDeposit())
                         .totalPrice(booking.getTotalPrice())
@@ -327,12 +348,12 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingsResponseDTO> findAllByCustomerEmailAndStatus(String customerEmail, String status) {
         List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
         try {
-            List<Booking> bookings = bookingRepository.findAllByUser_EmailAndStatus(customerEmail,status);
+            List<Booking> bookings = bookingRepository.findAllByUser_EmailAndStatus(customerEmail, status);
             for (Booking booking : bookings) {
                 BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
                         .id(booking.getId())
                         .name(booking.getName())
-                        .sitterName(booking.getSitter()==null?null:booking.getSitter().getFullName())
+                        .sitterName(booking.getSitter() == null ? null : booking.getSitter().getFullName())
                         .place(booking.getPlace())
                         .deposit(booking.getDeposit())
                         .totalPrice(booking.getTotalPrice())
@@ -350,12 +371,12 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingsResponseDTO> findAllBySitter_EmailAndStatus(String sitterEmail, String status) {
         List<BookingsResponseDTO> bookingsResponseDTOS = new ArrayList<>();
         try {
-            List<Booking> bookings = bookingRepository.findAllBySitter_EmailAndStatus(sitterEmail,status);
+            List<Booking> bookings = bookingRepository.findAllBySitter_EmailAndStatus(sitterEmail, status);
             for (Booking booking : bookings) {
                 BookingsResponseDTO bookingsResponseDTO = BookingsResponseDTO.builder()
                         .id(booking.getId())
                         .name(booking.getName())
-                        .sitterName(booking.getSitter()==null?null:booking.getSitter().getFullName())
+                        .sitterName(booking.getSitter() == null ? null : booking.getSitter().getFullName())
                         .place(booking.getPlace())
                         .deposit(booking.getDeposit())
                         .totalPrice(booking.getTotalPrice())
@@ -373,8 +394,8 @@ public class BookingServiceImpl implements BookingService {
     public Long countBooking(String startDate, String endDate) {
         Long count = 0l;
         try {
-             count = bookingRepository.countBookingOnMonth(LocalDate.parse(startDate), LocalDate.parse(endDate));
-        }catch (Exception e){
+            count = bookingRepository.countBookingOnMonth(LocalDate.parse(startDate), LocalDate.parse(endDate));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return count;
@@ -385,7 +406,7 @@ public class BookingServiceImpl implements BookingService {
         BigDecimal sum = BigDecimal.valueOf(0);
         try {
             sum = bookingRepository.totalRevenue(LocalDate.parse(startDate), LocalDate.parse(endDate));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return sum;
@@ -407,7 +428,7 @@ public class BookingServiceImpl implements BookingService {
                     .totalPrice(booking.getTotalPrice())
                     .status(booking.getStatus())
                     .build();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return bookingsResponseDTO;
@@ -601,7 +622,6 @@ public class BookingServiceImpl implements BookingService {
         }
         return bookingDTO;
     }
-
 
 
 }
