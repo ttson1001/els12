@@ -2,19 +2,26 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.request.DateRequestDTO;
+import elderlysitter.capstone.dto.request.LoginRequestDTO;
 import elderlysitter.capstone.entities.Role;
 import elderlysitter.capstone.entities.Service;
 import elderlysitter.capstone.entities.SitterService;
 import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.jwt.JwtConfig;
 import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.BookingService;
 import elderlysitter.capstone.services.RatingService;
 import elderlysitter.capstone.services.ServiceService;
+import elderlysitter.capstone.services.UserService;
 import elderlysitter.capstone.servicesImpl.RatingServiceImpl;
 import elderlysitter.capstone.servicesImpl.SitterServiceImpl;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -46,6 +54,13 @@ public class TestController {
 
     @Autowired
     SitterServiceImpl sitterService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    private JwtConfig jwtConfig;
 
     @GetMapping
     @PermitAll
@@ -53,9 +68,9 @@ public class TestController {
     public ResponseEntity<ResponseDTO> test() {
         String password = "12345678";
         ResponseDTO responseDTO = new ResponseDTO();
-        User user = userRepository.findUserByEmail("somith727@gmail.com");
+//        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
-            boolean s = passwordEncoder.matches(password, user.getPassword());
+            boolean s = passwordEncoder.matches(passwordEncoder.encode(password),passwordEncoder.encode(password));
             responseDTO.setData(s);
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,6 +127,7 @@ public class TestController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @GetMapping("revenue/{startDate}/{endDate}")
     @PermitAll
     public ResponseEntity<ResponseDTO> test4(@PathVariable String startDate, @PathVariable String endDate) {
@@ -136,6 +152,29 @@ public class TestController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+
+//    @PostMapping("Son")
+//    @PermitAll
+//    public ResponseEntity<ResponseDTO> test6(@RequestBody LoginRequestDTO user) {
+//        ResponseDTO responseDTO = new ResponseDTO();
+//        User user1 = userService.findByEmail(user.getEmail());
+//        user1.
+//        try {
+//            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword());
+//            Authentication authenticate = authenticationManager.authenticate(authentication);
+//            User userAuthenticated = userService.findByEmail(authenticate.getName());
+//            System.out.println(userAuthenticated.getEmail());
+//            String token = Jwts.builder().setSubject(authenticate.getName())
+//                    .claim(("authorities"), authenticate.getAuthorities()).claim("id", userAuthenticated.getId())
+//                    .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
+//                    .signWith(jwtConfig.secretKey()).compact();
+//            responseDTO.setData(token);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return  ResponseEntity.ok().body(responseDTO);
+//    }
+
 //    public static void main(String[] args) {
 ////        String date = "2022-11-14T00:00:00";
 ////
@@ -158,7 +197,6 @@ public class TestController {
 //
 //
 //    }
-
 
 
 }

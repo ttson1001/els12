@@ -1,5 +1,6 @@
 package elderlysitter.capstone.controller;
 
+import elderlysitter.capstone.dto.request.LoginGmailRequestDTO;
 import elderlysitter.capstone.services.UserService;
 import elderlysitter.capstone.dto.request.LoginRequestDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("auth")
@@ -44,15 +48,15 @@ public class AuthenController {
 
     @PostMapping()
     @PermitAll
-    public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginRequestDTO user){
+    public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginRequestDTO user) {
         ResponseDTO responseDTO = new ResponseDTO();
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-        try{
+        try {
             Authentication authenticate = authenticationManager.authenticate(authentication);
-            if(authenticate.isAuthenticated()){
+            if (authenticate.isAuthenticated()) {
                 User userAuthenticated = userServices.findByEmail(authenticate.getName());
                 String token = Jwts.builder().setSubject(authenticate.getName())
-                        .claim(("authorities"), authenticate.getAuthorities()).claim("id",userAuthenticated.getId())
+                        .claim(("authorities"), authenticate.getAuthorities()).claim("id", userAuthenticated.getId())
                         .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
                         .signWith(jwtConfig.secretKey()).compact();
 
@@ -69,15 +73,55 @@ public class AuthenController {
                 responseDTO.setData(loginResponseDTO);
                 responseDTO.setSuccessCode(SuccessCode.LOGIN_SUCCESS);
                 return ResponseEntity.ok().body(responseDTO);
-            }else {
+            } else {
                 responseDTO.setErrorCode(ErrorCode.LOGIN_FAIL);
                 return ResponseEntity.ok().body(responseDTO);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
+    @PostMapping("login-gmail")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> loginByGmail(@RequestBody LoginGmailRequestDTO loginGmailRequestDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+            SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("CUSTOMER");
+            simpleGrantedAuthorities.add(simpleGrantedAuthority);
+            User user = userServices.loginByGmail(loginGmailRequestDTO);
+            Authentication authenticate = new UsernamePasswordAuthenticationToken(user.getEmail(),null);
+            if (user != null) {
+                System.out.println(authenticate.getName());
+                User userAuthenticated = userServices.findByEmail(authenticate.getName());
+                String token = Jwts.builder().setSubject(authenticate.getName())
+                        .claim(("authorities"), simpleGrantedAuthorities).claim("id", userAuthenticated.getId())
+                        .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
+                        .signWith(jwtConfig.secretKey()).compact();
 
-}
+                LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder()
+                        .address(userAuthenticated.getAddress())
+                        .fullName(userAuthenticated.getFullName())
+                        .dob(userAuthenticated.getDob())
+                        .phone(userAuthenticated.getPhone())
+                        .gender(userAuthenticated.getGender())
+                        .email(userAuthenticated.getEmail())
+                        .role(userAuthenticated.getRole().getName())
+                        .token(jwtConfig.getTokenPrefix() + token).build();
+
+                responseDTO.setData(loginResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.LOGIN_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.LOGIN_FAIL);
+            }
+            }catch(Exception e){
+                e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        return ResponseEntity.ok().body(responseDTO);
+        }
+
+
+    }
