@@ -55,7 +55,7 @@ public class WorkingTimeServiceImpl implements WorkingTimeService {
     public List<WorkingTimeDTO> getAllWorkingTimeByBooking_IdAndStatus(Long bookingId, String status) {
         List<WorkingTimeDTO> workingTimeDTOS = new ArrayList<>();
         try {
-        List<WorkingTime>   workingTimes = workingTimeRepository.findAllByBooking_Id(bookingId);
+        List<WorkingTime>   workingTimes = workingTimeRepository.findAllByBooking_IdAndStatus(bookingId,status);
             for (WorkingTime workingTime: workingTimes
                  ) {
                 WorkingTimeDTO workingTimeDTO = WorkingTimeDTO.builder()
