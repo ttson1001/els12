@@ -9,10 +9,7 @@ import elderlysitter.capstone.entities.SitterService;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.jwt.JwtConfig;
 import elderlysitter.capstone.repository.*;
-import elderlysitter.capstone.services.BookingService;
-import elderlysitter.capstone.services.RatingService;
-import elderlysitter.capstone.services.ServiceService;
-import elderlysitter.capstone.services.UserService;
+import elderlysitter.capstone.services.*;
 import elderlysitter.capstone.servicesImpl.RatingServiceImpl;
 import elderlysitter.capstone.servicesImpl.SitterServiceImpl;
 import io.jsonwebtoken.Jwts;
@@ -62,6 +59,9 @@ public class TestController {
     @Autowired
     private JwtConfig jwtConfig;
 
+    @Autowired
+    WorkingTimeService workingTimeService;
+
     @GetMapping
     @PermitAll
 
@@ -71,7 +71,7 @@ public class TestController {
 //        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
             boolean s = passwordEncoder.matches(passwordEncoder.encode(password),passwordEncoder.encode(password));
-            responseDTO.setData(s);
+            responseDTO.setData(workingTimeService.getAllWorkingTimeByBooking_IdAndStatus(1L,"s"));
         } catch (Exception e) {
             e.printStackTrace();
         }

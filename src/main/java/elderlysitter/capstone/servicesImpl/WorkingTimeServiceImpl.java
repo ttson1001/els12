@@ -1,6 +1,7 @@
 package elderlysitter.capstone.servicesImpl;
 
 import elderlysitter.capstone.dto.ReduceDateDTO;
+import elderlysitter.capstone.dto.WorkingTimeDTO;
 import elderlysitter.capstone.entities.WorkingTime;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.WorkingTimeRepository;
@@ -11,44 +12,62 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class WorkingTimeServiceImpl implements WorkingTimeService {
     @Autowired
     private WorkingTimeRepository workingTimeRepository;
 
     @Override
-    public List<WorkingTime> reduceDateFromBooking(ReduceDateDTO reduceDateDTO) {
-        List<WorkingTime> workingTimes = new ArrayList<>();
+    public List<WorkingTimeDTO> reduceDateFromBooking(ReduceDateDTO reduceDateDTO) {
+        List<WorkingTimeDTO> workingTimeDTOS = new ArrayList<>();
         try {
-            workingTimes = workingTimeRepository.findAllByBooking_Id(reduceDateDTO.getBookingId());
+        List<WorkingTime>   workingTimes = workingTimeRepository.findAllByBooking_Id(reduceDateDTO.getBookingId());
             List<LocalDate> localDates = reduceDateDTO.getDate();
-            for (WorkingTime workingTime1 : workingTimes
+            for (WorkingTime workingTime : workingTimes
             ) {
                 for (LocalDate date : localDates
                 ) {
-                    if(workingTime1.getEndDateTime().toLocalDate().isEqual(date)){
-                        workingTime1.setStatus(StatusCode.CANCEL.toString());
-                        workingTimeRepository.save(workingTime1);
+                    if(workingTime.getEndDateTime().toLocalDate().isEqual(date)){
+                        workingTime.setStatus(StatusCode.CANCEL.toString());
+                        workingTimeRepository.save(workingTime);
                     }
                 }
             }
             workingTimes = workingTimeRepository.findAllByBooking_Id(reduceDateDTO.getBookingId());
+            for (WorkingTime workingTime: workingTimes
+            ) {
+                WorkingTimeDTO workingTimeDTO = WorkingTimeDTO.builder()
+                        .bookingId(workingTime.getBooking().getId())
+                        .Date(workingTime.getStartDateTime().toLocalDate())
+                        .status(workingTime.getStatus())
+                        .build();
+                workingTimeDTOS.add(workingTimeDTO);
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
-        return workingTimes;
+        return workingTimeDTOS;
 
     }
 
     @Override
-    public List<WorkingTime> getAllWorkingTimeByBooking_IdAndStatus(Long bookingId, String status) {
-        List<WorkingTime> workingTimes = new ArrayList<>();
+    public List<WorkingTimeDTO> getAllWorkingTimeByBooking_IdAndStatus(Long bookingId, String status) {
+        List<WorkingTimeDTO> workingTimeDTOS = new ArrayList<>();
         try {
-            workingTimes = workingTimeRepository.findAllByBooking_IdAndStatus(bookingId,status);
+        List<WorkingTime>   workingTimes = workingTimeRepository.findAllByBooking_Id(bookingId);
+            for (WorkingTime workingTime: workingTimes
+                 ) {
+                WorkingTimeDTO workingTimeDTO = WorkingTimeDTO.builder()
+                        .bookingId(workingTime.getBooking().getId())
+                        .Date(workingTime.getStartDateTime().toLocalDate())
+                        .status(workingTime.getStatus())
+                        .build();
+                workingTimeDTOS.add(workingTimeDTO);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return workingTimes;
+        return workingTimeDTOS;
     }
 }

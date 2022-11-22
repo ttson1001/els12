@@ -2,6 +2,7 @@ package elderlysitter.capstone.repository;
 
 import elderlysitter.capstone.entities.WorkingTime;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
