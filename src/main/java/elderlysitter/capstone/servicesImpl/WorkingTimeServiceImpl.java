@@ -38,7 +38,7 @@ public class WorkingTimeServiceImpl implements WorkingTimeService {
             ) {
                 WorkingTimeDTO workingTimeDTO = WorkingTimeDTO.builder()
                         .bookingId(workingTime.getBooking().getId())
-                        .Date(workingTime.getStartDateTime().toLocalDate())
+                        .DateTime(workingTime.getStartDateTime())
                         .status(workingTime.getStatus())
                         .build();
                 workingTimeDTOS.add(workingTimeDTO);
@@ -60,7 +60,7 @@ public class WorkingTimeServiceImpl implements WorkingTimeService {
                  ) {
                 WorkingTimeDTO workingTimeDTO = WorkingTimeDTO.builder()
                         .bookingId(workingTime.getBooking().getId())
-                        .Date(workingTime.getStartDateTime().toLocalDate())
+                        .DateTime(workingTime.getStartDateTime())
                         .status(workingTime.getStatus())
                         .build();
                 workingTimeDTOS.add(workingTimeDTO);

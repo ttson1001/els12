@@ -26,4 +26,6 @@ public class SitterCancel {
     @ManyToOne(fetch = FetchType.EAGER)
     private Booking booking;
 
+    private String status;
+
 }

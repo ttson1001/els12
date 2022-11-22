@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -13,6 +13,6 @@ import java.time.LocalDate;
 @Builder
 public class WorkingTimeDTO {
     private Long bookingId;
-    private LocalDate Date;
+    private LocalDateTime DateTime;
     private String status;
 }
