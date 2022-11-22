@@ -29,5 +29,6 @@ public class BookingDetail implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Service service;
     private Long duration;
+    private String serviceName;
     private BigDecimal price;
 }

@@ -97,6 +97,7 @@ public class BookingServiceImpl implements BookingService {
                     BookingDetail bookingDetail = BookingDetail.builder()
                             .booking(newBooking)
                             .service(service)
+                            .serviceName(service.getName())
                             .commission(service.getCommission())
                             .duration(addBookingRequestDTO.getAddBookingServiceRequestDTOS().get(i).getDuration())
                             .build();
@@ -144,6 +145,7 @@ public class BookingServiceImpl implements BookingService {
                 BookingDetail bookingDetail = BookingDetail.builder()
                         .booking(newBooking)
                         .service(service)
+                        .serviceName(service.getName())
                         .commission(service.getCommission())
                         .duration(addBookingServiceRequestDTO.getDuration() * addWorkingTimesRequestDTOS.size())
                         .price(price.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
@@ -504,7 +506,7 @@ public class BookingServiceImpl implements BookingService {
                 ) {
                     BookingDetailResponseDTO bookingDetailResponseDTO = BookingDetailResponseDTO.builder()
                             .id(bookingDetail.getId())
-                            .serviceName(bookingDetail.getService().getName())
+                            .serviceName(bookingDetail.getServiceName())
                             .commission(bookingDetail.getCommission())
                             .duration(bookingDetail.getDuration())
                             .price(bookingDetail.getPrice())
@@ -597,7 +599,7 @@ public class BookingServiceImpl implements BookingService {
             for (BookingDetail bookingDetail : bookingDetails) {
                 BookingDetailResponseDTO bookingDetailResponseDTO = BookingDetailResponseDTO.builder()
                         .id(bookingDetail.getId())
-                        .serviceName(bookingDetail.getService().getName())
+                        .serviceName(bookingDetail.getServiceName())
                         .commission(bookingDetail.getCommission())
                         .duration(bookingDetail.getDuration())
                         .price(bookingDetail.getPrice())
