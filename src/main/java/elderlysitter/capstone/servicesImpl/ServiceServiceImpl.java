@@ -59,7 +59,7 @@ public class ServiceServiceImpl implements ServiceService {
             service.setSitterRequirement(updateServiceRequestDTO.getSitterRequirement());
             service.setDuration(updateServiceRequestDTO.getDuration());
             service.setCommission(updateServiceRequestDTO.getCommission());
-            service.setCategory(categoryRepository.findById(updateServiceRequestDTO.getId()).get());
+            service.setCategory(categoryRepository.findById(updateServiceRequestDTO.getCategoryId()).get());
             service = serviceRepository.save(service);
         }catch (Exception e){
             e.printStackTrace();
