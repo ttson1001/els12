@@ -1,7 +1,6 @@
 package elderlysitter.capstone.servicesImpl;
 
 import elderlysitter.capstone.dto.BookingDTO;
-import elderlysitter.capstone.dto.ReduceDateDTO;
 import elderlysitter.capstone.dto.SitterDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingServiceRequestDTO;
@@ -248,7 +247,7 @@ public class BookingServiceImpl implements BookingService {
                     .address(booking.getAddress())
                     .description(booking.getDescription())
                     .place(booking.getPlace())
-                    .sitterName(booking.getSitter().getFullName())
+                    .sitterName(booking.getSitter() == null ? null : booking.getSitter().getFullName())
                     .customerName(booking.getUser().getFullName())
                     .totalPrice(booking.getTotalPrice())
                     .totalTime(totalTime)
@@ -448,17 +447,20 @@ public class BookingServiceImpl implements BookingService {
                     .healthStatus(booking.getElder().getHealthStatus())
                     .isAllergy(booking.getElder().getIsAllergy())
                     .build();
+            SitterDTO sitterDTO = null;
+            if(booking.getSitter() != null){
+                sitterDTO = SitterDTO.builder()
+                        .id(booking.getSitter().getId())
+                        .fullName(booking.getSitter().getFullName())
+                        .dob(booking.getSitter().getDob())
+                        .gender(booking.getSitter().getGender())
+                        .phone(booking.getSitter().getPhone())
+                        .address(booking.getSitter().getAddress())
+                        .email(booking.getSitter().getEmail())
+                        .avatarImgUrl(booking.getSitter().getAvatarImgUrl())
+                        .build();
+            }
 
-            SitterDTO sitterDTO = SitterDTO.builder()
-                    .id(booking.getSitter().getId())
-                    .fullName(booking.getSitter().getFullName())
-                    .dob(booking.getSitter().getDob())
-                    .gender(booking.getSitter().getGender())
-                    .phone(booking.getSitter().getPhone())
-                    .address(booking.getSitter().getAddress())
-                    .email(booking.getSitter().getEmail())
-                    .avatarImgUrl(booking.getSitter().getAvatarImgUrl())
-                    .build();
 
             CustomerResponseDTO cusResponseDTO = CustomerResponseDTO.builder()
                     .fullName(booking.getUser().getFullName())
