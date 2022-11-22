@@ -107,7 +107,7 @@ public class BookingServiceImpl implements BookingService {
                             .booking(newBooking)
                             .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
                             .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
-                            .status("ACTIVATE")
+                            .status(StatusCode.ACTIVATE.toString())
                             .build();
                     workingTimeRepository.save(workingTime);
                 }
@@ -156,7 +156,7 @@ public class BookingServiceImpl implements BookingService {
                         .booking(newBooking)
                         .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
                         .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
-                        .status("ACTIVATE")
+                        .status(StatusCode.ACTIVATE.toString())
                         .build();
                 workingTimeRepository.save(workingTime);
             }
@@ -221,7 +221,7 @@ public class BookingServiceImpl implements BookingService {
                     totalTime = totalTime + bookingDetail.getDuration();
                     BookingDetailResponseDTO bookingDetailResponseDTO = BookingDetailResponseDTO.builder()
                             .id(bookingDetail.getId())
-                            .serviceName(bookingDetail.getService().getName())
+                            .serviceName(bookingDetail.getServiceName())
                             .commission(bookingDetail.getCommission())
                             .duration(bookingDetail.getDuration())
                             .price(bookingDetail.getPrice())
