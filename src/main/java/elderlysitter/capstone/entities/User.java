@@ -50,6 +50,7 @@ public class User {
 
     private String status;
 
+    private String token;
     @JsonIgnore
     @JoinColumn (name = "role_id")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -76,6 +77,7 @@ public class User {
     @JsonIgnore
     @OneToOne(mappedBy = "user")
     private SitterProfile sitterProfile;
+
 
 
 }

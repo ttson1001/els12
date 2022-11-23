@@ -10,6 +10,7 @@ import elderlysitter.capstone.entities.*;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.BookingService;
+import elderlysitter.capstone.services.NotificationService;
 import elderlysitter.capstone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -47,6 +48,8 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     WorkingTimeRepository workingTimeRepository;
 
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public BigDecimal payForSitter(Long bookingId) {
@@ -111,6 +114,8 @@ public class BookingServiceImpl implements BookingService {
                             .build();
                     workingTimeRepository.save(workingTime);
                 }
+                notificationService.sendNotification(newBooking.getUser().getId(), "Không có sitter nào phù hợp với đơn của bạn \n Hoặc nhân viên chúng tôi hiện chưa thể nhận đơn hàng của bạn","Vui lòng chọn dịch vụ khác hoặc thử lại sao");
+
                 bookingDTO = convertBookingToBookingDTO(newBooking);
                 return bookingDTO;
             }
@@ -160,7 +165,7 @@ public class BookingServiceImpl implements BookingService {
                         .build();
                 workingTimeRepository.save(workingTime);
             }
-
+            notificationService.sendNotification(newBooking.getSitter().getId(), "Bạn nhận được một booking mới","Mau mau kiểm tra lịch trình của bạn");
             bookingDTO = convertBookingToBookingDTO(newBooking);
         } catch (Exception e) {
             e.printStackTrace();
@@ -294,6 +299,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_PAYMENT.toString());
             booking = bookingRepository.save(booking);
             bookingDTO = convertBookingToBookingDTO(booking);
+            notificationService.sendNotification(booking.getUser().getId(), "Sitter đã đồng ý nhận đơn hàng của bạn vui lòng đặt cọc để công việc được thực hiện","Mau mau kiểm tra lịch trình của bạn");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -430,6 +436,7 @@ public class BookingServiceImpl implements BookingService {
                     .totalPrice(booking.getTotalPrice())
                     .status(booking.getStatus())
                     .build();
+            notificationService.sendNotification(booking.getSitter().getId(), "Khánh hàng đã kiểm tra xong công việc của bạn","Mau mau kiểm tra lịch trình của bạn");
         } catch (Exception e) {
             e.printStackTrace();
         }

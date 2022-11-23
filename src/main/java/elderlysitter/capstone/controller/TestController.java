@@ -1,35 +1,23 @@
 package elderlysitter.capstone.controller;
 
+import elderlysitter.capstone.dto.MyNotificationDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
+import elderlysitter.capstone.dto.NotificationResponseDTO;
 import elderlysitter.capstone.dto.request.DateRequestDTO;
-import elderlysitter.capstone.dto.request.LoginRequestDTO;
 import elderlysitter.capstone.entities.Role;
-import elderlysitter.capstone.entities.Service;
-import elderlysitter.capstone.entities.SitterService;
-import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.jwt.JwtConfig;
 import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.*;
-import elderlysitter.capstone.servicesImpl.RatingServiceImpl;
 import elderlysitter.capstone.servicesImpl.SitterServiceImpl;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
 
 import javax.annotation.security.PermitAll;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @RestController
 @RequestMapping("test")
@@ -140,15 +128,57 @@ public class TestController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("report-service")
+//    @GetMapping("notification-service")
+//    @PermitAll
+//    public ResponseEntity<ResponseDTO> test5() {
+//        ResponseDTO responseDTO = new ResponseDTO();
+//        try {
+//            String uri = "https://fcm.googleapis.com/fcm/send";
+//            HttpHeaders httpHeaders = new HttpHeaders();
+//            String reqBody = "{"to":" Rachi"}";
+//
+//            httpHeaders.set("Authorization","key=AAAA3DkXm68:APA91bFojmlMVxQcyjb1MAH5U_d-M6JCKa4FQzj7Z02XnZuGJ8tAIZpfMoIMSiCsJKczwXL-F8GzITTh1lM-LVPIRr9Ah4Pln1K3ZK-AoQFkV779mVu98mp_pC0ImkHDEke8-sGWQLtW");
+//            RestTemplate restTemplate = new RestTemplate();
+//            String reqBody = "{"city": "Ranchi"}";
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return ResponseEntity.ok().body(responseDTO);
+//    }
+
+    @GetMapping(value = "/testclient")
     @PermitAll
-    public ResponseEntity<ResponseDTO> test5() {
+    public ResponseEntity<ResponseDTO> testclient()
+    {
+        RestTemplate restTemplate = new RestTemplate();
         ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            responseDTO.setData(service.reportService());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        MyNotificationDTO myNotificationDTO = MyNotificationDTO.builder()
+                .title("Khánh bịp")
+                .body("Khanh dep trai")
+                .build();
+//        MyData data = MyData.builder()
+//                .route("/home")
+//                .title("Title of Your Notification in Title")
+//                .key_1("Value for key_1")
+//                .key_2("Value for key_2")
+//                .build();
+
+        NotificationResponseDTO testDTO = NotificationResponseDTO.builder()
+                .to("d0aarqm5Qdq5s-rwYuGi9V:APA91bHQY9dvnidM2FkeL8UvVkqtnTm4BmIx4W2EAuhQInyJmSojdfz8dJqkJTxEnOPrUZrF-zlYACjfJVEA8jzuLZpG0UX9IOYcRm62fueCITb1Ir_UdZkVmBIfUr_ayuXztHykgWp_")
+                .notification(myNotificationDTO)
+//                .data(data)
+                .build();
+
+        responseDTO.setData(testDTO);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "key=AAAA3DkXm68:APA91bFojmlMVxQcyjb1MAH5U_d-M6JCKa4FQzj7Z02XnZuGJ8tAIZpfMoIMSiCsJKczwXL-F8GzITTh1lM-LVPIRr9Ah4Pln1K3ZK-AoQFkV779mVu98mp_pC0ImkHDEke8-sGWQLtW");
+
+        HttpEntity<NotificationResponseDTO> request = new HttpEntity<>(testDTO, headers);
+
+        restTemplate.postForObject("https://fcm.googleapis.com/fcm/send", request, NotificationResponseDTO.class);
+
         return ResponseEntity.ok().body(responseDTO);
     }
 

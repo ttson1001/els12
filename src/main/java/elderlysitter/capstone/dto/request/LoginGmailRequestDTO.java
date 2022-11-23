@@ -16,4 +16,5 @@ public class LoginGmailRequestDTO {
     private String fullName;
     private LocalDate dob;
     private String gender;
+    private String token;
 }

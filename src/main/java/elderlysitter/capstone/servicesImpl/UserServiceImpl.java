@@ -134,6 +134,16 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public User save(User user) {
+        try {
+            return userRepository.save(user);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String randomPassword() {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'

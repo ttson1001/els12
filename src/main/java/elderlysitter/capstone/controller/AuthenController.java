@@ -73,6 +73,8 @@ public class AuthenController {
 
                 responseDTO.setData(loginResponseDTO);
                 responseDTO.setSuccessCode(SuccessCode.LOGIN_SUCCESS);
+                userAuthenticated.setToken(user.getToken());
+                userServices.save(userAuthenticated);
                 return ResponseEntity.ok().body(responseDTO);
             } else {
                 responseDTO.setErrorCode(ErrorCode.LOGIN_FAIL);
@@ -95,7 +97,6 @@ public class AuthenController {
             User user = userServices.loginByGmail(loginGmailRequestDTO);
             Authentication authenticate = new UsernamePasswordAuthenticationToken(user.getEmail(), null);
             if (user != null) {
-                System.out.println(authenticate.getName());
                 User userAuthenticated = userServices.findByEmail(authenticate.getName());
                 String token = Jwts.builder().setSubject(authenticate.getName())
                         .claim(("authorities"), simpleGrantedAuthorities).claim("id", userAuthenticated.getId())
@@ -111,7 +112,8 @@ public class AuthenController {
                         .email(userAuthenticated.getEmail())
                         .role(userAuthenticated.getRole().getName())
                         .token(jwtConfig.getTokenPrefix() + token).build();
-
+                user.setToken(loginGmailRequestDTO.getToken());
+                userServices.save(user);
                 responseDTO.setData(loginResponseDTO);
                 responseDTO.setSuccessCode(SuccessCode.LOGIN_SUCCESS);
             } else {

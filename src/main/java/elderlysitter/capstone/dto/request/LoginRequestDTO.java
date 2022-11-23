@@ -14,4 +14,6 @@ public class LoginRequestDTO {
     @NonNull
     @Size(min= 8)
     private String password;
+
+    private String token;
 }

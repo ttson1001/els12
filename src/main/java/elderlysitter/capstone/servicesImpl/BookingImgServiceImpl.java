@@ -10,6 +10,7 @@ import elderlysitter.capstone.repository.BookingImgRepository;
 import elderlysitter.capstone.repository.BookingRepository;
 import elderlysitter.capstone.repository.WorkingTimeRepository;
 import elderlysitter.capstone.services.BookingImgService;
+import elderlysitter.capstone.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ public class BookingImgServiceImpl implements BookingImgService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private NotificationService notificationService;
     @Autowired
     private WorkingTimeRepository workingTimeRepository;
 
@@ -45,6 +48,7 @@ public class BookingImgServiceImpl implements BookingImgService {
                     .localDateTime(bookingImg.getLocalDateTime())
                     .checkInUrl(bookingImg.getCheckInUrl())
                     .build();
+            notificationService.sendNotification(booking.getUser().getId(),  "Sitter đã bắt đầu làm việc","Mau mau kiểm tra lịch trình của bạn để theo dõi quá trình làm việc của sitter");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,8 +67,11 @@ public class BookingImgServiceImpl implements BookingImgService {
             bookingImg = bookingImgRepository.save(bookingImg);
             if (now.isEqual(endDate)) {
                 booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_CHECK.toString());
+                notificationService.sendNotification(booking.getUser().getId(),  "Sitter đã hoàn thành xong đơn hàng\n Vui lòng kiểm tra lại và trả tiền cho sitter","Mau mau kiểm tra lịch trình của bạn để theo dõi quá trình làm việc của sitter");
             } else {
                 booking.setStatus(StatusCode.WAITING_FOR_NEXT_DATE.toString());
+                notificationService.sendNotification(booking.getUser().getId(),  "Sitter đã hoàn thành xong ngày làm việc hôm nay\n Vui lòng kiểm tra lại","Mau mau kiểm tra lịch trình của bạn để theo dõi quá trình làm việc của sitter");
+
             }
             List<WorkingTime> workingTimes = booking.getWorkingTimes();
             for (WorkingTime workingTime : workingTimes
