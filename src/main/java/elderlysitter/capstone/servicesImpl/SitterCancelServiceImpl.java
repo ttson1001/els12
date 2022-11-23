@@ -5,6 +5,7 @@ import elderlysitter.capstone.dto.response.SitterCancelResponseDTO;
 import elderlysitter.capstone.entities.*;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.*;
+import elderlysitter.capstone.services.NotificationService;
 import elderlysitter.capstone.services.SitterCancelService;
 import elderlysitter.capstone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class SitterCancelServiceImpl implements SitterCancelService {
     @Autowired
     private BookingDetailRepository bookingDetailRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public SitterCancelResponseDTO cancelBooking(Long bookingId) {
         SitterCancelResponseDTO sitterCancelResponseDTO = null;
@@ -45,6 +49,7 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                     .bookingName(sitterCancel.getBooking().getName())
                     .sitterName(sitterCancel.getUser().getFullName())
                     .build();
+            notificationService.sendNotification(booking.getUser().getId(),  "Sitter không châp nhận đơn hàng của bạn\n Chúng tôi sẽ tìm sitter mới cho bạn","");
             changeSitter(booking);
         }catch (Exception e){
             e.printStackTrace();
@@ -83,6 +88,7 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                 booking.setSitter(sitter);
                 booking.setTotalPrice(total.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
                 booking.setDeposit(deposit.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
+                notificationService.sendNotification(booking.getSitter().getId(), "Bạn nhận được một booking mới","Mau mau kiểm tra lịch trình của bạn");
                 bookingRepository.save(booking);
             }else {
                 booking.setSitter(null);
@@ -93,6 +99,7 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                     bookingDetail.setPrice(null);
                     bookingDetailRepository.save(bookingDetail);
                 }
+                notificationService.sendNotification(booking.getUser().getId(), "Không có sitter nào phù hợp với đơn của bạn \n Hoặc nhân viên chúng tôi hiện chưa thể nhận đơn hàng của bạn","Vui lòng chọn dịch vụ khác hoặc thử lại sao");
                 bookingRepository.save(booking);
             }
 
