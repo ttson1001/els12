@@ -1,6 +1,7 @@
 package elderlysitter.capstone.enumCode;
 
 public enum StatusCode {
+    CHANGE,
     ACTIVATE,
     DEACTIVATE,
     WAITING_FOR_SITTER,

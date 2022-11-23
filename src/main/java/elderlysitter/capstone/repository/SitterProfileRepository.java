@@ -7,4 +7,5 @@ public interface SitterProfileRepository extends JpaRepository<SitterProfile, Lo
 
     SitterProfile findByUser_Email(String email);
 
+
 }

@@ -81,6 +81,7 @@ public class CandidateServiceImpl implements CandidateService {
                         .exp(addSitterServiceRequestDTO.getExp())
                         .price(addSitterServiceRequestDTO.getServicePrice())
                         .sitterProfile(candidateProfile)
+                        .status(StatusCode.ACTIVATE.toString())
                         .build();
                 sitterServiceRepository.save(sitterService);
             }

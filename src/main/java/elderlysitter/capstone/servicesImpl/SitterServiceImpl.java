@@ -1,7 +1,9 @@
 package elderlysitter.capstone.servicesImpl;
 
 import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.UpdateSalaryDTO;
 import elderlysitter.capstone.dto.request.ChangePasswordDTO;
+import elderlysitter.capstone.dto.request.UpdateSalaryRequestDTO;
 import elderlysitter.capstone.dto.request.UpdateSitterRequestDTO;
 import elderlysitter.capstone.dto.response.*;
 import elderlysitter.capstone.entities.CertificateSitter;
@@ -10,6 +12,7 @@ import elderlysitter.capstone.entities.SitterProfile;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.RatingRepository;
+import elderlysitter.capstone.repository.SitterServiceRepository;
 import elderlysitter.capstone.repository.UserRepository;
 import elderlysitter.capstone.services.SitterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SitterServiceImpl implements SitterService {
@@ -30,6 +35,9 @@ public class SitterServiceImpl implements SitterService {
 
     @Autowired
     private RatingRepository ratingRepository;
+
+    @Autowired
+    private SitterServiceRepository sitterServiceRepository;
 
 
     @Override
@@ -271,6 +279,143 @@ public class SitterServiceImpl implements SitterService {
             e.printStackTrace();
         }
         return sitterDTO;
+    }
+
+    @Override
+    public UpdateSalaryResponseDTO updateSalary(UpdateSalaryRequestDTO updateSalaryRequestDTO) {
+        UpdateSalaryResponseDTO updateSalaryResponseDTO = null;
+        try {
+            List<UpdateSalaryDTO> updateSalaryDTOS = updateSalaryRequestDTO.getUpdateSalaryDTOS();
+            List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
+            for (UpdateSalaryDTO updateSalaryDTO: updateSalaryDTOS
+                 ) {
+                elderlysitter.capstone.entities.SitterService sitterService= sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(updateSalaryResponseDTO.getSitterEmail(),updateSalaryDTO.getServiceId());
+                sitterService.setNewPrice(updateSalaryDTO.getNewPrice());
+                sitterService.setStatus(StatusCode.CHANGE.toString());
+                sitterServiceRepository.save(sitterService);
+                SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
+                        .id(sitterService.getId())
+                        .name(sitterService.getService().getName())
+                        .newPrice(sitterService.getNewPrice())
+                        .duration(sitterService.getService().getDuration())
+                        .exp(sitterService.getExp())
+                        .build();
+                sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
+                updateSalaryResponseDTO = UpdateSalaryResponseDTO.builder()
+                        .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
+                        .build();
+            }
+            updateSalaryResponseDTO.setSitterEmail(updateSalaryResponseDTO.getSitterEmail());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return updateSalaryResponseDTO;
+    }
+
+
+    @Override
+    public UpdateSalaryResponseDTO approveUpSalary(Long sitterId) {
+       UpdateSalaryResponseDTO updateSalaryResponseDTO = null;
+        List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
+       try{
+           List<elderlysitter.capstone.entities.SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Id(sitterId);
+           for (elderlysitter.capstone.entities.SitterService sitterService: sitterServices
+                ) {
+               elderlysitter.capstone.entities.SitterService newSitterService = sitterServiceRepository.findById(sitterService.getId()).get();
+               newSitterService.setPrice(sitterService.getNewPrice());
+               newSitterService.setStatus(StatusCode.ACTIVATE.toString());
+               sitterServiceRepository.save(newSitterService);
+               SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
+                       .id(sitterService.getId())
+                       .name(sitterService.getService().getName())
+                       .newPrice(sitterService.getNewPrice())
+                       .duration(sitterService.getService().getDuration())
+                       .exp(sitterService.getExp())
+                       .build();
+               sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
+
+           }
+           updateSalaryResponseDTO = UpdateSalaryResponseDTO.builder()
+                   .sitterId(sitterId)
+                   .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
+                   .build();
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+       return updateSalaryResponseDTO;
+    }
+
+
+    @Override
+    public UpdateSalaryResponseDTO rejectUpSalary(Long sitterId) {
+        UpdateSalaryResponseDTO updateSalaryResponseDTO = null;
+        List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
+        try{
+            List<elderlysitter.capstone.entities.SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Id(sitterId);
+            for (elderlysitter.capstone.entities.SitterService sitterService: sitterServices
+            ) {
+                elderlysitter.capstone.entities.SitterService newSitterService = sitterServiceRepository.findById(sitterService.getId()).get();
+                newSitterService.setStatus(StatusCode.ACTIVATE.toString());
+                sitterServiceRepository.save(newSitterService);
+                SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
+                        .id(sitterService.getId())
+                        .name(sitterService.getService().getName())
+                        .newPrice(sitterService.getNewPrice())
+                        .duration(sitterService.getService().getDuration())
+                        .exp(sitterService.getExp())
+                        .build();
+                sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
+
+            }
+            updateSalaryResponseDTO = UpdateSalaryResponseDTO.builder()
+                    .sitterId(sitterId)
+                    .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
+                    .build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return updateSalaryResponseDTO;
+    }
+
+    @Override
+    public List<UpdateSalaryResponseDTO> getAllFormUpdateSalary() {
+        List<UpdateSalaryResponseDTO> updateSalaryResponseDTOS = new ArrayList<>();
+        try {
+            Set<String> names = new HashSet<>();
+            List<elderlysitter.capstone.entities.SitterService> sitterServices = sitterServiceRepository.findAllByStatus(StatusCode.CHANGE.toString());
+            for (elderlysitter.capstone.entities.SitterService sitterService: sitterServices
+                 ) {
+                    String email = sitterService.getSitterProfile().getUser().getEmail();
+                    names.add(email);
+            }
+            for (String email: names
+                 ) {
+                sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
+                List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
+                Long sitterId = 0L;
+                for (elderlysitter.capstone.entities.SitterService sitterService: sitterServices
+                     ) {
+                    SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
+                            .id(sitterService.getId())
+                            .name(sitterService.getService().getName())
+                            .newPrice(sitterService.getNewPrice())
+                            .duration(sitterService.getService().getDuration())
+                            .exp(sitterService.getExp())
+                            .build();
+                    sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
+                    sitterId = sitterService.getSitterProfile().getId();
+                }
+                UpdateSalaryResponseDTO updateSalaryResponseDTO = UpdateSalaryResponseDTO.builder()
+                        .sitterId(sitterId)
+                        .sitterEmail(email)
+                        .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
+                        .build();
+                updateSalaryResponseDTOS.add(updateSalaryResponseDTO);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return updateSalaryResponseDTOS;
     }
 
     public Float averageStarOfSitter(String email) {
