@@ -42,7 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponseDTO paymentResponseDTO = null;
         try {
             Booking booking = bookingRepository.findById(addPaymentRequestDTO.getBookingId()).get();
-            booking.setStatus(StatusCode.DONE.toString());
+            booking.setStatus(StatusCode.WAITING_FOR_DATE.toString());
             booking = bookingRepository.save(booking);
             Payment payment = Payment.builder()
                     .paymentType(addPaymentRequestDTO.getPaymentType())
