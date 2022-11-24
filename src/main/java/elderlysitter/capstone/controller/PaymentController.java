@@ -41,12 +41,12 @@ public class PaymentController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("paid")
+    @PostMapping("paid-before-change-sitter")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> paid(@RequestBody AddPaymentRequestDTO addPaymentRequestDTO) {
+    public ResponseEntity<ResponseDTO> paidBeforeChangeSitter(@RequestBody AddPaymentRequestDTO addPaymentRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            PaymentResponseDTO paymentResponseDTO = paymentService.paid(addPaymentRequestDTO);
+            PaymentResponseDTO paymentResponseDTO = paymentService.paidBeforeChangeSitter(addPaymentRequestDTO);
             responseDTO.setData(paymentResponseDTO);
             if (paymentResponseDTO != null) {
                 responseDTO.setSuccessCode(SuccessCode.PAID_SUCCESS);
