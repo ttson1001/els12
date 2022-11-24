@@ -178,7 +178,7 @@ public class SitterController {
     }
 
     @GetMapping("up-salary-forms")
-    @PreAuthorize("hasRole('SITTER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> getAllFormUpdateSalary() {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
