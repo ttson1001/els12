@@ -403,6 +403,7 @@ public class SitterServiceImpl implements SitterService {
                             .name(sitterService.getService().getName())
                             .newPrice(sitterService.getNewPrice())
                             .duration(sitterService.getService().getDuration())
+                            .price(sitterService.getPrice())
                             .exp(sitterService.getExp())
                             .build();
                     sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
