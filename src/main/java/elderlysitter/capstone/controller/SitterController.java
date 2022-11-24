@@ -196,6 +196,25 @@ public class SitterController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("up-salary-form/{sitterId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getFormUpdateSalaryById(@PathVariable Long sitterId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            UpdateSalaryResponseDTO updateSalaryResponseDTO = sitterService.getFormBySitterId(sitterId);
+            if (updateSalaryResponseDTO != null) {
+                responseDTO.setData(updateSalaryResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.GET_FORMS_SALARY_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.GET_FORMS_SALARY_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.GET_FORMS_SALARY_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PutMapping("approve-up-salary/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> approveUpSalary(@PathVariable Long id) {
