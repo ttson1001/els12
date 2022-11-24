@@ -300,6 +300,7 @@ public class SitterServiceImpl implements SitterService {
                         .name(sitterService.getService().getName())
                         .newPrice(sitterService.getNewPrice())
                         .duration(sitterService.getService().getDuration())
+                        .price(sitterService.getPrice())
                         .exp(sitterService.getExp())
                         .build();
                 sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
@@ -392,7 +393,7 @@ public class SitterServiceImpl implements SitterService {
             }
             for (String email: names
                  ) {
-                sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
+                sitterServices = sitterServiceRepository.findAllBySitterProfile_User_EmailAndStatus(email,StatusCode.CHANGE.toString());
                 List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
                 Long sitterId = 0L;
                 for (elderlysitter.capstone.entities.SitterService sitterService: sitterServices

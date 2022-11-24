@@ -10,4 +10,5 @@ public interface SitterServiceRepository extends JpaRepository<SitterService, Lo
     List<SitterService> findAllByStatus(String status);
     SitterService findBySitterProfile_User_EmailAndService_Id(String email, Long id);
     List<SitterService> findAllBySitterProfile_User_Id(Long id);
+    List<SitterService> findAllBySitterProfile_User_EmailAndStatus(String email,String status);
 }
