@@ -20,4 +20,5 @@ public class SittersResponseDTO {
     private String gender;
     private String status;
     private BigDecimal avgPrice;
+    private Boolean isForm;
 }

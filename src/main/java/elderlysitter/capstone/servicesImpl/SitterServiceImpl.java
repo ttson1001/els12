@@ -63,6 +63,7 @@ public class SitterServiceImpl implements SitterService {
                         .avgPrice(total.divide(count))
                         .address(sitter.getAddress())
                         .id(sitter.getId())
+                        .isForm(sitter.getIsForm())
                         .build();
                 sittersResponseDTOList.add(sittersResponseDTO);
             }
@@ -308,6 +309,9 @@ public class SitterServiceImpl implements SitterService {
                         .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
                         .build();
             }
+            User user = userRepository.findUserByEmail(updateSalaryRequestDTO.getSitterEmail());
+            user.setIsForm(true);
+            userRepository.save(user);
             updateSalaryResponseDTO.setSitterEmail(updateSalaryResponseDTO.getSitterEmail());
         }catch (Exception e){
             e.printStackTrace();
@@ -338,6 +342,9 @@ public class SitterServiceImpl implements SitterService {
                sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
 
            }
+           User user = userRepository.findById(sitterId).get();
+           user.setIsForm(false);
+           userRepository.save(user);
            updateSalaryResponseDTO = UpdateSalaryResponseDTO.builder()
                    .sitterId(sitterId)
                    .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
@@ -370,6 +377,9 @@ public class SitterServiceImpl implements SitterService {
                 sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
 
             }
+            User user = userRepository.findById(sitterId).get();
+            user.setIsForm(false);
+            userRepository.save(user);
             updateSalaryResponseDTO = UpdateSalaryResponseDTO.builder()
                     .sitterId(sitterId)
                     .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
@@ -420,6 +430,36 @@ public class SitterServiceImpl implements SitterService {
             e.printStackTrace();
         }
         return updateSalaryResponseDTOS;
+    }
+
+    @Override
+    public UpdateSalaryResponseDTO getFormBySitterId(Long sitterId) {
+        UpdateSalaryResponseDTO updateSalaryResponseDTO = null;
+        try {
+            User sitter = userRepository.findById(sitterId).get();
+            List<elderlysitter.capstone.entities.SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_EmailAndStatus(sitter.getEmail(),StatusCode.CHANGE.toString());
+            List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
+            for (elderlysitter.capstone.entities.SitterService sitterService: sitterServices
+            ) {
+                SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
+                        .id(sitterService.getId())
+                        .name(sitterService.getService().getName())
+                        .newPrice(sitterService.getNewPrice())
+                        .duration(sitterService.getService().getDuration())
+                        .price(sitterService.getPrice())
+                        .exp(sitterService.getExp())
+                        .build();
+                sitterServicesResponseDTOS.add(sitterServicesResponseDTO);
+            }
+            updateSalaryResponseDTO = UpdateSalaryResponseDTO.builder()
+                    .sitterId(sitterId)
+                    .sitterEmail(sitter.getEmail())
+                    .sitterServicesResponseDTOS(sitterServicesResponseDTOS)
+                    .build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return updateSalaryResponseDTO;
     }
 
     public Float averageStarOfSitter(String email) {

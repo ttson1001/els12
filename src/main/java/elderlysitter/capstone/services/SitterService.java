@@ -33,6 +33,8 @@ public interface SitterService {
 
     UpdateSalaryResponseDTO rejectUpSalary(Long sitterId);
 
+    UpdateSalaryResponseDTO getFormBySitterId(Long sitterId);
+
 
 
 }

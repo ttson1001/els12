@@ -50,6 +50,9 @@ public class User {
 
     private String status;
 
+    @Column(name = "is_form")
+    private Boolean isForm;
+
     private String token;
     @JsonIgnore
     @JoinColumn (name = "role_id")
