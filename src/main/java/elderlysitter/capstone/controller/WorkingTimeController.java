@@ -51,25 +51,45 @@ public class WorkingTimeController {
 
         return ResponseEntity.ok().body(responseDTO);
     }
-
-    @PutMapping("reduce-date")
+    @PutMapping ("reduce")
     @PreAuthorize("hasRole('CUSTOMER')")
-    private ResponseEntity<ResponseDTO> reduceDateFromBooking(@RequestBody ReduceDateDTO reduceDateDTO) {
+    public ResponseEntity<ResponseDTO> test1(@RequestBody ReduceDateDTO reduceDateDTO) {
+
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             List<WorkingTimeDTO> workingTimeList = workingTimeService.reduceDateFromBooking(reduceDateDTO);
             responseDTO.setData(workingTimeList);
-            if (workingTimeList != null) {
-                responseDTO.setSuccessCode(SuccessCode.REDUCE_SUCCESS);
-            } else {
-                responseDTO.setErrorCode(ErrorCode.REDUCE_FAIL);
+            responseDTO.setSuccessCode(SuccessCode.FIND_ALL_WORKING_TIME_SUCCESS);
+            if(workingTimeList.isEmpty()){
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            responseDTO.setErrorCode(ErrorCode.REDUCE_ERROR);
+            responseDTO.setErrorCode(ErrorCode.FIND_ALL_WORKING_TIME_ERROR);
         }
+
         return ResponseEntity.ok().body(responseDTO);
     }
+
+
+//    @PutMapping("reduce-date")
+//    @PreAuthorize("hasRole('CUSTOMER')")
+//    private ResponseEntity<ResponseDTO> reduceDateFromBooking() {
+//        ResponseDTO responseDTO = new ResponseDTO();
+//        try {
+//            List<WorkingTimeDTO> workingTimeList = workingTimeService.reduceDateFromBooking(reduceDateDTO);
+//            responseDTO.setData(workingTimeList);
+//            if (workingTimeList != null) {
+//                responseDTO.setSuccessCode(SuccessCode.REDUCE_SUCCESS);
+//            } else {
+//                responseDTO.setErrorCode(ErrorCode.REDUCE_FAIL);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            responseDTO.setErrorCode(ErrorCode.REDUCE_ERROR);
+//        }
+//        return ResponseEntity.ok().body(responseDTO);
+//    }
 
 
 
