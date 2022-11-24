@@ -1,5 +1,6 @@
 package elderlysitter.capstone.controller;
 
+import elderlysitter.capstone.dto.CategoryDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.request.AddCategoryRequestDTO;
 import elderlysitter.capstone.entities.Category;
@@ -54,6 +55,25 @@ public class CategoryController {
         }catch (Exception e){
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.FIND_ALL_CATEGORY_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("update")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> update (@RequestBody CategoryDTO categoryDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            Category category = categoryService.update(categoryDTO);
+            responseDTO.setData(category);
+            if(category != null){
+                responseDTO.setSuccessCode(SuccessCode.UPDATE_SUCCESS);
+            }else{
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.UPDATE_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }

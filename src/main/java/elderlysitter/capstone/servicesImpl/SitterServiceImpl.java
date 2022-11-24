@@ -291,7 +291,7 @@ public class SitterServiceImpl implements SitterService {
             List<SitterServicesResponseDTO> sitterServicesResponseDTOS = new ArrayList<>();
             for (UpdateSalaryDTO updateSalaryDTO: updateSalaryDTOS
                  ) {
-                elderlysitter.capstone.entities.SitterService sitterService= sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(updateSalaryResponseDTO.getSitterEmail(),updateSalaryDTO.getServiceId());
+                elderlysitter.capstone.entities.SitterService sitterService= sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(updateSalaryRequestDTO.getSitterEmail(),updateSalaryDTO.getServiceId());
                 sitterService.setNewPrice(updateSalaryDTO.getNewPrice());
                 sitterService.setStatus(StatusCode.CHANGE.toString());
                 sitterServiceRepository.save(sitterService);

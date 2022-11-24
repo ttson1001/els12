@@ -1,5 +1,6 @@
 package elderlysitter.capstone.servicesImpl;
 
+import elderlysitter.capstone.dto.CategoryDTO;
 import elderlysitter.capstone.dto.request.AddCategoryRequestDTO;
 import elderlysitter.capstone.entities.Category;
 import elderlysitter.capstone.repository.CategoryRepository;
@@ -37,5 +38,18 @@ public class CategoryServiceImpl implements CategoryService {
             e.printStackTrace();
         }
         return categories;
+    }
+
+    @Override
+    public Category update(CategoryDTO categoryDTO) {
+        Category category = null;
+        try {
+            category = categoryRepository.findById(categoryDTO.getId()).get();
+            category.setName(category.getName());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return category;
+
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 
 public enum SuccessCode {
+    UPDATE_SUCCESS,
     SUCCESS,
     FIND_ALL_SUCCESS,
     FIND_ALL_REPORT_SUCCESS,

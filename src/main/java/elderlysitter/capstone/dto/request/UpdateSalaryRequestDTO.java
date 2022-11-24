@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UpdateSalaryRequestDTO {
-    private Long sitterEmail;
+    private String sitterEmail;
     private List<UpdateSalaryDTO> updateSalaryDTOS;
 }
