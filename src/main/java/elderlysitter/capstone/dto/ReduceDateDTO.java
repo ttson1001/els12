@@ -14,5 +14,5 @@ import java.util.List;
 @Builder
 public class ReduceDateDTO {
     private Long bookingId;
-    private List<LocalDate> date;
+    private List<LocalDate> dateList;
 }

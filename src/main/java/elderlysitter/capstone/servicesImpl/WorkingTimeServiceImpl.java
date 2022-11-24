@@ -22,7 +22,7 @@ public class WorkingTimeServiceImpl implements WorkingTimeService {
         List<WorkingTimeDTO> workingTimeDTOS = new ArrayList<>();
         try {
         List<WorkingTime>   workingTimes = workingTimeRepository.findAllByBooking_Id(reduceDateDTO.getBookingId());
-            List<LocalDate> localDates = reduceDateDTO.getDate();
+            List<LocalDate> localDates = reduceDateDTO.getDateList();
             for (WorkingTime workingTime : workingTimes
             ) {
                 for (LocalDate date : localDates
