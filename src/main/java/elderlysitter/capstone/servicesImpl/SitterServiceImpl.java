@@ -139,6 +139,7 @@ public class SitterServiceImpl implements SitterService {
             BigDecimal total = BigDecimal.valueOf(0);
             for (elderlysitter.capstone.entities.SitterService sitterService : sitterServices) {
                 SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
+                        .id(sitterService.getId())
                         .name(sitterService.getService().getName())
                         .price(sitterService.getPrice())
                         .duration(sitterService.getService().getDuration())
@@ -193,6 +194,7 @@ public class SitterServiceImpl implements SitterService {
             BigDecimal total = BigDecimal.valueOf(0);
             for (elderlysitter.capstone.entities.SitterService sitterService : sitterServices) {
                 SitterServicesResponseDTO sitterServicesResponseDTO = SitterServicesResponseDTO.builder()
+                        .id(sitterService.getId())
                         .name(sitterService.getService().getName())
                         .price(sitterService.getPrice())
                         .duration(sitterService.getService().getDuration())

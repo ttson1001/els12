@@ -197,7 +197,7 @@ public class SitterController {
     }
 
     @PutMapping("approve-up-salary/{id}")
-    @PreAuthorize("hasRole('SITTER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> approveUpSalary(@PathVariable Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
@@ -216,7 +216,7 @@ public class SitterController {
     }
 
     @PutMapping("reject-up-salary/{id}")
-    @PreAuthorize("hasRole('SITTER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> rejectUpSalary(@PathVariable Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {

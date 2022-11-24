@@ -12,6 +12,9 @@ import elderlysitter.capstone.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ReportServiceImpl implements ReportService {
     @Autowired
@@ -47,5 +50,32 @@ public class ReportServiceImpl implements ReportService {
             e.printStackTrace();
         }
         return reportResponseDTO;
+    }
+
+    @Override
+    public List<ReportResponseDTO> getAllReportCustomer() {
+        List<ReportResponseDTO> reportResponseDTOS = new ArrayList<>();
+        try {
+            List<Report> reports = reportRepository.findAll();
+            for (Report report: reports
+                 ) {
+                CustomerResponseDTO customerResponseDTO = CustomerResponseDTO.builder()
+                        .fullName(report.getCustomer().getFullName())
+                        .dob(report.getCustomer().getDob())
+                        .gender(report.getCustomer().getGender())
+                        .phone(report.getCustomer().getPhone())
+                        .email(report.getCustomer().getEmail())
+                        .build();
+                ReportResponseDTO reportResponseDTO = ReportResponseDTO.builder()
+                        .id(report.getId())
+                        .comment(report.getComment())
+                        .customerResponseDTO(customerResponseDTO)
+                        .build();
+                reportResponseDTOS.add(reportResponseDTO);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return reportResponseDTOS;
     }
 }

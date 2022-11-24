@@ -43,18 +43,31 @@ public class SitterCancelServiceImpl implements SitterCancelService {
             SitterCancel sitterCancel = SitterCancel.builder()
                     .user(booking.getSitter())
                     .booking(booking)
+                    .status(StatusCode.CANCEL.toString())
                     .build();
             sitterCancel = sitterCancelRepository.save(sitterCancel);
             sitterCancelResponseDTO = SitterCancelResponseDTO.builder()
                     .bookingName(sitterCancel.getBooking().getName())
                     .sitterName(sitterCancel.getUser().getFullName())
                     .build();
-            notificationService.sendNotification(booking.getUser().getId(),  "Sitter không châp nhận đơn hàng của bạn\n Chúng tôi sẽ tìm sitter mới cho bạn","");
+            notificationService.sendNotification(booking.getUser().getId(),  "Sitter không chấp nhận đơn hàng của bạn\n Chúng tôi sẽ tìm sitter mới cho bạn","");
             changeSitter(booking);
         }catch (Exception e){
             e.printStackTrace();
         }
         return sitterCancelResponseDTO;
+    }
+
+    @Override
+    public SitterCancelResponseDTO changeSitter(Long bookingId) {
+        SitterCancelResponseDTO sitterCancelResponseDTO = null;
+        try {
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  null;
+
     }
 
     private User changeSitter(Booking booking){

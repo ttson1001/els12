@@ -11,10 +11,9 @@ import elderlysitter.capstone.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("report")
@@ -37,6 +36,25 @@ public class ReportController {
         } catch (Exception e) {
             e.printStackTrace();
             responseDTO.setErrorCode(ErrorCode.REPORT_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAllReportCustomer () {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<ReportResponseDTO> reportResponseDTOS = reportService.getAllReportCustomer();
+            responseDTO.setData(reportResponseDTOS);
+            if (reportResponseDTOS != null) {
+                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_REPORT_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ALL_REPORT_ERROR);
         }
         return ResponseEntity.ok().body(responseDTO);
     }

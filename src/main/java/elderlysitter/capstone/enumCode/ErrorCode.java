@@ -1,6 +1,8 @@
 package elderlysitter.capstone.enumCode;
 
 public enum ErrorCode {
+    FIND_ALL_ERROR,
+    FIND_ALL_REPORT_ERROR,
     REJECT_APPROVE_UP_SALARY_FAIL,
     REJECT_APPROVE_UP_SALARY_ERROR,
     APPROVE_UP_SALARY_FAIL,

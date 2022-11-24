@@ -32,6 +32,7 @@ public interface SitterService {
     UpdateSalaryResponseDTO approveUpSalary(Long sitterId);
 
     UpdateSalaryResponseDTO rejectUpSalary(Long sitterId);
+    
 
 
 }
