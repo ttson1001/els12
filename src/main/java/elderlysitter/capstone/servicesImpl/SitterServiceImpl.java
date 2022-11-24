@@ -336,6 +336,7 @@ public class SitterServiceImpl implements SitterService {
                        .id(sitterService.getId())
                        .name(sitterService.getService().getName())
                        .newPrice(sitterService.getNewPrice())
+                       .price(sitterService.getPrice())
                        .duration(sitterService.getService().getDuration())
                        .exp(sitterService.getExp())
                        .build();
