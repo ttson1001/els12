@@ -59,14 +59,29 @@ public class SitterCancelServiceImpl implements SitterCancelService {
     }
 
     @Override
-    public SitterCancelResponseDTO changeSitter(Long bookingId) {
-        SitterCancelResponseDTO sitterCancelResponseDTO = null;
+    public BigDecimal getTotalPrice(Long bookingId) {
+        BigDecimal total  = BigDecimal.valueOf(0);
         try {
+            Booking booking = bookingRepository.findById(bookingId).get();
+            List<BookingDetail> bookingDetails = booking.getBookingDetails();
+            for(BookingDetail bookingDetail: bookingDetails){
+                SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(booking.getSitter().getEmail(), bookingDetail.getId());
+                total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingDetail.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
+            }
+            Long count = 0L;
+            List<WorkingTime> workingTimes = booking.getWorkingTimes();
+            for (WorkingTime workingTime: workingTimes
+                 ) {
+                if(workingTime.getStatus().equalsIgnoreCase(StatusCode.DONE.toString())){
+                    count = count + 1;
+                }
+            }
+            total = total.multiply(BigDecimal.valueOf(count));
 
         }catch (Exception e){
             e.printStackTrace();
         }
-        return  null;
+        return  total;
 
     }
 
@@ -90,10 +105,10 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                 for (BookingDetail bookingDetail: bookingDetails) {
                     SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), bookingDetail.getId());
                     Long commission = sitterService.getService().getCommission();
-                    deposit = deposit.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingDetail.getDuration()).divide(BigDecimal.valueOf(60))).multiply((BigDecimal.valueOf(commission).divide(BigDecimal.valueOf(100)))));
-                    total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingDetail.getDuration()).divide(BigDecimal.valueOf(60))));
+                    deposit = deposit.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingDetail.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))).multiply((BigDecimal.valueOf(commission).divide(BigDecimal.valueOf(100)))));
+                    total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(bookingDetail.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
 
-                    BigDecimal price = (sitterService.getPrice().multiply(BigDecimal.valueOf(bookingDetail.getDuration()).divide(BigDecimal.valueOf(60))));
+                    BigDecimal price = (sitterService.getPrice().multiply(BigDecimal.valueOf(bookingDetail.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
 
                     bookingDetail.setPrice(price.multiply(BigDecimal.valueOf(booking.getWorkingTimes().size())));
                     bookingDetailRepository.save(bookingDetail);

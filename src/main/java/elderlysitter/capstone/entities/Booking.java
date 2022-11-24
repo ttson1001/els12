@@ -41,11 +41,9 @@ public class Booking {
 
     private String place;
 
-    private Boolean isSitterCheckout;
+    private Boolean isChange;
 
     private BigDecimal deposit;
-
-    private Boolean isCustomerCheckout;
 
     private String status;
 

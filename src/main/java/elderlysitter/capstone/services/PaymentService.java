@@ -5,4 +5,6 @@ import elderlysitter.capstone.dto.response.PaymentResponseDTO;
 
 public interface PaymentService {
     PaymentResponseDTO paid(AddPaymentRequestDTO addPaymentRequestDTO);
+    PaymentResponseDTO paidBeforeChangeSitter(AddPaymentRequestDTO addPaymentRequestDTO);
+
 }

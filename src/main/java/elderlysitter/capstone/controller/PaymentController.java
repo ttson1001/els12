@@ -40,4 +40,23 @@ public class PaymentController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PostMapping("paid")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> paid(@RequestBody AddPaymentRequestDTO addPaymentRequestDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            PaymentResponseDTO paymentResponseDTO = paymentService.paid(addPaymentRequestDTO);
+            responseDTO.setData(paymentResponseDTO);
+            if (paymentResponseDTO != null) {
+                responseDTO.setSuccessCode(SuccessCode.PAID_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.PAID_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.PAID_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }
