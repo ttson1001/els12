@@ -188,7 +188,7 @@ public class CustomerController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping("cancel")
+    @PutMapping("cancel/{bookingId}")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ResponseDTO> cancel(@PathVariable Long bookingId){
         ResponseDTO responseDTO = new ResponseDTO();
