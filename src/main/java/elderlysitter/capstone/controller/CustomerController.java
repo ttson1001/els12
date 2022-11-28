@@ -188,6 +188,24 @@ public class CustomerController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PutMapping("customer-cancel")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ResponseDTO> cancel(@PathVariable Long bookingId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            CustomerResponseDTO customerResponseDTO = customerService.customerCancel(bookingId);
+            if(customerResponseDTO != null){
+                responseDTO.setData(customerResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.CANCEL_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.CANCEL_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.CANCEL_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 
 }

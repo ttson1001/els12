@@ -1,6 +1,10 @@
 package elderlysitter.capstone.enumCode;
 
 public enum ErrorCode {
+    CANCEL_ERROR,
+    CANCEL_FAIL,
+    LOGOUT_ERROR,
+    LOGOUT_FAIL,
     UPDATE_ERROR,
     FIND_ALL_ERROR,
     FIND_ALL_REPORT_ERROR,

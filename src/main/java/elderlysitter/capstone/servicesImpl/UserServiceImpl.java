@@ -135,6 +135,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User logout(String email) {
+        User user = null;
+        try{
+            user = userRepository.findUserByEmail(email);
+            user.setToken("");
+            user = userRepository.save(user);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    @Override
     public User save(User user) {
         try {
             return userRepository.save(user);

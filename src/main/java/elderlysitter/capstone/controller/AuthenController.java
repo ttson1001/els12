@@ -144,5 +144,24 @@ public class AuthenController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PutMapping("logout")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> logout(@PathVariable String email) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        User user = null;
+        try {
+            user = userServices.logout(email);
+            if (user != null) {
+                responseDTO.setData(user);
+                responseDTO.setSuccessCode(SuccessCode.LOGOUT_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.LOGOUT_FAIL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.LOGOUT_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }

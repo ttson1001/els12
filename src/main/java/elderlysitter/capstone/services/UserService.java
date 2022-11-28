@@ -14,6 +14,7 @@ public interface UserService {
 
     User forgotPassword(String email);
 
+    User logout(String email);
     User save(User user);
 
 

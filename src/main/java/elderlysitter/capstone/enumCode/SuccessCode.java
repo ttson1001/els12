@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 
 public enum SuccessCode {
+    CANCEL_SUCCESS,
+    LOGOUT_SUCCESS,
     UPDATE_SUCCESS,
     SUCCESS,
     FIND_ALL_SUCCESS,

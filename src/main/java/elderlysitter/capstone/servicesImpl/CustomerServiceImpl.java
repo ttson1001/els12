@@ -5,8 +5,10 @@ import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateCustomerRequestDTO;
 import elderlysitter.capstone.dto.response.CustomerResponseDTO;
 import elderlysitter.capstone.dto.response.CustomersResponseDTO;
+import elderlysitter.capstone.entities.Booking;
 import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.enumCode.StatusCode;
+import elderlysitter.capstone.repository.BookingRepository;
 import elderlysitter.capstone.repository.RoleRepository;
 import elderlysitter.capstone.repository.UserRepository;
 import elderlysitter.capstone.services.CustomerService;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -27,6 +30,8 @@ public class CustomerServiceImpl implements CustomerService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Override
     public CustomerResponseDTO addCustomer(AddCustomerRequestDTO addCustomerRequestDTO) {
@@ -78,7 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setStatus(StatusCode.DEACTIVATE.toString());
             customer = userRepository.save(customer);
             responseDTO = convertor(customer);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return responseDTO;
@@ -92,7 +97,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setStatus(StatusCode.ACTIVATE.toString());
             customer = userRepository.save(customer);
             responseDTO = convertor(customer);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return responseDTO;
@@ -103,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<CustomersResponseDTO> responseDTOS = new ArrayList<>();
         try {
             List<User> customers = userRepository.findAllByRole_Name("CUSTOMER");
-            for (User customer: customers) {
+            for (User customer : customers) {
                 CustomersResponseDTO responseDTO = CustomersResponseDTO.builder()
                         .id(customer.getId())
                         .fullName(customer.getFullName())
@@ -113,9 +118,9 @@ public class CustomerServiceImpl implements CustomerService {
                         .status(customer.getStatus())
                         .address(customer.getAddress())
                         .build();
-                    responseDTOS.add(responseDTO);
+                responseDTOS.add(responseDTO);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return responseDTOS;
@@ -127,7 +132,7 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             User customer = userRepository.findById(id).get();
             responseDTO = convertor(customer);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return responseDTO;
@@ -139,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             User customer = userRepository.findUserByEmail(email);
             responseDTO = convertor(customer);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return responseDTO;
@@ -151,11 +156,27 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             User customer = userRepository.findUserByEmail(changePasswordDTO.getEmail());
             Boolean check = passwordEncoder.matches(changePasswordDTO.getOldPassword(), customer.getPassword());
-            if(check == true){
+            if (check == true) {
                 customer.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
-                responseDTO = convertor( userRepository.save(customer));
+                responseDTO = convertor(userRepository.save(customer));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return responseDTO;
+    }
+
+    @Override
+    public CustomerResponseDTO customerCancel(Long bookingId) {
+        CustomerResponseDTO responseDTO = null;
+        try {
+            Booking booking = bookingRepository.findById(bookingId).get();
+            if (booking.getStatus().equalsIgnoreCase(StatusCode.WAITING_FOR_SITTER.toString())) {
+                booking.setStatus(StatusCode.CANCEL.toString());
+                bookingRepository.save(booking);
+                responseDTO = convertor(booking.getUser());
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return responseDTO;

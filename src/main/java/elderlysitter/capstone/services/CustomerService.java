@@ -24,5 +24,6 @@ public interface CustomerService {
     CustomerResponseDTO getByEmail(String email);
 
     CustomerResponseDTO changePassword(ChangePasswordDTO changePasswordDTO);
+    CustomerResponseDTO customerCancel(Long bookingId);
 
 }
