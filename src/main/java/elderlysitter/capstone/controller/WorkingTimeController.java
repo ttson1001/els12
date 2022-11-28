@@ -33,7 +33,7 @@ public class WorkingTimeController {
     WorkingTimeService workingTimeService;
 
     @GetMapping("get-all-by-booking-id/{bookingId}/{status}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER,SITTER')")
     public ResponseEntity<ResponseDTO> test(@PathVariable Long bookingId, @PathVariable String status) {
 
         ResponseDTO responseDTO = new ResponseDTO();
@@ -53,7 +53,7 @@ public class WorkingTimeController {
     }
     @PutMapping ("reduce")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<ResponseDTO> test1(@RequestBody ReduceDateDTO reduceDateDTO) {
+    public ResponseEntity<ResponseDTO> reduceDateFromBooking(@RequestBody ReduceDateDTO reduceDateDTO) {
 
         ResponseDTO responseDTO = new ResponseDTO();
         try {
