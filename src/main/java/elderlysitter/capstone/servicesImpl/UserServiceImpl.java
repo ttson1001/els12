@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         User user = null;
         try{
             user = userRepository.findUserByEmail(email);
-            user.setToken("");
+            user.setToken(null);
             user = userRepository.save(user);
         }catch (Exception e){
             e.printStackTrace();

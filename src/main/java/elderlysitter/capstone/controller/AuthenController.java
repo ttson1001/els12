@@ -144,7 +144,7 @@ public class AuthenController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PutMapping("logout")
+    @PutMapping("logout/{email}")
     @PermitAll
     public ResponseEntity<ResponseDTO> logout(@PathVariable String email) {
         ResponseDTO responseDTO = new ResponseDTO();

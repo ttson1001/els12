@@ -22,28 +22,35 @@ public class TestServiceImpl {
     @Autowired
     WorkingTimeRepository workingTimeRepository;
 
-    private String bookingSitter(AddBookingRequestDTO addBookingRequestDTO) {
-        boolean checkCreateDate = true;
-        boolean checkWorkingTime;
-        boolean checkStatus;
+    private User bookingSitter(AddBookingRequestDTO addBookingRequestDTO) {
+        User user = null;
         int checkDate = 0;
         LocalDate now = LocalDate.now();
         List<User> sitters = userRepository.findAllByRole_NameAndStatus("SITTER", "ACTIVATE");
-        for (User user : sitters) {
+        for (User sitter : sitters) {
             checkDate = user.getCreateDate().compareTo(now);
-            if (checkDate < 0) {
-                checkCreateDate = false;
-            }
-            List<WorkingTime> workingTimes = workingTimeRepository.findAllByBooking_User_IdAndStatus(user.getId(),"ACTIVATE");
-            List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOs = addBookingRequestDTO.getAddWorkingTimesDTOList();
-            for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOs) {
-                for (WorkingTime workingTime: workingTimes) {
-//                    workingTime
+            if (sitter.getToken() != null) {
+                if (checkDate >= 0) {
+                    List<WorkingTime> workingTimes = workingTimeRepository.findAllByBooking_User_IdAndStatus(user.getId(), "ACTIVATE");
+                    List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOs = addBookingRequestDTO.getAddWorkingTimesDTOList();
+                    for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOs) {
+                        for (WorkingTime workingTime : workingTimes) {
+                            if (addWorkingTimesRequestDTO.getStartDateTime().toLocalDate().equals(workingTime.getStartDateTime().toLocalDate())) {
+                                boolean check1 = addWorkingTimesRequestDTO.getStartDateTime().isBefore(workingTime.getStartDateTime());
+                                boolean check2 = addWorkingTimesRequestDTO.getStartDateTime().isBefore(workingTime.getEndDateTime());
+                                boolean check3 = addWorkingTimesRequestDTO.getStartDateTime().isAfter(workingTime.getStartDateTime());
+                                if ((check1 == true && check2 == true) || check3 == true) {
+                                    return sitter;
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
+
         }
-        return "son";
+        return user;
     }
 
     public static void main(String[] args) {
@@ -66,7 +73,7 @@ public class TestServiceImpl {
 
         System.out.println("ngày bắt đầu vs ngày kết thúc : " + dateTimeS1.isAfter(dateTime2));
 
-        if((dateTimeS1.isBefore(dateTime1)==true&& dateTimeS2.isBefore(dateTime1)==true)|| dateTimeS1.isAfter(dateTime2) == true){
+        if ((dateTimeS1.isBefore(dateTime1) == true && dateTimeS2.isBefore(dateTime1) == true) || dateTimeS1.isAfter(dateTime2) == true) {
             System.out.println("dc phép đặc lịch");
         }
 
