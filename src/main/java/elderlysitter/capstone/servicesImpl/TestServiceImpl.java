@@ -38,7 +38,7 @@ public class TestServiceImpl {
             List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOs = addBookingRequestDTO.getAddWorkingTimesDTOList();
             for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOs) {
                 for (WorkingTime workingTime: workingTimes) {
-                    workingTime
+//                    workingTime
                 }
             }
 
