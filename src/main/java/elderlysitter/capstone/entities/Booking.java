@@ -54,30 +54,30 @@ public class Booking {
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<BookingDetail> bookingDetails;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToOne(mappedBy = "booking")
     private Rating rating;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToOne(mappedBy = "booking")
     private Report report;
 
     @OneToOne(fetch = FetchType.EAGER)
     private Payment payment;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<WorkingTime> workingTimes;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<BookingImg> bookingImgs;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<SitterCancel> sitterCancels;
 
