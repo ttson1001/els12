@@ -77,7 +77,8 @@ public class BookingServiceImpl implements BookingService {
         try {
             List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOS = addBookingRequestDTO.getAddWorkingTimesDTOList();
             List<AddBookingServiceRequestDTO> addBookingServiceRequestDTOS = addBookingRequestDTO.getAddBookingServiceRequestDTOS();
-
+            List<WorkingTime> workingTimes = new ArrayList<>();
+            List<BookingDetail> bookingDetails = new ArrayList<>();
             User sitter = userService.randomSitter(addBookingRequestDTO, "");
             if (sitter == null) {
                 Booking booking = Booking.builder()
@@ -94,7 +95,6 @@ public class BookingServiceImpl implements BookingService {
                         .user(userRepository.findUserByEmail(addBookingRequestDTO.getEmail()))
                         .build();
                 bookingRepository.save(booking);
-                List<BookingDetail> bookingDetails = new ArrayList<>();
                 Booking newBooking = bookingRepository.findBookingByName(booking.getName());
                 for (int i = 0; i < addBookingRequestDTO.getAddBookingServiceRequestDTOS().size(); i++) {
                     Service service = serviceRepository.findById(addBookingServiceRequestDTOS.get(i).getId()).get();
@@ -107,7 +107,6 @@ public class BookingServiceImpl implements BookingService {
                     bookingDetailRepository.save(bookingDetail);
                     bookingDetails.add(bookingDetail);
                 }
-                List<WorkingTime> workingTimes = new ArrayList<>();
                 for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOS) {
                     WorkingTime workingTime = WorkingTime.builder()
                             .booking(newBooking)
@@ -160,6 +159,7 @@ public class BookingServiceImpl implements BookingService {
                             .duration(addBookingServiceRequestDTO.getDuration() * addWorkingTimesRequestDTOS.size())
                             .price(price.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
                             .build();
+                    bookingDetails.add(bookingDetail);
                     bookingDetailRepository.save(bookingDetail);
                 }
                 for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOS) {
@@ -169,6 +169,7 @@ public class BookingServiceImpl implements BookingService {
                             .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
                             .status(StatusCode.ACTIVATE.toString())
                             .build();
+                    workingTimes.add(workingTime);
                     workingTimeRepository.save(workingTime);
                 }
                 newBooking = bookingRepository.findBookingByName(booking.getName());
