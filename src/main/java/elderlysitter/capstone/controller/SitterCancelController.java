@@ -21,7 +21,7 @@ public class SitterCancelController {
 
     @PostMapping("cancel-booking/{bookingId}")
     @PreAuthorize("hasRole('SITTER')")
-    public ResponseEntity<ResponseDTO> getAllSitter(@PathVariable Long bookingId){
+    public ResponseEntity<ResponseDTO> cancelBooking(@PathVariable Long bookingId){
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             SitterCancelResponseDTO sitterCancelResponseDTO = sitterCancelService.cancelBooking(bookingId);
