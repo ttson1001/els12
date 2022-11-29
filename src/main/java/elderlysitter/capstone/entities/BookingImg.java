@@ -1,5 +1,6 @@
 package elderlysitter.capstone.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 
@@ -19,6 +20,7 @@ public class BookingImg {
     private Long id;
 
     @JoinColumn(name = "booking_id")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Booking booking;
 
