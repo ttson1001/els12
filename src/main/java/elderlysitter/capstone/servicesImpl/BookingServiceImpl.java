@@ -114,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
                             .build();
                     workingTimeRepository.save(workingTime);
                 }
-                notificationService.sendNotification(newBooking.getUser().getId(), "Không có sitter nào phù hợp với đơn của bạn \n Hoặc nhân viên chúng tôi hiện chưa thể nhận đơn hàng của bạn","Vui lòng chọn dịch vụ khác hoặc thử lại sao");
+                notificationService.sendNotification(newBooking.getUser().getId(), "Không có chăm sóc viên nào phù hợp với đơn của bạn \n Hoặc chăm sóc viên chúng tôi hiện chưa thể nhận đơn hàng của bạn","Vui lòng chọn dịch vụ khác hoặc thử lại sau");
 
                 bookingDTO = convertBookingToBookingDTO(newBooking);
                 return bookingDTO;
@@ -165,7 +165,7 @@ public class BookingServiceImpl implements BookingService {
                         .build();
                 workingTimeRepository.save(workingTime);
             }
-            notificationService.sendNotification(newBooking.getSitter().getId(), "Bạn nhận được một booking mới","Mau mau kiểm tra lịch trình của bạn");
+            notificationService.sendNotification(newBooking.getSitter().getId(), "Bạn nhận được một đơn đặt hàng mới","Mau mau kiểm tra lịch trình của bạn");
             bookingDTO = convertBookingToBookingDTO(newBooking);
         } catch (Exception e) {
             e.printStackTrace();
@@ -299,7 +299,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_PAYMENT.toString());
             booking = bookingRepository.save(booking);
             bookingDTO = convertBookingToBookingDTO(booking);
-            notificationService.sendNotification(booking.getUser().getId(), "Sitter đã đồng ý nhận đơn hàng của bạn vui lòng đặt cọc để công việc được thực hiện","Mau mau kiểm tra lịch trình của bạn");
+            notificationService.sendNotification(booking.getUser().getId(), "Chăm sóc viên "+ booking.getSitter().getFullName() +" đã đồng ý nhận đơn hàng của bạn vui lòng đặt cọc để công việc được thực hiện","Mau mau kiểm tra lịch trình của bạn");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -568,17 +568,19 @@ public class BookingServiceImpl implements BookingService {
                     .note(booking.getElder().getNote())
                     .isAllergy(booking.getElder().getIsAllergy())
                     .build();
-
-            SitterDTO sitterDTO = SitterDTO.builder()
-                    .id(booking.getSitter().getId())
-                    .fullName(booking.getSitter().getFullName())
-                    .dob(booking.getSitter().getDob())
-                    .gender(booking.getSitter().getGender())
-                    .phone(booking.getSitter().getPhone())
-                    .address(booking.getSitter().getAddress())
-                    .email(booking.getSitter().getEmail())
-                    .avatarImgUrl(booking.getSitter().getAvatarImgUrl())
-                    .build();
+            SitterDTO sitterDTO = null;
+            if(booking.getSitter() != null) {
+                sitterDTO  = SitterDTO.builder()
+                        .id(booking.getSitter().getId())
+                        .fullName(booking.getSitter().getFullName())
+                        .dob(booking.getSitter().getDob())
+                        .gender(booking.getSitter().getGender())
+                        .phone(booking.getSitter().getPhone())
+                        .address(booking.getSitter().getAddress())
+                        .email(booking.getSitter().getEmail())
+                        .avatarImgUrl(booking.getSitter().getAvatarImgUrl())
+                        .build();
+            }
 
             CustomerResponseDTO cusResponseDTO = CustomerResponseDTO.builder()
                     .fullName(booking.getUser().getFullName())
