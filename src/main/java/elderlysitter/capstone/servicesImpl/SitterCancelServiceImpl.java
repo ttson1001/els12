@@ -1,6 +1,8 @@
 package elderlysitter.capstone.servicesImpl;
 
+import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.request.AddBookingServiceRequestDTO;
+import elderlysitter.capstone.dto.request.AddWorkingTimesRequestDTO;
 import elderlysitter.capstone.dto.response.SitterCancelResponseDTO;
 import elderlysitter.capstone.entities.*;
 import elderlysitter.capstone.enumCode.StatusCode;
@@ -90,6 +92,7 @@ public class SitterCancelServiceImpl implements SitterCancelService {
         User sitter = null;
         try {
             List<AddBookingServiceRequestDTO> addBookingServiceRequestDTOS = new ArrayList<>();
+            List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOS = new ArrayList<>();
             List<BookingDetail> bookingDetails = booking.getBookingDetails();
             for (BookingDetail bookingDetail: bookingDetails) {
                 AddBookingServiceRequestDTO addBookingServiceRequestDTO = AddBookingServiceRequestDTO.builder()
@@ -97,7 +100,19 @@ public class SitterCancelServiceImpl implements SitterCancelService {
                         .build();
                 addBookingServiceRequestDTOS.add(addBookingServiceRequestDTO);
             }
-            sitter = userService.randomSitter(addBookingServiceRequestDTOS,booking.getSitter().getEmail());
+            List<WorkingTime> workingTimes = booking.getWorkingTimes();
+            for (WorkingTime workingTime: workingTimes) {
+                AddWorkingTimesRequestDTO addWorkingTimesRequestDTO = AddWorkingTimesRequestDTO.builder()
+                        .startDateTime(workingTime.getStartDateTime())
+                        .endDateTime(workingTime.getEndDateTime())
+                        .build();
+                addWorkingTimesRequestDTOS.add(addWorkingTimesRequestDTO);
+            }
+            AddBookingRequestDTO addBookingRequestDTO = AddBookingRequestDTO.builder()
+                    .addBookingServiceRequestDTOS(addBookingServiceRequestDTOS)
+                    .addWorkingTimesDTOList(addWorkingTimesRequestDTOS)
+                    .build();
+            sitter = userService.randomSitter(addBookingRequestDTO,booking.getSitter().getEmail());
             BigDecimal total = BigDecimal.valueOf(0);
             BigDecimal deposit = BigDecimal.valueOf(0);
 

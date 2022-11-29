@@ -63,8 +63,8 @@ public class TestController {
 //        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
             List<User> sitters = userRepository.findAllByRole_NameAndStatus("SITTER", "ACTIVATE");
-            sitters.stream().sorted(Comparator.comparing(User::getCreateDate).reversed()).collect(Collectors.toList());
-            responseDTO.setData(sitters);
+            List<User> sortSitters = sitters.stream().sorted(Comparator.comparing(User::getCreateDate).reversed()).collect(Collectors.toList());
+            responseDTO.setData(sortSitters);
         } catch (Exception e) {
             e.printStackTrace();
         }

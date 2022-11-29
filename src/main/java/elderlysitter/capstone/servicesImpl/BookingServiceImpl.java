@@ -78,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
             List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOS = addBookingRequestDTO.getAddWorkingTimesDTOList();
             List<AddBookingServiceRequestDTO> addBookingServiceRequestDTOS = addBookingRequestDTO.getAddBookingServiceRequestDTOS();
 
-            User sitter = userService.randomSitter(addBookingServiceRequestDTOS, "");
+            User sitter = userService.randomSitter(addBookingRequestDTO, "");
             if (sitter == null) {
                 Booking booking = Booking.builder()
                         .name(uuid.toString())
