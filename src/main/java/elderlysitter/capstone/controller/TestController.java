@@ -55,6 +55,9 @@ public class TestController {
     @Autowired
     WorkingTimeService workingTimeService;
 
+    @Autowired
+    BookingRepository bookingRepository;
+
     @GetMapping
     @PermitAll
 
@@ -63,9 +66,8 @@ public class TestController {
         ResponseDTO responseDTO = new ResponseDTO();
 //        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
-            List<User> sitters = userRepository.findAllByRole_NameAndStatus("SITTER", "ACTIVATE");
-            List<User> sortSitters = sitters.stream().sorted(Comparator.comparing(User::getCreateDate).reversed()).collect(Collectors.toList());
-            responseDTO.setData(sortSitters);
+
+            responseDTO.setData(bookingRepository.findById(304L).get());
         } catch (Exception e) {
             e.printStackTrace();
         }
