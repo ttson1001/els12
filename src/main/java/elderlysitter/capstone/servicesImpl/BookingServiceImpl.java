@@ -171,8 +171,11 @@ public class BookingServiceImpl implements BookingService {
                             .build();
                     workingTimes.add(workingTime);
                     workingTimeRepository.save(workingTime);
+
                 }
-                newBooking = bookingRepository.findBookingByName(booking.getName());
+                newBooking.setBookingDetails(bookingDetails);
+                newBooking.setWorkingTimes(workingTimes);
+                newBooking = bookingRepository.save(newBooking);
                 notificationService.sendNotification(newBooking.getSitter().getId(), "Bạn nhận được một đơn đặt hàng mới", "Mau mau kiểm tra lịch trình của bạn");
                 bookingDTO = convertBookingToBookingDTO(newBooking);
             }
