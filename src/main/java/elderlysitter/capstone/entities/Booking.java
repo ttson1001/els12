@@ -54,7 +54,7 @@ public class Booking {
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<BookingDetail> bookingDetails;
 
