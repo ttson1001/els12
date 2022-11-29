@@ -5,6 +5,7 @@ import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.NotificationResponseDTO;
 import elderlysitter.capstone.dto.request.DateRequestDTO;
 import elderlysitter.capstone.entities.Role;
+import elderlysitter.capstone.entities.User;
 import elderlysitter.capstone.jwt.JwtConfig;
 import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.*;
@@ -18,6 +19,9 @@ import org.springframework.web.client.RestTemplate;
 
 
 import javax.annotation.security.PermitAll;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("test")
@@ -58,8 +62,9 @@ public class TestController {
         ResponseDTO responseDTO = new ResponseDTO();
 //        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
-            boolean s = passwordEncoder.matches(passwordEncoder.encode(password),passwordEncoder.encode(password));
-            responseDTO.setData(workingTimeService.getAllWorkingTimeByBooking_IdAndStatus(1L,"s"));
+            List<User> sitters = userRepository.findAllByRole_NameAndStatus("SITTER", "ACTIVATE");
+            sitters.stream().sorted(Comparator.comparing(User::getCreateDate).reversed()).collect(Collectors.toList());
+            responseDTO.setData(sitters);
         } catch (Exception e) {
             e.printStackTrace();
         }
