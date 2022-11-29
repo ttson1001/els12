@@ -113,6 +113,7 @@ public class BookingServiceImpl implements BookingService {
                             .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
                             .status(StatusCode.ACTIVATE.toString())
                             .build();
+                    System.out.println(addWorkingTimesRequestDTO.getStartDateTime());
                     workingTimeRepository.save(workingTime);
                 }
                 newBooking = bookingRepository.findBookingByName(booking.getName());
