@@ -54,6 +54,8 @@ public class User {
     private Boolean isForm;
 
     private String token;
+
+    private Boolean isLogin;
     @JsonIgnore
     @JoinColumn (name = "role_id")
     @ManyToOne(fetch = FetchType.EAGER)

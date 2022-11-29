@@ -1,6 +1,5 @@
 package elderlysitter.capstone.servicesImpl;
 
-import elderlysitter.capstone.dto.WorkingTimeDTO;
 import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
 import elderlysitter.capstone.dto.request.AddWorkingTimesRequestDTO;
 import elderlysitter.capstone.entities.User;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,16 +22,16 @@ public class TestServiceImpl {
     @Autowired
     WorkingTimeRepository workingTimeRepository;
 
-    private User bookingSitter(AddBookingRequestDTO addBookingRequestDTO) {
-        User user = null;
+    private List<User> randomSitter(AddBookingRequestDTO addBookingRequestDTO) {
         int checkDate = 0;
         LocalDate now = LocalDate.now();
         List<User> sitters = userRepository.findAllByRole_NameAndStatus("SITTER", "ACTIVATE");
+        List<User> users = new ArrayList<>();
         for (User sitter : sitters) {
-            checkDate = user.getCreateDate().compareTo(now);
+            checkDate = sitter.getCreateDate().compareTo(now);
             if (sitter.getToken() != null) {
                 if (checkDate >= 0) {
-                    List<WorkingTime> workingTimes = workingTimeRepository.findAllByBooking_User_IdAndStatus(user.getId(), "ACTIVATE");
+                    List<WorkingTime> workingTimes = workingTimeRepository.findAllByBooking_User_IdAndStatus(sitter.getId(), "ACTIVATE");
                     List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOs = addBookingRequestDTO.getAddWorkingTimesDTOList();
                     for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOs) {
                         for (WorkingTime workingTime : workingTimes) {
@@ -40,18 +40,20 @@ public class TestServiceImpl {
                                 boolean check2 = addWorkingTimesRequestDTO.getStartDateTime().isBefore(workingTime.getEndDateTime());
                                 boolean check3 = addWorkingTimesRequestDTO.getStartDateTime().isAfter(workingTime.getStartDateTime());
                                 if ((check1 == true && check2 == true) || check3 == true) {
-                                    return sitter;
+                                    users.add(sitter);
                                 }
                             }
                         }
                     }
                 }
             }
-
-
         }
-        return user;
+        return users;
     }
+
+//    public User random(List<E>){
+//
+//    }
 
     public static void main(String[] args) {
 //        String s = "2022-11-28";

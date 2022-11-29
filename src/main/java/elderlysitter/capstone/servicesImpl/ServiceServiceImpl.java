@@ -73,6 +73,7 @@ public class ServiceServiceImpl implements ServiceService {
         try {
             service = serviceRepository.findById(id).get();
             service.setStatus(StatusCode.ACTIVATE.toString());
+            serviceRepository.save(service);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -85,6 +86,7 @@ public class ServiceServiceImpl implements ServiceService {
         try {
             service = serviceRepository.findById(id).get();
             service.setStatus(StatusCode.DEACTIVATE.toString());
+            serviceRepository.save(service);
         }catch (Exception e){
             e.printStackTrace();
         }
