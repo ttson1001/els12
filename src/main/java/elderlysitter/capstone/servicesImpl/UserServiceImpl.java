@@ -8,6 +8,7 @@ import elderlysitter.capstone.dto.request.AddBookingServiceRequestDTO;
 import elderlysitter.capstone.entities.SitterService;
 import elderlysitter.capstone.entities.WorkingTime;
 import elderlysitter.capstone.repository.RoleRepository;
+import elderlysitter.capstone.repository.SitterServiceRepository;
 import elderlysitter.capstone.repository.WorkingTimeRepository;
 import elderlysitter.capstone.services.EmailService;
 import elderlysitter.capstone.services.UserService;
@@ -42,6 +43,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private WorkingTimeRepository workingTimeRepository;
 
+    @Autowired
+    private SitterServiceRepository sitterServiceRepository;
+
     @Override
     public User findByEmail(String email) {
         User user = null;
@@ -61,20 +65,19 @@ public class UserServiceImpl implements UserService {
                     .collect(Collectors.toList());
             List<AddBookingServiceRequestDTO> addBookingServiceRequestDTOS = addBookingRequestDTO.getAddBookingServiceRequestDTOS();
             for (User sitter : sitters) {
-                if (!sitter.getEmail().equalsIgnoreCase(email)) {
+                if (!sitter.getEmail().equalsIgnoreCase("")) {
                     boolean checkWorkingTime = false;
                     int countWorkingTime = 0;
                     boolean checkService = false;
                     int count = 0;
                     if (sitter.getToken() != null) {
-                        //
-                        List<WorkingTime> workingTimes = workingTimeRepository.findAllByBooking_User_IdAndStatus(sitter.getId(), "ACTIVATE");
+                        List<WorkingTime> workingTimes = workingTimeRepository.findAllByBooking_Sitter_IdAndStatus(sitter.getId(), "ACTIVATE");
                         List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOs = addBookingRequestDTO.getAddWorkingTimesDTOList();
                         for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOs) {
                             for (WorkingTime workingTime : workingTimes) {
                                 if (addWorkingTimesRequestDTO.getStartDateTime().toLocalDate().equals(workingTime.getStartDateTime().toLocalDate())) {
                                     boolean check1 = addWorkingTimesRequestDTO.getStartDateTime().isBefore(workingTime.getStartDateTime());
-                                    boolean check2 = addWorkingTimesRequestDTO.getStartDateTime().isBefore(workingTime.getEndDateTime());
+                                    boolean check2 = addWorkingTimesRequestDTO.getEndDateTime().isBefore(workingTime.getStartDateTime());
                                     boolean check3 = addWorkingTimesRequestDTO.getStartDateTime().isAfter(workingTime.getStartDateTime());
                                     if (!((check1 == true && check2 == true) || check3 == true)) {
                                         countWorkingTime++;
@@ -83,11 +86,11 @@ public class UserServiceImpl implements UserService {
                             }
                         }
 
-                        if(countWorkingTime > 0) {
+                        if (countWorkingTime == 0) {
                             checkWorkingTime = true;
                         }
 
-                        List<SitterService> sitterServices = sitter.getSitterProfile().getSitterService();
+                        List<elderlysitter.capstone.entities.SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(sitter.getEmail());
                         for (SitterService sitterService : sitterServices) {
                             for (AddBookingServiceRequestDTO addbookingServiceRequestDTO : addBookingServiceRequestDTOS) {
                                 if (addbookingServiceRequestDTO.getId() == sitterService.getService().getId())
@@ -95,11 +98,11 @@ public class UserServiceImpl implements UserService {
                             }
                         }
 
-                        if((count == addBookingServiceRequestDTOS.size())){
+                        if ((count == addBookingServiceRequestDTOS.size())) {
                             checkService = true;
                         }
 
-                        if(checkService == true && checkWorkingTime == true){
+                        if (checkService == true && checkWorkingTime == true) {
                             return sitter;
                         }
                     }

@@ -3,9 +3,14 @@ package elderlysitter.capstone.controller;
 import elderlysitter.capstone.dto.MyNotificationDTO;
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.NotificationResponseDTO;
+import elderlysitter.capstone.dto.request.AddBookingRequestDTO;
+import elderlysitter.capstone.dto.request.AddBookingServiceRequestDTO;
+import elderlysitter.capstone.dto.request.AddWorkingTimesRequestDTO;
 import elderlysitter.capstone.dto.request.DateRequestDTO;
 import elderlysitter.capstone.entities.Role;
+import elderlysitter.capstone.entities.SitterService;
 import elderlysitter.capstone.entities.User;
+import elderlysitter.capstone.entities.WorkingTime;
 import elderlysitter.capstone.jwt.JwtConfig;
 import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.*;
@@ -45,6 +50,9 @@ public class TestController {
     SitterServiceImpl sitterService;
 
     @Autowired
+    SitterServiceRepository sitterServiceRepository;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -58,6 +66,9 @@ public class TestController {
     @Autowired
     BookingRepository bookingRepository;
 
+    @Autowired
+    WorkingTimeRepository workingTimeRepository;
+
     @GetMapping
     @PermitAll
 
@@ -66,8 +77,8 @@ public class TestController {
         ResponseDTO responseDTO = new ResponseDTO();
 //        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
-
-            responseDTO.setData(bookingRepository.findById(304L).get().getWorkingTimes().size());
+            Long id = 3L;
+            responseDTO.setData(bookingRepository.findById(id).get().getWorkingTimes().size());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,11 +87,59 @@ public class TestController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> test1() {
+    @PermitAll
+    public ResponseEntity<ResponseDTO> test1(@RequestBody AddBookingRequestDTO addBookingRequestDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
 
-            responseDTO.setData(sitterService.averageStarOfSitter("son"));
+            List<User> sitters = userRepository.findAllByRole_NameAndStatus("SITTER", "ACTIVATE").stream()
+                    .sorted(Comparator.comparing(User::getCreateDate).reversed())
+                    .collect(Collectors.toList());
+            List<AddBookingServiceRequestDTO> addBookingServiceRequestDTOS = addBookingRequestDTO.getAddBookingServiceRequestDTOS();
+            for (User sitter : sitters) {
+                if (!sitter.getEmail().equalsIgnoreCase("")) {
+                    boolean checkWorkingTime = false;
+                    int countWorkingTime = 0;
+                    boolean checkService = false;
+                    int count = 0;
+                    if (sitter.getToken() != null) {
+                        List<WorkingTime> workingTimes = workingTimeRepository.findAllByBooking_Sitter_IdAndStatus(sitter.getId(), "ACTIVATE");
+                        List<AddWorkingTimesRequestDTO> addWorkingTimesRequestDTOs = addBookingRequestDTO.getAddWorkingTimesDTOList();
+                        for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOs) {
+                            for (WorkingTime workingTime : workingTimes) {
+                                if (addWorkingTimesRequestDTO.getStartDateTime().toLocalDate().equals(workingTime.getStartDateTime().toLocalDate())) {
+                                    boolean check1 = addWorkingTimesRequestDTO.getStartDateTime().isBefore(workingTime.getStartDateTime());
+                                    boolean check2 = addWorkingTimesRequestDTO.getEndDateTime().isBefore(workingTime.getStartDateTime());
+                                    boolean check3 = addWorkingTimesRequestDTO.getStartDateTime().isAfter(workingTime.getStartDateTime());
+                                    if (!((check1 == true && check2 == true) || check3 == true)) {
+                                        countWorkingTime++;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (countWorkingTime == 0) {
+                            checkWorkingTime = true;
+                        }
+
+                        List<elderlysitter.capstone.entities.SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(sitter.getEmail());
+                        for (SitterService sitterService : sitterServices) {
+                            for (AddBookingServiceRequestDTO addbookingServiceRequestDTO : addBookingServiceRequestDTOS) {
+                                if (addbookingServiceRequestDTO.getId() == sitterService.getService().getId())
+                                    count = count + 1;
+                            }
+                        }
+
+                        if ((count == addBookingServiceRequestDTOS.size())) {
+                            checkService = true;
+                        }
+
+                        if (checkService == true && checkWorkingTime == true) {
+                            responseDTO.setData(sitter);
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

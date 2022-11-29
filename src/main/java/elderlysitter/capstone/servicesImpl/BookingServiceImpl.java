@@ -94,18 +94,20 @@ public class BookingServiceImpl implements BookingService {
                         .user(userRepository.findUserByEmail(addBookingRequestDTO.getEmail()))
                         .build();
                 bookingRepository.save(booking);
+                List<BookingDetail> bookingDetails = new ArrayList<>();
                 Booking newBooking = bookingRepository.findBookingByName(booking.getName());
                 for (int i = 0; i < addBookingRequestDTO.getAddBookingServiceRequestDTOS().size(); i++) {
                     Service service = serviceRepository.findById(addBookingServiceRequestDTOS.get(i).getId()).get();
                     BookingDetail bookingDetail = BookingDetail.builder()
-                            .booking(newBooking)
                             .service(service)
                             .serviceName(service.getName())
                             .commission(service.getCommission())
                             .duration(addBookingRequestDTO.getAddBookingServiceRequestDTOS().get(i).getDuration())
                             .build();
                     bookingDetailRepository.save(bookingDetail);
+                    bookingDetails.add(bookingDetail);
                 }
+                List<WorkingTime> workingTimes = new ArrayList<>();
                 for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOS) {
                     WorkingTime workingTime = WorkingTime.builder()
                             .booking(newBooking)
@@ -113,11 +115,13 @@ public class BookingServiceImpl implements BookingService {
                             .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
                             .status(StatusCode.ACTIVATE.toString())
                             .build();
-                    System.out.println(workingTimeRepository.save(workingTime).getStartDateTime());
+                    workingTimeRepository.save(workingTime);
+                    workingTimes.add(workingTime);
                 }
-                System.out.println(newBooking.getWorkingTimes().size());
+                newBooking.setBookingDetails(bookingDetails);
+                newBooking.setWorkingTimes(workingTimes);
+                newBooking = bookingRepository.save(newBooking);
                 notificationService.sendNotification(newBooking.getUser().getId(), "Không có chăm sóc viên nào phù hợp với đơn của bạn \n Hoặc chăm sóc viên chúng tôi hiện chưa thể nhận đơn hàng của bạn","Vui lòng chọn dịch vụ khác hoặc thử lại sau");
-
                 bookingDTO = convertBookingToBookingDTO(newBooking);
                 return bookingDTO;
             } else {

@@ -11,4 +11,7 @@ public interface WorkingTimeRepository extends JpaRepository<WorkingTime, Long> 
     List<WorkingTime> findAllByBooking_IdAndStatus(Long id,String status);
 
     List<WorkingTime> findAllByBooking_User_IdAndStatus(Long userId,String status );
+
+    List<WorkingTime> findAllByBooking_Sitter_IdAndStatus(Long sitter,String status );
+
 }
