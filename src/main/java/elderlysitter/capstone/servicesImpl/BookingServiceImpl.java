@@ -86,6 +86,7 @@ public class BookingServiceImpl implements BookingService {
                         .place(addBookingRequestDTO.getPlace())
                         .description(addBookingRequestDTO.getDescription())
                         .status(StatusCode.CANCEL.toString())
+                        .createDate(LocalDate.now())
                         .elder(elderRepository.findById(addBookingRequestDTO.getElderId()).get())
                         .sitter(null)
                         .deposit(null)
@@ -114,59 +115,62 @@ public class BookingServiceImpl implements BookingService {
                             .build();
                     workingTimeRepository.save(workingTime);
                 }
+                newBooking = bookingRepository.findBookingByName(booking.getName());
                 notificationService.sendNotification(newBooking.getUser().getId(), "Không có chăm sóc viên nào phù hợp với đơn của bạn \n Hoặc chăm sóc viên chúng tôi hiện chưa thể nhận đơn hàng của bạn","Vui lòng chọn dịch vụ khác hoặc thử lại sau");
 
                 bookingDTO = convertBookingToBookingDTO(newBooking);
                 return bookingDTO;
-            }
+            } else {
 
-            for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
-                SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), addBookingServiceRequestDTO.getId());
-                Long commission = sitterService.getService().getCommission();
-                deposit = deposit.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))).multiply((BigDecimal.valueOf(commission).divide(BigDecimal.valueOf(100)))));
-                deposit = deposit.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size()));
-                total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
-            }
+                for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
+                    SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), addBookingServiceRequestDTO.getId());
+                    Long commission = sitterService.getService().getCommission();
+                    deposit = deposit.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))).multiply((BigDecimal.valueOf(commission).divide(BigDecimal.valueOf(100)))));
+                    deposit = deposit.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size()));
+                    total = total.add(sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
+                }
 
-            Booking booking = Booking.builder()
-                    .name(uuid.toString())
-                    .address(addBookingRequestDTO.getAddress())
-                    .place(addBookingRequestDTO.getPlace())
-                    .description(addBookingRequestDTO.getDescription())
-                    .status(StatusCode.WAITING_FOR_SITTER.toString())
-                    .elder(elderRepository.findById(addBookingRequestDTO.getElderId()).get())
-                    .sitter(sitter)
-                    .deposit(deposit)
-                    .totalPrice(total.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
-                    .user(userRepository.findUserByEmail(addBookingRequestDTO.getEmail()))
-                    .build();
-            bookingRepository.save(booking);
-            Booking newBooking = bookingRepository.findBookingByName(booking.getName());
-            for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
-                Service service = serviceRepository.findById(addBookingServiceRequestDTO.getId()).get();
-                SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), service.getId());
-                BigDecimal price = (sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
-                BookingDetail bookingDetail = BookingDetail.builder()
-                        .booking(newBooking)
-                        .service(service)
-                        .serviceName(service.getName())
-                        .commission(service.getCommission())
-                        .duration(addBookingServiceRequestDTO.getDuration() * addWorkingTimesRequestDTOS.size())
-                        .price(price.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
+                Booking booking = Booking.builder()
+                        .name(uuid.toString())
+                        .address(addBookingRequestDTO.getAddress())
+                        .place(addBookingRequestDTO.getPlace())
+                        .description(addBookingRequestDTO.getDescription())
+                        .status(StatusCode.WAITING_FOR_SITTER.toString())
+                        .elder(elderRepository.findById(addBookingRequestDTO.getElderId()).get())
+                        .sitter(sitter)
+                        .deposit(deposit)
+                        .totalPrice(total.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
+                        .user(userRepository.findUserByEmail(addBookingRequestDTO.getEmail()))
                         .build();
-                bookingDetailRepository.save(bookingDetail);
+                bookingRepository.save(booking);
+                Booking newBooking = bookingRepository.findBookingByName(booking.getName());
+                for (AddBookingServiceRequestDTO addBookingServiceRequestDTO : addBookingServiceRequestDTOS) {
+                    Service service = serviceRepository.findById(addBookingServiceRequestDTO.getId()).get();
+                    SitterService sitterService = sitterServiceRepository.findBySitterProfile_User_EmailAndService_Id(sitter.getEmail(), service.getId());
+                    BigDecimal price = (sitterService.getPrice().multiply(BigDecimal.valueOf(addBookingServiceRequestDTO.getDuration()).divide(BigDecimal.valueOf(sitterService.getService().getDuration()))));
+                    BookingDetail bookingDetail = BookingDetail.builder()
+                            .booking(newBooking)
+                            .service(service)
+                            .serviceName(service.getName())
+                            .commission(service.getCommission())
+                            .duration(addBookingServiceRequestDTO.getDuration() * addWorkingTimesRequestDTOS.size())
+                            .price(price.multiply(BigDecimal.valueOf(addWorkingTimesRequestDTOS.size())))
+                            .build();
+                    bookingDetailRepository.save(bookingDetail);
+                }
+                for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOS) {
+                    WorkingTime workingTime = WorkingTime.builder()
+                            .booking(newBooking)
+                            .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
+                            .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
+                            .status(StatusCode.ACTIVATE.toString())
+                            .build();
+                    workingTimeRepository.save(workingTime);
+                }
+                newBooking = bookingRepository.findBookingByName(booking.getName());
+                notificationService.sendNotification(newBooking.getSitter().getId(), "Bạn nhận được một đơn đặt hàng mới", "Mau mau kiểm tra lịch trình của bạn");
+                bookingDTO = convertBookingToBookingDTO(newBooking);
             }
-            for (AddWorkingTimesRequestDTO addWorkingTimesRequestDTO : addWorkingTimesRequestDTOS) {
-                WorkingTime workingTime = WorkingTime.builder()
-                        .booking(newBooking)
-                        .startDateTime(addWorkingTimesRequestDTO.getStartDateTime())
-                        .endDateTime(addWorkingTimesRequestDTO.getEndDateTime())
-                        .status(StatusCode.ACTIVATE.toString())
-                        .build();
-                workingTimeRepository.save(workingTime);
-            }
-            notificationService.sendNotification(newBooking.getSitter().getId(), "Bạn nhận được một đơn đặt hàng mới","Mau mau kiểm tra lịch trình của bạn");
-            bookingDTO = convertBookingToBookingDTO(newBooking);
         } catch (Exception e) {
             e.printStackTrace();
         }
