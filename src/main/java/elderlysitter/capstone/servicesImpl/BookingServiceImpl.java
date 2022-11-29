@@ -115,7 +115,6 @@ public class BookingServiceImpl implements BookingService {
                             .build();
                     System.out.println(workingTimeRepository.save(workingTime).getStartDateTime());
                 }
-                newBooking = bookingRepository.findById(newBooking.getId()).get();
                 System.out.println(newBooking.getWorkingTimes().size());
                 notificationService.sendNotification(newBooking.getUser().getId(), "Không có chăm sóc viên nào phù hợp với đơn của bạn \n Hoặc chăm sóc viên chúng tôi hiện chưa thể nhận đơn hàng của bạn","Vui lòng chọn dịch vụ khác hoặc thử lại sau");
 

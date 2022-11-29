@@ -67,7 +67,7 @@ public class TestController {
 //        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
 
-            responseDTO.setData(bookingRepository.findById(304L).get());
+            responseDTO.setData(bookingRepository.findById(304L).get().getWorkingTimes().size());
         } catch (Exception e) {
             e.printStackTrace();
         }
