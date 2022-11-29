@@ -86,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
                         .address(addBookingRequestDTO.getAddress())
                         .place(addBookingRequestDTO.getPlace())
                         .description(addBookingRequestDTO.getDescription())
-                        .status(StatusCode.CANCEL.toString())
+                        .status(StatusCode.SITTER_NOT_FOUND.toString())
                         .createDate(LocalDate.now())
                         .elder(elderRepository.findById(addBookingRequestDTO.getElderId()).get())
                         .sitter(null)
