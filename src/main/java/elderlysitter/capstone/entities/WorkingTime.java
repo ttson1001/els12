@@ -23,6 +23,7 @@ public class WorkingTime {
     @Column(name = "working_time_id")
     private Long id;
 
+    @JsonIgnore
     @JoinColumn(name = "booking_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Booking booking;
