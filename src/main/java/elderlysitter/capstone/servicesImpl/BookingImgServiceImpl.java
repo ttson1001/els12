@@ -65,6 +65,8 @@ public class BookingImgServiceImpl implements BookingImgService {
             BookingImg bookingImg = bookingImgRepository.findByBooking_Id(addBookingImgRequestDTO.getBookingId());
             bookingImg.setCheckOutUrl(addBookingImgRequestDTO.getUrl());
             bookingImg = bookingImgRepository.save(bookingImg);
+            System.out.println(now);
+            System.out.println(endDate);
             if (now.isEqual(endDate)) {
                 booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_CHECK.toString());
                 notificationService.sendNotification(booking.getUser().getId(),  "Sitter đã hoàn thành xong đơn hàng\n Vui lòng kiểm tra lại và trả tiền cho sitter","Mau mau kiểm tra lịch trình của bạn để theo dõi quá trình làm việc của sitter");
