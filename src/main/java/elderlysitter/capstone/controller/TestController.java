@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.PermitAll;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,7 +80,7 @@ public class TestController {
 //        User user = userRepository.findUserByEmail("somith727@gmail.com");
         try {
             Long id = 3L;
-            LocalDate now = LocalDate.now();
+            LocalDateTime now = LocalDateTime.now();
             responseDTO.setData(now);
         } catch (Exception e) {
             e.printStackTrace();
