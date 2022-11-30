@@ -15,8 +15,7 @@ import java.util.List;
 @Builder
 public class Payment {
     @Id
-
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "payment_type")
@@ -31,7 +30,6 @@ public class Payment {
 
     private BigDecimal amount;
 
-    @MapsId
     @JoinColumn(name = "booking_id")
     @OneToOne(fetch = FetchType.EAGER)
     private Booking booking;
