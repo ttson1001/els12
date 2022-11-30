@@ -4,10 +4,12 @@ import elderlysitter.capstone.dto.ServiceDTO;
 import elderlysitter.capstone.dto.request.AddServiceRequestDTO;
 import elderlysitter.capstone.dto.request.UpdateServiceRequestDTO;
 import elderlysitter.capstone.entities.Service;
+import elderlysitter.capstone.entities.SitterService;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.BookingDetailRepository;
 import elderlysitter.capstone.repository.CategoryRepository;
 import elderlysitter.capstone.repository.ServiceRepository;
+import elderlysitter.capstone.repository.SitterServiceRepository;
 import elderlysitter.capstone.services.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +22,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Autowired
     private ServiceRepository serviceRepository;
+
+    @Autowired
+    private SitterServiceRepository sitterServiceRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -142,6 +147,29 @@ public class ServiceServiceImpl implements ServiceService {
         List<Service> services = new ArrayList<>();
         try {
             services = serviceRepository.findAllByCategory_Id(id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return services;
+    }
+
+    @Override
+    public List<Service> getAllServiceForSitterForm(String email) {
+        List<Service> services = new ArrayList<>();
+        try {
+            List<Service> serviceList = serviceRepository.findAll();
+            List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(email);
+            for (Service service: serviceList
+                 ) {
+                for (SitterService sitterService: sitterServices
+                     ) {
+                    if(sitterService.getService().getId() == service.getId()){
+
+                    }else {
+                        services.add(service);
+                    }
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

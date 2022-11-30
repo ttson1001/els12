@@ -9,6 +9,7 @@ import elderlysitter.capstone.entities.*;
 import elderlysitter.capstone.enumCode.StatusCode;
 import elderlysitter.capstone.repository.*;
 import elderlysitter.capstone.services.BookingService;
+import elderlysitter.capstone.services.NotificationService;
 import elderlysitter.capstone.services.PaymentService;
 import elderlysitter.capstone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private SitterServiceRepository sitterServiceRepository;
@@ -53,6 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
                     .booking(booking)
                     .build();
             payment = paymentRepository.save(payment);
+            notificationService.sendNotification(booking.getSitter().getId(),  "Khách hàng đã thanh toán thành công\n","Bạn hãy kiểm tra lịch trình để bắt đầu làm việc");
             paymentResponseDTO = PaymentResponseDTO.builder()
                     .paymentType(payment.getPaymentType())
                     .amount(payment.getAmount())
@@ -79,6 +83,7 @@ public class PaymentServiceImpl implements PaymentService {
                     .booking(booking)
                     .build();
             payment = paymentRepository.save(payment);
+            notificationService.sendNotification(booking.getSitter().getId(),  "Bạn đã thanh toán thành công\n","Bạn hãy kiểm tra lịch trình để bắt đầu làm việc");
             addNewBooking(booking);
             paymentResponseDTO = PaymentResponseDTO.builder()
                     .paymentType(payment.getPaymentType())

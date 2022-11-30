@@ -8,6 +8,7 @@ import elderlysitter.capstone.dto.response.CandidatesResponseDTO;
 import java.util.List;
 
 public interface CandidateService {
+    Boolean duplicateCandidate (AddCandidateRequestDTO addCandidateRequestDTO);
     CandidateResponseCommonDTO addCandidate(AddCandidateRequestDTO addCandidateRequestDTO);
 
     CandidateResponseCommonDTO acceptCandidate(String email);

@@ -1,6 +1,13 @@
 package elderlysitter.capstone.enumCode;
 
 public enum ErrorCode {
+    FIND_ERROR,
+    APPROVE_ERROR,
+    APPROVE_FAIL,
+    REJECT_ERROR,
+    REJECT_FAIL,
+    ADD_ERROR,
+    ADD_FAIL,
     CANCEL_ERROR,
     CANCEL_FAIL,
     LOGOUT_ERROR,

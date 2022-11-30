@@ -50,6 +50,73 @@ public class CandidateServiceImpl implements CandidateService {
     private CertificateSitterRepository certificateSitterRepository;
 
     @Override
+    public Boolean duplicateCandidate(AddCandidateRequestDTO addCandidateRequestDTO) {
+        Boolean check = false;
+        try {
+            User candidate = userRepository.findUserByEmail(addCandidateRequestDTO.getEmail());
+            candidate.setFullName(addCandidateRequestDTO.getFullName());
+            candidate.setPhone(addCandidateRequestDTO.getPhone());
+            candidate.setStatus(StatusCode.NEW.toString());
+            candidate.setGender(addCandidateRequestDTO.getGender());
+            candidate.setAddress(addCandidateRequestDTO.getAddress());
+            candidate.setCreateDate(LocalDate.now());
+            candidate.setAvatarImgUrl(addCandidateRequestDTO.getAvatarImgUrl());
+            candidate.setBackIdImgUrl(addCandidateRequestDTO.getBackIdImgUrl());
+            candidate.setFrontIdImgUrl(addCandidateRequestDTO.getFrontIdImgUrl());
+            candidate.setDob(addCandidateRequestDTO.getDob());
+            candidate = userRepository.save(candidate);
+
+            SitterProfile candidateProfile = sitterProfileRepository.findByUser_Email(candidate.getEmail());
+            candidateProfile.setUser(candidate);
+            candidateProfile.setIdNumber(addCandidateRequestDTO.getIdNumber());
+            candidateProfile.setDescription(addCandidateRequestDTO.getDescription());
+            sitterProfileRepository.save(candidateProfile);
+
+
+            List<AddSitterServiceRequestDTO> addSitterServiceRequestDTOList = addCandidateRequestDTO.getAddSitterServiceRequestDTOList();
+            List<SitterService> sitterServices = sitterServiceRepository.findAllBySitterProfile_User_Email(candidate.getEmail());
+            for (AddSitterServiceRequestDTO addSitterServiceRequestDTO : addSitterServiceRequestDTOList) {
+                int count = 0;
+                for (SitterService sitterService: sitterServices
+                     ) {
+                    if(sitterService.getService().getId() == addSitterServiceRequestDTO.getId()) {
+                        sitterService.setPrice(addSitterServiceRequestDTO.getServicePrice());
+                        sitterService.setExp(addSitterServiceRequestDTO.getExp());
+                        sitterServiceRepository.save(sitterService);
+                        count++;
+                    }
+                }
+                if(count == 0) {
+                    SitterService sitterService = SitterService.builder()
+                            .service(serviceRepository.findById(addSitterServiceRequestDTO.getId()).get())
+                            .exp(addSitterServiceRequestDTO.getExp())
+                            .price(addSitterServiceRequestDTO.getServicePrice())
+                            .sitterProfile(candidateProfile)
+                            .status(StatusCode.ACTIVATE.toString())
+                            .build();
+                    sitterServiceRepository.save(sitterService);
+                }
+            }
+
+            List<AddCertificateRequestDTO> addCertificateRequestDTOList = addCandidateRequestDTO.getAddCertificateRequestDTOS();
+            if (addCertificateRequestDTOList != null) {
+                for (AddCertificateRequestDTO addCertificateRequestDTO : addCertificateRequestDTOList) {
+                    CertificateSitter certificateSitter = CertificateSitter.builder()
+                            .sitterProfile(candidateProfile)
+                            .url(addCertificateRequestDTO.getUrl())
+                            .name(addCertificateRequestDTO.getName())
+                            .build();
+                    certificateSitterRepository.save(certificateSitter);
+                }
+            }
+            check = true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return check;
+    }
+
+    @Override
     public CandidateResponseCommonDTO addCandidate(AddCandidateRequestDTO addCandidateRequestDTO) {
         CandidateResponseCommonDTO candidateResponseCommonDTO = null;
         try {

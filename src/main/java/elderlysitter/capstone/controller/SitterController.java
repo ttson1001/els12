@@ -3,9 +3,11 @@ package elderlysitter.capstone.controller;
 
 import elderlysitter.capstone.dto.ResponseDTO;
 import elderlysitter.capstone.dto.SitterDTO;
+import elderlysitter.capstone.dto.request.AddSitterServiceFormRequestDTO;
 import elderlysitter.capstone.dto.request.ChangePasswordDTO;
 import elderlysitter.capstone.dto.request.UpdateSalaryRequestDTO;
 import elderlysitter.capstone.dto.request.UpdateSitterRequestDTO;
+import elderlysitter.capstone.dto.response.AddSitterServiceFormResponseDTO;
 import elderlysitter.capstone.dto.response.SitterResponseDTO;
 import elderlysitter.capstone.dto.response.SittersResponseDTO;
 import elderlysitter.capstone.dto.response.UpdateSalaryResponseDTO;
@@ -253,5 +255,97 @@ public class SitterController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PostMapping("add-sitter-service")
+    @PreAuthorize("hasRole('SITTER')")
+    public ResponseEntity<ResponseDTO> addServiceForSitter(@RequestBody AddSitterServiceFormRequestDTO addSitterServiceFormRequestDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            Boolean check =sitterService.addServiceForSitter(addSitterServiceFormRequestDTO);
+            if(check == true){
+                responseDTO.setData(check);
+                responseDTO.setSuccessCode(SuccessCode.SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.ADD_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.ADD_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
+    @PutMapping("approve-add-service/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> approveService(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            Boolean check =sitterService.approveServiceForSitter(id);
+            if(check == true){
+                responseDTO.setData(check);
+                responseDTO.setSuccessCode(SuccessCode.SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.APPROVE_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.APPROVE_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PutMapping("reject-add-service/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> rejectServiceForSitter(@PathVariable Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            Boolean check =sitterService.rejectServiceForSitter(id);
+            if(check == true){
+                responseDTO.setData(check);
+                responseDTO.setSuccessCode(SuccessCode.SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.REJECT_FAIL);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.REJECT_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("forms-sitter-service")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getAllFormAddServiceForSitter() {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<AddSitterServiceFormResponseDTO> addSitterServiceFormResponseDTOS = sitterService.getAllFormAddServiceForSitter();
+            if (addSitterServiceFormResponseDTOS != null) {
+                responseDTO.setData(addSitterServiceFormResponseDTOS);
+                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ALL_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("form-sitter-service/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDTO> getFormAddServiceForSitter(@PathVariable Long id) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            AddSitterServiceFormResponseDTO addSitterServiceFormResponseDTO = sitterService.getFormAddServiceForSitter(id);
+            if (addSitterServiceFormResponseDTO != null) {
+                responseDTO.setData(addSitterServiceFormResponseDTO);
+                responseDTO.setSuccessCode(SuccessCode.FIND_SUCCESS);
+            } else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

@@ -192,4 +192,23 @@ public class ServiceController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("services-by-sitter-email/{email}")
+    @PreAuthorize(("hasRole('SITTER')"))
+    public ResponseEntity<ResponseDTO> getAllServiceForSitterForm(@PathVariable String email){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            List<Service> services = serviceService.getAllServiceForSitterForm(email);
+            responseDTO.setData(services);
+            if(services != null){
+                responseDTO.setSuccessCode(SuccessCode.FIND_ALL_SUCCESS);
+            }else {
+                responseDTO.setErrorCode(ErrorCode.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.FIND_ALL_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

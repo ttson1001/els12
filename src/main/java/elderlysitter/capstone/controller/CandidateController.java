@@ -52,6 +52,25 @@ public class CandidateController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PostMapping("add-duplicate")
+    @PermitAll
+    public ResponseEntity<ResponseDTO> addCandidateDuplicate(@RequestBody AddCandidateRequestDTO addCandidateRequestDTO){
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+                Boolean isAdd = candidateService.duplicateCandidate(addCandidateRequestDTO);
+                if (isAdd == true) {
+                    responseDTO.setSuccessCode(SuccessCode.ADD_CANDIDATE_SUCCESS);
+                    responseDTO.setData(isAdd);
+                } else {
+                    responseDTO.setErrorCode(ErrorCode.ADD_CANDIDATE_FAIL);
+                }
+        }catch (Exception e){
+            e.printStackTrace();
+            responseDTO.setErrorCode(ErrorCode.ADD_CANDIDATE_ERROR);
+        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PutMapping("accept/{email}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> acceptCandidate(@PathVariable String email){

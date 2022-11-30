@@ -23,5 +23,6 @@ public interface ServiceService {
 
     List<ServiceDTO> reportService();
     List<Service> getAllServiceByCategoryID(Long id);
+    List<Service> getAllServiceForSitterForm(String email);
 
 }

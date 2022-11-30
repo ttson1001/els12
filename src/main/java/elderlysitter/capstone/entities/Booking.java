@@ -27,8 +27,6 @@ public class Booking {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-
-
     @JoinColumn(name = "elder_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Elder elder;
@@ -66,10 +64,11 @@ public class Booking {
     @OneToOne(mappedBy = "booking")
     private Report report;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     private Payment payment;
 
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<WorkingTime> workingTimes;
 
@@ -80,9 +79,6 @@ public class Booking {
     @JsonIgnore
     @OneToMany(mappedBy = "booking")
     private List<SitterCancel> sitterCancels;
-
-
-
 
 
 }
