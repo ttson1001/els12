@@ -58,16 +58,15 @@ public class BookingImgServiceImpl implements BookingImgService {
     @Override
     public BookingImgResponseDTO checkOut(AddBookingImgRequestDTO addBookingImgRequestDTO) {
         BookingImgResponseDTO bookingImgResponseDTO = null;
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
+
         try {
             Booking booking = bookingRepository.findById(addBookingImgRequestDTO.getBookingId()).get();
             LocalDate endDate = booking.getWorkingTimes().get(booking.getWorkingTimes().size() - 1).getEndDateTime().toLocalDate();
             BookingImg bookingImg = bookingImgRepository.findByBooking_Id(addBookingImgRequestDTO.getBookingId());
             bookingImg.setCheckOutUrl(addBookingImgRequestDTO.getUrl());
             bookingImg = bookingImgRepository.save(bookingImg);
-            System.out.println(now);
-            System.out.println(endDate);
-            if (now.isEqual(endDate)) {
+            if (now.plusHours(7).toLocalDate().isEqual(endDate)) {
                 booking.setStatus(StatusCode.WAITING_FOR_CUSTOMER_CHECK.toString());
                 notificationService.sendNotification(booking.getUser().getId(),  "Sitter đã hoàn thành xong đơn hàng\n Vui lòng kiểm tra lại và trả tiền cho sitter","Mau mau kiểm tra lịch trình của bạn để theo dõi quá trình làm việc của sitter");
             } else {
@@ -78,7 +77,7 @@ public class BookingImgServiceImpl implements BookingImgService {
             List<WorkingTime> workingTimes = booking.getWorkingTimes();
             for (WorkingTime workingTime : workingTimes
             ) {
-                if(workingTime.getEndDateTime().toLocalDate().isEqual(now)){
+                if(workingTime.getEndDateTime().toLocalDate().isEqual(now.plusHours(7).toLocalDate())){
                     workingTime.setStatus("DONE");
                     workingTimeRepository.save(workingTime);
                 }
