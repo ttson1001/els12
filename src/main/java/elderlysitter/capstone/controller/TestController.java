@@ -81,7 +81,7 @@ public class TestController {
         try {
             Long id = 3L;
             LocalDateTime now = LocalDateTime.now();
-            responseDTO.setData(now);
+            responseDTO.setData(now.plusHours(7));
         } catch (Exception e) {
             e.printStackTrace();
         }
